@@ -21,4 +21,21 @@ enum AlertType: String, Codable, CaseIterable {
             return "Symptom needs attention"
         }
     }
+
+    /// A patient-friendly description explaining the alert for accessibility and UI display.
+    /// These descriptions are warm and reassuring, guiding the patient to contact their care team.
+    var accessibilityDescription: String {
+        switch self {
+        case .weightGain24h:
+            return "Your weight has changed noticeably since yesterday. It's a good idea to check in with your care team."
+        case .weightGain7d:
+            return "Your weight has shifted over the past week. Your care team can help you understand what this means."
+        case .heartRateLow:
+            return "Your heart rate seems lower than usual. Consider reaching out to your care team."
+        case .heartRateHigh:
+            return "Your heart rate seems higher than usual. Your care team can help you figure out next steps."
+        case .severeSymptom:
+            return "You've noted a symptom that may need attention. Please consider contacting your care team."
+        }
+    }
 }
