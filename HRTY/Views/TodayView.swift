@@ -12,6 +12,7 @@ struct TodayView: View {
                 VStack(spacing: 24) {
                     headerSection
                     weightEntrySection
+                    symptomsSection
                     Spacer(minLength: 40)
                 }
                 .padding()
@@ -19,6 +20,7 @@ struct TodayView: View {
             .navigationTitle("Today")
             .onAppear {
                 viewModel.loadData(context: modelContext)
+                viewModel.loadSymptoms(context: modelContext)
                 isWeightFieldFocused = true
             }
         }
@@ -37,6 +39,61 @@ struct TodayView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.top, 8)
+    }
+
+    // MARK: - Symptoms Section
+    private var symptomsSection: some View {
+        VStack(spacing: 16) {
+            symptomsSectionHeader
+
+            VStack(spacing: 4) {
+                ForEach(SymptomType.allCases, id: \.self) { symptomType in
+                    SymptomRowView(
+                        symptomType: symptomType,
+                        severity: viewModel.severity(for: symptomType),
+                        onSeverityChange: { newSeverity in
+                            viewModel.updateSeverity(newSeverity, for: symptomType, context: modelContext)
+                        }
+                    )
+
+                    if symptomType != SymptomType.allCases.last {
+                        Divider()
+                    }
+                }
+            }
+
+            severityLegend
+        }
+        .padding()
+        .background(Color(.systemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 2)
+    }
+
+    private var symptomsSectionHeader: some View {
+        HStack {
+            Image(systemName: "heart.text.square.fill")
+                .foregroundStyle(.pink)
+            Text("How are you feeling?")
+                .font(.headline)
+            Spacer()
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Symptoms section")
+        .accessibilityHint("Rate your symptoms from 1 (none) to 5 (severe)")
+    }
+
+    private var severityLegend: some View {
+        HStack(spacing: 16) {
+            Text("1 = None")
+            Text("3 = Moderate")
+            Text("5 = Severe")
+        }
+        .font(.caption)
+        .foregroundStyle(.secondary)
+        .frame(maxWidth: .infinity)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Severity scale: 1 means none, 3 means moderate, 5 means severe")
     }
 
     // MARK: - Weight Entry Section

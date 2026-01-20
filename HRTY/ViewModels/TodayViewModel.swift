@@ -8,6 +8,9 @@ final class TodayViewModel {
     var validationError: String?
     var showSaveSuccess: Bool = false
 
+    // MARK: - Symptom Input
+    var symptomSeverities: [SymptomType: Int] = [:]
+
     // MARK: - Data State
     var todayEntry: DailyEntry?
     var yesterdayEntry: DailyEntry?
@@ -123,6 +126,60 @@ final class TodayViewModel {
             }
         } catch {
             validationError = "Could not save weight. Please try again."
+        }
+    }
+
+    // MARK: - Symptom Methods
+
+    func loadSymptoms(context: ModelContext) {
+        // Initialize all symptoms with default severity of 1
+        for symptomType in SymptomType.allCases {
+            symptomSeverities[symptomType] = 1
+        }
+
+        // Load existing symptoms from today's entry
+        guard let entry = todayEntry,
+              let existingSymptoms = entry.symptoms else {
+            return
+        }
+
+        for symptom in existingSymptoms {
+            symptomSeverities[symptom.symptomType] = symptom.severity
+        }
+    }
+
+    func severity(for symptomType: SymptomType) -> Int {
+        symptomSeverities[symptomType] ?? 1
+    }
+
+    func updateSeverity(_ severity: Int, for symptomType: SymptomType, context: ModelContext) {
+        let clampedSeverity = min(max(severity, 1), 5)
+        symptomSeverities[symptomType] = clampedSeverity
+
+        // Ensure we have a daily entry
+        if todayEntry == nil {
+            todayEntry = DailyEntry.getOrCreate(for: Date(), in: context)
+        }
+
+        guard let entry = todayEntry else { return }
+
+        // Find or create the symptom entry
+        var symptoms = entry.symptoms ?? []
+        if let existingIndex = symptoms.firstIndex(where: { $0.symptomType == symptomType }) {
+            symptoms[existingIndex].severity = clampedSeverity
+        } else {
+            let newSymptom = SymptomEntry(symptomType: symptomType, severity: clampedSeverity, dailyEntry: entry)
+            context.insert(newSymptom)
+            symptoms.append(newSymptom)
+        }
+
+        entry.symptoms = symptoms
+        entry.updatedAt = Date()
+
+        do {
+            try context.save()
+        } catch {
+            // Silently handle save error for auto-save
         }
     }
 }

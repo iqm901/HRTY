@@ -23,6 +23,7 @@
 		A100000120000001000000010000000E /* Medication.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000220000001000000010000000E /* Medication.swift */; };
 		A100000120000001000000010000000F /* AlertEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000220000001000000010000000F /* AlertEvent.swift */; };
 		A1000001200000010000000100000010 /* TodayViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002200000010000000100000010 /* TodayViewModel.swift */; };
+		A1000001200000010000000100000011 /* SymptomRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002200000010000000100000011 /* SymptomRowView.swift */; };
 		B1000001200000010000000200000001 /* TabTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000002200000010000000200000001 /* TabTests.swift */; };
 /* End PBXBuildFile section */
 
@@ -53,6 +54,7 @@
 		A100000220000001000000010000000E /* Medication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Medication.swift; sourceTree = "<group>"; };
 		A100000220000001000000010000000F /* AlertEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertEvent.swift; sourceTree = "<group>"; };
 		A1000002200000010000000100000010 /* TodayViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayViewModel.swift; sourceTree = "<group>"; };
+		A1000002200000010000000100000011 /* SymptomRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymptomRowView.swift; sourceTree = "<group>"; };
 		A1000003200000010000000100000001 /* HRTY.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HRTY.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1000002200000010000000200000001 /* TabTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabTests.swift; sourceTree = "<group>"; };
 		B1000004200000010000000200000001 /* HRTYTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HRTYTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -129,6 +131,7 @@
 				A1000002200000010000000100000006 /* MedicationsView.swift */,
 				A1000002200000010000000100000007 /* ExportView.swift */,
 				A1000002200000010000000100000008 /* SettingsView.swift */,
+				A1000002200000010000000100000011 /* SymptomRowView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -263,6 +266,7 @@
 				A100000120000001000000010000000E /* Medication.swift in Sources */,
 				A100000120000001000000010000000F /* AlertEvent.swift in Sources */,
 				A1000001200000010000000100000010 /* TodayViewModel.swift in Sources */,
+				A1000001200000010000000100000011 /* SymptomRowView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
