@@ -54,3 +54,23 @@
 - [x] Diuretics are visually distinguished
 - [x] Form validation prevents empty submissions
 - [x] App builds without errors
+
+## Feature Completion Summary
+**Status:** Complete
+**Verified:** 2026-01-20
+
+### Files Implemented
+- `HRTY/Views/MedicationsView.swift` - Main list view with empty state
+- `HRTY/Views/MedicationFormView.swift` - Shared add/edit form
+- `HRTY/Views/MedicationRowView.swift` - List row component
+- `HRTY/ViewModels/MedicationsViewModel.swift` - @Observable view model
+- `HRTY/Models/Medication.swift` - SwiftData model with availableUnits
+- `HRTYTests/MedicationsViewModelTests.swift` - Unit tests (30+ test cases)
+
+### Acceptance Criteria Met
+- [x] Add medication with name, dosage amount, unit, and schedule
+- [x] Mark medication as diuretic (checkbox/toggle)
+- [x] List all medications on Medications tab
+- [x] Edit existing medication
+- [x] Delete medication with confirmation
+- [x] Diuretics visually distinguished in list
