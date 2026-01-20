@@ -4,14 +4,27 @@ struct WeightAlertView: View {
     let alert: AlertEvent
     let onDismiss: () -> Void
 
-    var body: some View {
-        HStack(alignment: .top, spacing: 12) {
-            alertIcon
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
-            VStack(alignment: .leading, spacing: 8) {
-                alertTitle
-                alertMessage
-                dismissButton
+    var body: some View {
+        Group {
+            if dynamicTypeSize.isAccessibilitySize {
+                VStack(alignment: .leading, spacing: 12) {
+                    alertIcon
+                    alertTitle
+                    alertMessage
+                    dismissButton
+                }
+            } else {
+                HStack(alignment: .top, spacing: 12) {
+                    alertIcon
+
+                    VStack(alignment: .leading, spacing: 8) {
+                        alertTitle
+                        alertMessage
+                        dismissButton
+                    }
+                }
             }
         }
         .padding()
