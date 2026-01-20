@@ -40,12 +40,12 @@ As a patient, I want to rate my symptoms on a 1-5 scale so I can track how I'm f
 - Scrollable if needed on smaller screens
 
 ## Acceptance Criteria
-- [ ] Displays all 8 symptoms with patient-friendly names
-- [ ] Each symptom has 1-5 severity selector
-- [ ] Symptoms save to today's DailyEntry
-- [ ] Clear visual indication of selected severity
-- [ ] Defaults to 1 (none) for new entries
-- [ ] Severity selection is intuitive and quick
+- [x] Displays all 8 symptoms with patient-friendly names
+- [x] Each symptom has 1-5 severity selector
+- [x] Symptoms save to today's DailyEntry
+- [x] Clear visual indication of selected severity
+- [x] Defaults to 1 (none) for new entries
+- [x] Severity selection is intuitive and quick
 
 ## UI/UX Notes
 - Use horizontal button row for 1-5 selection (like a rating)
