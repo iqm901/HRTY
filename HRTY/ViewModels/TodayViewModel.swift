@@ -10,6 +10,7 @@ final class TodayViewModel {
 
     // MARK: - Symptom Input
     var symptomSeverities: [SymptomType: Int] = [:]
+    var symptomSaveError: Bool = false
 
     // MARK: - Data State
     var todayEntry: DailyEntry?
@@ -184,8 +185,14 @@ final class TodayViewModel {
 
         do {
             try context.save()
+            symptomSaveError = false
         } catch {
-            // Silently handle save error for auto-save
+            // Track error state for potential UI indication
+            // Auto-save errors are non-blocking but trackable
+            symptomSaveError = true
+            #if DEBUG
+            print("Symptom save error: \(error.localizedDescription)")
+            #endif
         }
     }
 }
