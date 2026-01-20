@@ -11,7 +11,7 @@ final class Medication {
     var isActive: Bool
     var createdAt: Date
 
-    @Relationship(inverse: \DiureticDose.medication)
+    @Relationship(deleteRule: .nullify, inverse: \DiureticDose.medication)
     var doses: [DiureticDose]?
 
     init(
