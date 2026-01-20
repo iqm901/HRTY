@@ -39,12 +39,12 @@ As a patient, I want to add and manage my medications so I can track what I'm ta
 - Tap to edit
 
 ## Acceptance Criteria
-- [ ] Add medication with name, dosage amount, unit, and schedule
-- [ ] Mark medication as diuretic (checkbox/toggle)
-- [ ] List all medications on Medications tab
-- [ ] Edit existing medication
-- [ ] Delete medication with confirmation
-- [ ] Diuretics visually distinguished in list
+- [x] Add medication with name, dosage amount, unit, and schedule
+- [x] Mark medication as diuretic (checkbox/toggle)
+- [x] List all medications on Medications tab
+- [x] Edit existing medication
+- [x] Delete medication with confirmation
+- [x] Diuretics visually distinguished in list
 
 ## UI/UX Notes
 - Use standard iOS list patterns

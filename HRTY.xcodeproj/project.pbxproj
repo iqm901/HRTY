@@ -25,6 +25,9 @@
 		A1000001200000010000000100000010 /* TodayViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002200000010000000100000010 /* TodayViewModel.swift */; };
 		A1000001200000010000000100000011 /* SymptomRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002200000010000000100000011 /* SymptomRowView.swift */; };
 		A1000001200000010000000100000012 /* SeverityLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002200000010000000100000012 /* SeverityLevel.swift */; };
+		A1000001200000010000000100000013 /* MedicationsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002200000010000000100000013 /* MedicationsViewModel.swift */; };
+		A1000001200000010000000100000014 /* MedicationRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002200000010000000100000014 /* MedicationRowView.swift */; };
+		A1000001200000010000000100000015 /* MedicationFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002200000010000000100000015 /* MedicationFormView.swift */; };
 		B1000001200000010000000200000001 /* TabTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000002200000010000000200000001 /* TabTests.swift */; };
 		B1000001200000010000000200000002 /* SymptomTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000002200000010000000200000002 /* SymptomTests.swift */; };
 /* End PBXBuildFile section */
@@ -58,6 +61,9 @@
 		A1000002200000010000000100000010 /* TodayViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayViewModel.swift; sourceTree = "<group>"; };
 		A1000002200000010000000100000011 /* SymptomRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymptomRowView.swift; sourceTree = "<group>"; };
 		A1000002200000010000000100000012 /* SeverityLevel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeverityLevel.swift; sourceTree = "<group>"; };
+		A1000002200000010000000100000013 /* MedicationsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicationsViewModel.swift; sourceTree = "<group>"; };
+		A1000002200000010000000100000014 /* MedicationRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicationRowView.swift; sourceTree = "<group>"; };
+		A1000002200000010000000100000015 /* MedicationFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicationFormView.swift; sourceTree = "<group>"; };
 		A1000003200000010000000100000001 /* HRTY.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HRTY.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1000002200000010000000200000001 /* TabTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabTests.swift; sourceTree = "<group>"; };
 		B1000002200000010000000200000002 /* SymptomTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymptomTests.swift; sourceTree = "<group>"; };
@@ -137,6 +143,8 @@
 				A1000002200000010000000100000007 /* ExportView.swift */,
 				A1000002200000010000000100000008 /* SettingsView.swift */,
 				A1000002200000010000000100000011 /* SymptomRowView.swift */,
+				A1000002200000010000000100000014 /* MedicationRowView.swift */,
+				A1000002200000010000000100000015 /* MedicationFormView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -145,6 +153,7 @@
 			isa = PBXGroup;
 			children = (
 				A1000002200000010000000100000010 /* TodayViewModel.swift */,
+				A1000002200000010000000100000013 /* MedicationsViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -274,6 +283,9 @@
 				A1000001200000010000000100000010 /* TodayViewModel.swift in Sources */,
 				A1000001200000010000000100000011 /* SymptomRowView.swift in Sources */,
 				A1000001200000010000000100000012 /* SeverityLevel.swift in Sources */,
+				A1000001200000010000000100000013 /* MedicationsViewModel.swift in Sources */,
+				A1000001200000010000000100000014 /* MedicationRowView.swift in Sources */,
+				A1000001200000010000000100000015 /* MedicationFormView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
