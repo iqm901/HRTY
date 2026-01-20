@@ -42,6 +42,7 @@ struct MedicationFormView: View {
                         }
                     }
                     .fontWeight(.semibold)
+                    .disabled(!viewModel.isFormValid)
                 }
             }
         }
