@@ -387,16 +387,16 @@ final class TodayViewModel {
         let today = Calendar.current.startOfDay(for: Date())
         let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: today) ?? today
 
+        // Use date-based predicate only (enum comparison not supported in #Predicate)
         let predicate = #Predicate<AlertEvent> { alert in
-            alert.alertType == alertType &&
             alert.triggeredAt >= today &&
             alert.triggeredAt < tomorrow
         }
-        var descriptor = FetchDescriptor<AlertEvent>(predicate: predicate)
-        descriptor.fetchLimit = 1
+        let descriptor = FetchDescriptor<AlertEvent>(predicate: predicate)
 
-        let existingAlerts = (try? context.fetch(descriptor)) ?? []
-        return !existingAlerts.isEmpty
+        let todayAlerts = (try? context.fetch(descriptor)) ?? []
+        // Filter by alert type in memory
+        return todayAlerts.contains { $0.alertType == alertType }
     }
 
     private func createAlert(type: AlertType, message: String, context: ModelContext) {
