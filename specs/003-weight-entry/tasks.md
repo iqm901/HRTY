@@ -1,40 +1,40 @@
 # Tasks: Today View - Weight Entry
 
 ## ViewModel Setup
-- [ ] Create TodayViewModel with @Observable
-- [ ] Add weight input property (String for TextField binding)
-- [ ] Add computed property for parsed weight (Double?)
-- [ ] Add validation logic for weight range (50-500 lbs)
-- [ ] Add save method that creates/updates DailyEntry
+- [x] Create TodayViewModel with @Observable
+- [x] Add weight input property (String for TextField binding)
+- [x] Add computed property for parsed weight (Double?)
+- [x] Add validation logic for weight range (50-500 lbs)
+- [x] Add save method that creates/updates DailyEntry
 
 ## Data Integration
-- [ ] Fetch or create today's DailyEntry on view appear
-- [ ] Fetch yesterday's DailyEntry for comparison
-- [ ] Calculate weight change from yesterday
-- [ ] Save weight to DailyEntry via SwiftData
+- [x] Fetch or create today's DailyEntry on view appear
+- [x] Fetch yesterday's DailyEntry for comparison
+- [x] Calculate weight change from yesterday
+- [x] Save weight to DailyEntry via SwiftData
 
 ## UI Components
-- [ ] Add weight input section to TodayView
-- [ ] Create weight TextField with decimal keyboard
-- [ ] Add "Save Weight" button (or auto-save)
-- [ ] Display previous day's weight
-- [ ] Display weight change with +/- indicator
-- [ ] Add color coding for weight change
-- [ ] Add validation error message display
+- [x] Add weight input section to TodayView
+- [x] Create weight TextField with decimal keyboard
+- [x] Add "Save Weight" button (or auto-save)
+- [x] Display previous day's weight
+- [x] Display weight change with +/- indicator
+- [x] Add color coding for weight change
+- [x] Add validation error message display
 
 ## User Feedback
-- [ ] Show success feedback when weight saved
-- [ ] Show "First entry" message if no previous data
-- [ ] Add appropriate placeholder text in input field
+- [x] Show success feedback when weight saved
+- [x] Show "First entry" message if no previous data
+- [x] Add appropriate placeholder text in input field
 
 ## Accessibility
-- [ ] Add accessibility labels to weight input
-- [ ] Add accessibility hints for weight change
-- [ ] Ensure VoiceOver reads weight change meaningfully
+- [x] Add accessibility labels to weight input
+- [x] Add accessibility hints for weight change
+- [x] Ensure VoiceOver reads weight change meaningfully
 
 ## Quality Checks
-- [ ] Weight entry compiles without errors
-- [ ] App builds successfully
+- [x] Weight entry compiles without errors
+- [x] App builds successfully
 - [ ] Weight saves and persists across app restarts
 - [ ] Validation rejects out-of-range values
 - [ ] Previous day comparison works correctly
