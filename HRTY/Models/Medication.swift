@@ -3,6 +3,9 @@ import SwiftData
 
 @Model
 final class Medication {
+    // MARK: - Available Units (Domain Constant)
+    static let availableUnits = ["mg", "mcg", "mL", "g", "units"]
+
     var name: String
     var dosage: Double
     var unit: String

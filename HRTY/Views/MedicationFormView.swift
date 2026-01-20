@@ -63,7 +63,7 @@ struct MedicationFormView: View {
                     .accessibilityHint("Enter the dosage number")
 
                 Picker("Unit", selection: $viewModel.selectedUnit) {
-                    ForEach(MedicationsViewModel.availableUnits, id: \.self) { unit in
+                    ForEach(Medication.availableUnits, id: \.self) { unit in
                         Text(unit).tag(unit)
                     }
                 }

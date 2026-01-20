@@ -21,9 +21,6 @@ final class MedicationsViewModel {
     // MARK: - Validation
     var validationError: String?
 
-    // MARK: - Available Units
-    static let availableUnits = ["mg", "mcg", "mL", "g", "units"]
-
     // MARK: - Computed Properties
     var sortedMedications: [Medication] {
         medications
