@@ -66,6 +66,12 @@ final class TodayViewModel {
         return formatter.string(from: yesterday)
     }
 
+    /// Returns true when the patient has actively engaged with symptom logging
+    /// (any symptom rated above 1, indicating intentional input rather than defaults)
+    var hasLoggedSymptoms: Bool {
+        symptomSeverities.values.contains { $0 > 1 }
+    }
+
     // MARK: - Methods
     func loadData(context: ModelContext) {
         let today = Date()

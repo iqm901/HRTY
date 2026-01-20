@@ -63,11 +63,29 @@ struct TodayView: View {
             }
 
             severityLegend
+
+            if viewModel.hasLoggedSymptoms {
+                symptomsEncouragement
+            }
         }
         .padding()
         .background(Color(.systemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 2)
+    }
+
+    private var symptomsEncouragement: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "checkmark.circle.fill")
+                .foregroundStyle(.green)
+            Text("Thanks for checking in today!")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+        }
+        .padding(.top, 8)
+        .transition(.opacity.combined(with: .scale))
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Thanks for checking in today")
     }
 
     private var symptomsSectionHeader: some View {
