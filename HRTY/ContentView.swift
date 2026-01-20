@@ -1,7 +1,15 @@
 import SwiftUI
 
+enum Tab: Hashable {
+    case today
+    case trends
+    case medications
+    case export
+    case settings
+}
+
 struct ContentView: View {
-    @State private var selectedTab = 0
+    @State private var selectedTab: Tab = .today
 
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -9,31 +17,31 @@ struct ContentView: View {
                 .tabItem {
                     Label("Today", systemImage: "heart.text.square")
                 }
-                .tag(0)
+                .tag(Tab.today)
 
             TrendsView()
                 .tabItem {
                     Label("Trends", systemImage: "chart.line.uptrend.xyaxis")
                 }
-                .tag(1)
+                .tag(Tab.trends)
 
             MedicationsView()
                 .tabItem {
                     Label("Medications", systemImage: "pills")
                 }
-                .tag(2)
+                .tag(Tab.medications)
 
             ExportView()
                 .tabItem {
                     Label("Export", systemImage: "square.and.arrow.up")
                 }
-                .tag(3)
+                .tag(Tab.export)
 
             SettingsView()
                 .tabItem {
                     Label("Settings", systemImage: "gear")
                 }
-                .tag(4)
+                .tag(Tab.settings)
         }
     }
 }
