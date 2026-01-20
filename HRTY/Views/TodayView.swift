@@ -10,6 +10,7 @@ struct TodayView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 24) {
+                    weightAlertsSection
                     headerSection
                     weightEntrySection
                     symptomsSection
@@ -23,8 +24,26 @@ struct TodayView: View {
                 viewModel.loadData(context: modelContext)
                 viewModel.loadSymptoms(context: modelContext)
                 viewModel.loadDiuretics(context: modelContext)
+                viewModel.loadWeightAlerts(context: modelContext)
                 isWeightFieldFocused = true
             }
+        }
+    }
+
+    // MARK: - Weight Alerts Section
+    @ViewBuilder
+    private var weightAlertsSection: some View {
+        if !viewModel.activeWeightAlerts.isEmpty {
+            VStack(spacing: 12) {
+                ForEach(viewModel.activeWeightAlerts, id: \.persistentModelID) { alert in
+                    WeightAlertView(alert: alert) {
+                        withAnimation(.easeInOut(duration: 0.3)) {
+                            viewModel.acknowledgeAlert(alert, context: modelContext)
+                        }
+                    }
+                }
+            }
+            .transition(.opacity.combined(with: .move(edge: .top)))
         }
     }
 
