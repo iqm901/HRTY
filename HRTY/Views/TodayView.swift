@@ -184,36 +184,40 @@ struct TodayView: View {
     }
 
     // MARK: - Weight Change Styling
+    private enum WeightChangeCategory {
+        case gained   // Weight gain - amber warning
+        case lost     // Weight loss - neutral
+        case stable   // No significant change - green success
+    }
+
+    private var weightChangeCategory: WeightChangeCategory {
+        guard let change = viewModel.weightChange else { return .stable }
+        if change > 0.05 { return .gained }
+        if change < -0.05 { return .lost }
+        return .stable
+    }
+
     private var weightChangeIcon: String {
-        switch viewModel.weightChangeColor {
-        case .warning:
-            return "arrow.up.circle.fill"
-        case .neutral:
-            return "arrow.down.circle.fill"
-        case .success:
-            return "equal.circle.fill"
+        switch weightChangeCategory {
+        case .gained: return "arrow.up.circle.fill"
+        case .lost: return "arrow.down.circle.fill"
+        case .stable: return "equal.circle.fill"
         }
     }
 
     private var weightChangeSwiftUIColor: Color {
-        switch viewModel.weightChangeColor {
-        case .warning:
-            return .orange
-        case .neutral:
-            return .secondary
-        case .success:
-            return .green
+        switch weightChangeCategory {
+        case .gained: return .orange
+        case .lost: return .secondary
+        case .stable: return .green
         }
     }
 
     private var weightChangeBackgroundColor: Color {
-        switch viewModel.weightChangeColor {
-        case .warning:
-            return .orange.opacity(0.1)
-        case .neutral:
-            return Color(.secondarySystemBackground)
-        case .success:
-            return .green.opacity(0.1)
+        switch weightChangeCategory {
+        case .gained: return .orange.opacity(0.1)
+        case .lost: return Color(.secondarySystemBackground)
+        case .stable: return .green.opacity(0.1)
         }
     }
 }

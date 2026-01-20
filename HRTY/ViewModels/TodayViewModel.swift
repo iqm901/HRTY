@@ -52,18 +52,6 @@ final class TodayViewModel {
         }
     }
 
-    var weightChangeColor: WeightChangeColor {
-        guard let change = weightChange else { return .neutral }
-
-        if change > 0.05 {
-            return .warning // Weight gain - amber
-        } else if change < -0.05 {
-            return .neutral // Weight loss - neutral
-        } else {
-            return .success // No change - green
-        }
-    }
-
     var hasNoPreviousData: Bool {
         previousWeight == nil
     }
@@ -137,11 +125,4 @@ final class TodayViewModel {
             validationError = "Could not save weight. Please try again."
         }
     }
-}
-
-// MARK: - Supporting Types
-enum WeightChangeColor {
-    case warning  // Weight gain - amber
-    case neutral  // Weight loss - gray/neutral
-    case success  // No change - green
 }
