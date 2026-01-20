@@ -122,13 +122,18 @@ struct DiureticRowView: View {
     // MARK: - Action Buttons
 
     private var actionButtons: some View {
-        HStack(spacing: 12) {
+        let layout = dynamicTypeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: 8))
+            : AnyLayout(HStackLayout(spacing: 12))
+
+        return layout {
             Button {
                 onLogStandardDose()
             } label: {
                 Label("Log Standard Dose", systemImage: "plus.circle.fill")
                     .font(.subheadline)
                     .fontWeight(.medium)
+                    .frame(maxWidth: dynamicTypeSize.isAccessibilitySize ? .infinity : nil)
             }
             .buttonStyle(.borderedProminent)
             .tint(.blue)
@@ -140,6 +145,7 @@ struct DiureticRowView: View {
             } label: {
                 Text("Custom")
                     .font(.subheadline)
+                    .frame(maxWidth: dynamicTypeSize.isAccessibilitySize ? .infinity : nil)
             }
             .buttonStyle(.bordered)
             .accessibilityLabel("Log custom dose")
