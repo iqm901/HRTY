@@ -18,8 +18,9 @@ final class MedicationsViewModel {
     var scheduleInput: String = ""
     var isDiuretic: Bool = false
 
-    // MARK: - Validation
+    // MARK: - Validation & Errors
     var validationError: String?
+    var deleteError: String?
 
     // MARK: - Computed Properties
     var sortedMedications: [Medication] {
@@ -176,8 +177,15 @@ final class MedicationsViewModel {
             try context.save()
             loadMedications(context: context)
             medicationToDelete = nil
+            deleteError = nil
         } catch {
-            // Silently fail - the medication will remain visible
+            // Revert the soft delete since save failed
+            medication.isActive = true
+            deleteError = "Could not remove medication. Please try again."
         }
+    }
+
+    func clearDeleteError() {
+        deleteError = nil
     }
 }

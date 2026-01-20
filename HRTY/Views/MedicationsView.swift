@@ -44,6 +44,18 @@ struct MedicationsView: View {
                     Text("Are you sure you want to remove \(medication.name) from your medications list? You can always add it back later.")
                 }
             }
+            .alert("Unable to Remove", isPresented: .init(
+                get: { viewModel.deleteError != nil },
+                set: { if !$0 { viewModel.clearDeleteError() } }
+            )) {
+                Button("OK", role: .cancel) {
+                    viewModel.clearDeleteError()
+                }
+            } message: {
+                if let error = viewModel.deleteError {
+                    Text(error)
+                }
+            }
             .onAppear {
                 viewModel.loadMedications(context: modelContext)
             }

@@ -391,6 +391,24 @@ final class MedicationsViewModelTests: XCTestCase {
         XCTAssertNotNil(viewModel.medicationToDelete)
         XCTAssertEqual(viewModel.medicationToDelete?.name, "ToDelete")
     }
+
+    // MARK: - Delete Error Tests
+
+    func testClearDeleteErrorResetsError() {
+        // Given: an existing delete error
+        viewModel.deleteError = "Some error"
+
+        // When: clear delete error
+        viewModel.clearDeleteError()
+
+        // Then: error should be nil
+        XCTAssertNil(viewModel.deleteError)
+    }
+
+    func testDeleteErrorInitiallyNil() {
+        // Then: delete error should be nil initially
+        XCTAssertNil(viewModel.deleteError)
+    }
 }
 
 // MARK: - Medication Model Tests
