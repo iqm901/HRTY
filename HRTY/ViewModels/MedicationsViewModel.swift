@@ -44,9 +44,8 @@ final class MedicationsViewModel {
     }
 
     var isFormValid: Bool {
-        !nameInput.trimmingCharacters(in: .whitespaces).isEmpty &&
-        parsedDosage != nil &&
-        parsedDosage! > 0
+        guard let dosage = parsedDosage else { return false }
+        return !nameInput.trimmingCharacters(in: .whitespaces).isEmpty && dosage > 0
     }
 
     // MARK: - Methods
