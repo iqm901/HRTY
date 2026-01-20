@@ -1,0 +1,256 @@
+{
+  "projectName": "HRTY",
+  "branchName": "main",
+  "description": "Heart failure self-management iOS app - offline-first, patient-facing tracker for daily weight, symptoms, and diuretic intake",
+  "userStories": [
+    {
+      "id": "HRTY-001",
+      "title": "Project Setup & Tab Navigation",
+      "description": "As a user, I want to navigate between the five main sections of the app using a tab bar",
+      "priority": 1,
+      "acceptanceCriteria": [
+        "Xcode project created with SwiftUI lifecycle",
+        "Minimum deployment target iOS 17.0",
+        "TabView with 5 tabs: Today, Trends, Medications, Export, Settings",
+        "Each tab has appropriate SF Symbol icon",
+        "Tab selection persists during app session"
+      ],
+      "passes": false
+    },
+    {
+      "id": "HRTY-002",
+      "title": "Core Data Model Setup",
+      "description": "As a developer, I need the data model to persist daily entries, medications, and alerts on-device",
+      "priority": 2,
+      "acceptanceCriteria": [
+        "SwiftData models created: DailyEntry, SymptomEntry, DiureticDose, Medication, AlertEvent",
+        "DailyEntry contains date, weight, symptoms array, diuretic doses array",
+        "SymptomEntry contains symptom type (enum) and severity (1-5)",
+        "Medication contains name, dosage, unit, schedule, isDiuretic flag",
+        "Data persists across app launches",
+        "Only one DailyEntry per calendar day"
+      ],
+      "passes": false
+    },
+    {
+      "id": "HRTY-003",
+      "title": "Today View - Weight Entry",
+      "description": "As a patient, I want to log my daily weight so I can track changes over time",
+      "priority": 3,
+      "acceptanceCriteria": [
+        "Weight input field accepts decimal values in pounds",
+        "Weight is saved to today's DailyEntry",
+        "Shows previous day's weight for reference",
+        "Shows weight change from yesterday (+ or - lbs)",
+        "Input validates reasonable weight range (50-500 lbs)"
+      ],
+      "passes": false
+    },
+    {
+      "id": "HRTY-004",
+      "title": "Today View - Symptom Logging",
+      "description": "As a patient, I want to rate my symptoms on a 1-5 scale so I can track how I'm feeling",
+      "priority": 4,
+      "acceptanceCriteria": [
+        "Displays all 8 symptoms: dyspnea at rest, dyspnea on exertion, orthopnea, PND, chest pain, dizziness, syncope, reduced urine output",
+        "Each symptom has 1-5 severity selector (1=none, 5=severe)",
+        "Symptoms save to today's DailyEntry",
+        "Clear visual indication of selected severity",
+        "Defaults to 1 (none) for new entries"
+      ],
+      "passes": false
+    },
+    {
+      "id": "HRTY-005",
+      "title": "Medications List Management",
+      "description": "As a patient, I want to add and manage my medications so I can track what I'm taking",
+      "priority": 5,
+      "acceptanceCriteria": [
+        "Add medication with name, dosage amount, unit, and schedule",
+        "Mark medication as diuretic (checkbox/toggle)",
+        "List all medications on Medications tab",
+        "Edit existing medication",
+        "Delete medication with confirmation",
+        "Diuretics visually distinguished in list"
+      ],
+      "passes": false
+    },
+    {
+      "id": "HRTY-006",
+      "title": "Today View - Diuretic Logging",
+      "description": "As a patient, I want to log when I take my diuretics so I can track my medication adherence",
+      "priority": 6,
+      "acceptanceCriteria": [
+        "Shows list of diuretic medications from medication list",
+        "Log dose taken with actual dosage amount",
+        "Mark dose as 'extra dose' if outside normal schedule",
+        "Multiple doses per day supported",
+        "Shows doses already logged today"
+      ],
+      "passes": false
+    },
+    {
+      "id": "HRTY-007",
+      "title": "Weight Alert Logic",
+      "description": "As a patient, I want to be alerted when my weight increases significantly so I can contact my clinician",
+      "priority": 7,
+      "acceptanceCriteria": [
+        "Alert triggers if weight increases ≥2 lbs in 24 hours",
+        "Alert triggers if weight increases ≥5 lbs over 7 days",
+        "Alert message is warm, non-alarmist, suggests contacting clinician",
+        "Alert displayed prominently on Today view",
+        "AlertEvent saved to data store"
+      ],
+      "passes": false
+    },
+    {
+      "id": "HRTY-008",
+      "title": "Symptom Severity Alert Logic",
+      "description": "As a patient, I want to be alerted when I log severe symptoms so I know to contact my clinician",
+      "priority": 8,
+      "acceptanceCriteria": [
+        "Alert triggers if any symptom is logged as 4 or 5",
+        "Alert message advises discussing with clinician",
+        "Alert is non-prescriptive and reassuring",
+        "Alert displayed after saving symptoms"
+      ],
+      "passes": false
+    },
+    {
+      "id": "HRTY-009",
+      "title": "Trends View - Weight Chart",
+      "description": "As a patient, I want to see my weight trend over 30 days so I can understand my progress",
+      "priority": 9,
+      "acceptanceCriteria": [
+        "Line chart showing daily weight for past 30 days",
+        "X-axis shows dates, Y-axis shows weight in lbs",
+        "Missing days shown as gaps (not interpolated)",
+        "Chart is scrollable/zoomable if needed",
+        "Shows current weight and 30-day change summary"
+      ],
+      "passes": false
+    },
+    {
+      "id": "HRTY-010",
+      "title": "Trends View - Symptom Trends",
+      "description": "As a patient, I want to see how my symptoms have changed over time",
+      "priority": 10,
+      "acceptanceCriteria": [
+        "Shows severity trends for each symptom over 30 days",
+        "Raw severity values displayed (no composite scores)",
+        "Can toggle individual symptoms on/off",
+        "Days with alerts visually marked"
+      ],
+      "passes": false
+    },
+    {
+      "id": "HRTY-011",
+      "title": "PDF Export",
+      "description": "As a patient, I want to export my data as a PDF so I can share it with my clinician during visits",
+      "priority": 11,
+      "acceptanceCriteria": [
+        "One-tap PDF generation from Export tab",
+        "PDF includes: date range, 30-day weight trend, symptom trends, diuretic history, alert events",
+        "Optional patient identifier field",
+        "Footer disclaimer: 'This summary reflects patient-entered data for self-management and discussion with a clinician.'",
+        "Share sheet opens after generation",
+        "PDF is readable and professionally formatted"
+      ],
+      "passes": false
+    },
+    {
+      "id": "HRTY-012",
+      "title": "Settings - Basic Preferences",
+      "description": "As a user, I want to configure basic app settings",
+      "priority": 12,
+      "acceptanceCriteria": [
+        "Setting for daily reminder notification time",
+        "Setting for patient name/identifier (optional, for PDF)",
+        "About section with version info",
+        "Privacy information explaining on-device storage"
+      ],
+      "passes": false
+    },
+    {
+      "id": "HRTY-013",
+      "title": "HealthKit Weight Import",
+      "description": "As a patient, I want to import my weight from Apple Health so I don't have to enter it manually",
+      "priority": 13,
+      "acceptanceCriteria": [
+        "Request HealthKit authorization for body mass (read-only)",
+        "Option to import today's weight from HealthKit",
+        "Shows most recent HealthKit weight with timestamp",
+        "User can override with manual entry",
+        "Graceful handling if HealthKit unavailable"
+      ],
+      "passes": false
+    },
+    {
+      "id": "HRTY-014",
+      "title": "HealthKit Heart Rate Import",
+      "description": "As a patient, I want my heart rate data imported from Apple Health for trend tracking",
+      "priority": 14,
+      "acceptanceCriteria": [
+        "Request HealthKit authorization for resting heart rate (read-only)",
+        "Display resting HR on Today view if available",
+        "Heart rate alert: <40 bpm or >120 bpm persistent",
+        "Show HR trend on Trends view"
+      ],
+      "passes": false
+    },
+    {
+      "id": "HRTY-015",
+      "title": "Daily Reminder Notification",
+      "description": "As a patient, I want a daily reminder to complete my check-in",
+      "priority": 15,
+      "acceptanceCriteria": [
+        "Local notification at user-configured time",
+        "Notification text is warm and encouraging",
+        "Tapping notification opens Today view",
+        "Can disable notifications in Settings"
+      ],
+      "passes": false
+    },
+    {
+      "id": "HRTY-016",
+      "title": "Onboarding Flow",
+      "description": "As a new user, I want guidance on setting up the app so I can start tracking quickly",
+      "priority": 16,
+      "acceptanceCriteria": [
+        "Welcome screen explaining app purpose",
+        "HealthKit permission request with explanation",
+        "Notification permission request",
+        "Prompt to add first medication(s)",
+        "Onboarding completes to Today view",
+        "Onboarding only shown once"
+      ],
+      "passes": false
+    },
+    {
+      "id": "HRTY-017",
+      "title": "Medication Photo Capture",
+      "description": "As a patient, I want to photograph my medication list to help set up my medications",
+      "priority": 17,
+      "acceptanceCriteria": [
+        "Camera access to photograph pill bottles or med list",
+        "Photos stored locally for reference",
+        "User manually enters medications after viewing photo",
+        "Optional feature - can skip and enter manually"
+      ],
+      "passes": false
+    },
+    {
+      "id": "HRTY-018",
+      "title": "Dizziness + BP Check Prompt",
+      "description": "As a patient logging dizziness, I want a prompt to check my blood pressure if it's not available",
+      "priority": 18,
+      "acceptanceCriteria": [
+        "If dizziness ≥3 and no BP data from HealthKit, show prompt",
+        "Prompt suggests checking BP manually",
+        "If unable to check, advises contacting clinician",
+        "Orthostatic precautions mentioned in alert"
+      ],
+      "passes": false
+    }
+  ]
+}
