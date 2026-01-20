@@ -21,13 +21,13 @@ As a user, I want to navigate between the five main sections of the app using a 
 - Icons are clearly visible in both light and dark mode
 
 ## Acceptance Criteria
-- [ ] Xcode project created with SwiftUI lifecycle (no UIKit AppDelegate)
-- [ ] Minimum deployment target iOS 17.0 configured in project settings
-- [ ] TabView with 5 tabs: Today, Trends, Medications, Export, Settings
-- [ ] Each tab has appropriate SF Symbol icon
-- [ ] Tab selection persists during app session (no unexpected resets)
-- [ ] App builds successfully on iOS Simulator
-- [ ] Placeholder views exist for each tab
+- [x] Xcode project created with SwiftUI lifecycle (no UIKit AppDelegate)
+- [x] Minimum deployment target iOS 17.0 configured in project settings
+- [x] TabView with 5 tabs: Today, Trends, Medications, Export, Settings
+- [x] Each tab has appropriate SF Symbol icon
+- [x] Tab selection persists during app session (no unexpected resets)
+- [x] App builds successfully on iOS Simulator
+- [x] Placeholder views exist for each tab
 
 ## UI/UX Notes
 - Tab bar should use system default styling
