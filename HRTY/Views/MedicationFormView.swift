@@ -4,6 +4,7 @@ import SwiftData
 struct MedicationFormView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+    @FocusState private var isDosageFieldFocused: Bool
 
     @Bindable var viewModel: MedicationsViewModel
     let isEditing: Bool
@@ -59,8 +60,17 @@ struct MedicationFormView: View {
             HStack {
                 TextField("Dosage", text: $viewModel.dosageInput)
                     .keyboardType(.decimalPad)
+                    .focused($isDosageFieldFocused)
                     .accessibilityLabel("Dosage amount")
                     .accessibilityHint("Enter the dosage number")
+                    .toolbar {
+                        ToolbarItemGroup(placement: .keyboard) {
+                            Spacer()
+                            Button("Done") {
+                                isDosageFieldFocused = false
+                            }
+                        }
+                    }
 
                 Picker("Unit", selection: $viewModel.selectedUnit) {
                     ForEach(Medication.availableUnits, id: \.self) { unit in
