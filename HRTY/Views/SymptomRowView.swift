@@ -1,5 +1,44 @@
 import SwiftUI
 
+enum SeverityLevel: Int, CaseIterable {
+    case none = 1
+    case mild = 2
+    case moderate = 3
+    case significant = 4
+    case severe = 5
+
+    var label: String {
+        switch self {
+        case .none: return "None"
+        case .mild: return "Mild"
+        case .moderate: return "Moderate"
+        case .significant: return "Significant"
+        case .severe: return "Severe"
+        }
+    }
+
+    var color: Color {
+        switch self {
+        case .none: return .green
+        case .mild: return Color(red: 0.6, green: 0.8, blue: 0.2)
+        case .moderate: return .yellow
+        case .significant: return .orange
+        case .severe: return .red
+        }
+    }
+
+    init?(rawValue: Int) {
+        switch rawValue {
+        case 1: self = .none
+        case 2: self = .mild
+        case 3: self = .moderate
+        case 4: self = .significant
+        case 5: self = .severe
+        default: return nil
+        }
+    }
+}
+
 struct SymptomRowView: View {
     let symptomType: SymptomType
     let severity: Int
@@ -46,62 +85,28 @@ struct SymptomRowView: View {
     // MARK: - Styling
 
     private func buttonBackground(for level: Int) -> Color {
-        if severity == level {
-            return severityColor(for: level)
+        guard severity == level, let severityLevel = SeverityLevel(rawValue: level) else {
+            return Color(.secondarySystemBackground)
         }
-        return Color(.secondarySystemBackground)
+        return severityLevel.color
     }
 
     private func buttonForeground(for level: Int) -> Color {
-        if severity == level {
-            return .white
-        }
-        return .primary
+        severity == level ? .white : .primary
     }
 
     private func buttonBorder(for level: Int) -> Color {
-        if severity == level {
-            return severityColor(for: level)
+        guard severity == level, let severityLevel = SeverityLevel(rawValue: level) else {
+            return Color(.separator)
         }
-        return Color(.separator)
-    }
-
-    private func severityColor(for level: Int) -> Color {
-        switch level {
-        case 1:
-            return .green
-        case 2:
-            return Color(red: 0.6, green: 0.8, blue: 0.2)
-        case 3:
-            return .yellow
-        case 4:
-            return .orange
-        case 5:
-            return .red
-        default:
-            return .gray
-        }
+        return severityLevel.color
     }
 
     // MARK: - Accessibility
 
     private func severityAccessibilityLabel(for level: Int) -> String {
-        let description: String
-        switch level {
-        case 1:
-            description = "None"
-        case 2:
-            description = "Mild"
-        case 3:
-            description = "Moderate"
-        case 4:
-            description = "Significant"
-        case 5:
-            description = "Severe"
-        default:
-            description = "Unknown"
-        }
-        return "Severity \(level): \(description)"
+        let label = SeverityLevel(rawValue: level)?.label ?? "Unknown"
+        return "Severity \(level): \(label)"
     }
 
     private func severityAccessibilityHint(for level: Int) -> String {
