@@ -118,7 +118,7 @@ struct TodayView: View {
 
     // MARK: - Diuretic Section
     private var diureticSection: some View {
-        DiureticSectionView(viewModel: viewModel, modelContext: modelContext)
+        DiureticSectionView(viewModel: viewModel)
     }
 
     // MARK: - Weight Entry Section

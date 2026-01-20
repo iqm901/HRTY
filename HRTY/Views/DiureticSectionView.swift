@@ -3,7 +3,7 @@ import SwiftData
 
 struct DiureticSectionView: View {
     @Bindable var viewModel: TodayViewModel
-    let modelContext: ModelContext
+    @Environment(\.modelContext) private var modelContext
 
     @State private var showCustomDoseSheet: Bool = false
     @State private var selectedMedication: Medication?
@@ -146,11 +146,8 @@ struct DiureticSectionView: View {
 
     return NavigationStack {
         ScrollView {
-            DiureticSectionView(
-                viewModel: viewModel,
-                modelContext: container.mainContext
-            )
-            .padding()
+            DiureticSectionView(viewModel: viewModel)
+                .padding()
         }
     }
     .modelContainer(container)
