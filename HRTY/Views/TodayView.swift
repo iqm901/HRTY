@@ -13,6 +13,7 @@ struct TodayView: View {
                     headerSection
                     weightEntrySection
                     symptomsSection
+                    diureticSection
                     Spacer(minLength: 40)
                 }
                 .padding()
@@ -21,6 +22,7 @@ struct TodayView: View {
             .onAppear {
                 viewModel.loadData(context: modelContext)
                 viewModel.loadSymptoms(context: modelContext)
+                viewModel.loadDiuretics(context: modelContext)
                 isWeightFieldFocused = true
             }
         }
@@ -112,6 +114,11 @@ struct TodayView: View {
         .frame(maxWidth: .infinity)
         .accessibilityElement(children: .combine)
         .accessibilityLabel("Severity scale: 1 means none, 3 means moderate, 5 means severe")
+    }
+
+    // MARK: - Diuretic Section
+    private var diureticSection: some View {
+        DiureticSectionView(viewModel: viewModel, modelContext: modelContext)
     }
 
     // MARK: - Weight Entry Section

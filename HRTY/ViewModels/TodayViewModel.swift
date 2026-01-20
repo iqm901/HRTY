@@ -136,6 +136,115 @@ final class TodayViewModel {
         }
     }
 
+    // MARK: - Diuretic State
+    var diureticMedications: [Medication] = []
+    var todayDiureticDoses: [DiureticDose] = []
+    var showDeleteError: Bool = false
+
+    // MARK: - Diuretic Computed Properties
+
+    /// Returns doses for a specific medication logged today
+    func doses(for medication: Medication) -> [DiureticDose] {
+        todayDiureticDoses.filter { $0.medication?.persistentModelID == medication.persistentModelID }
+            .sorted { $0.timestamp < $1.timestamp }
+    }
+
+    // MARK: - Diuretic Methods
+
+    func loadDiuretics(context: ModelContext) {
+        // Fetch all active diuretic medications
+        let predicate = #Predicate<Medication> { medication in
+            medication.isDiuretic && medication.isActive
+        }
+        let descriptor = FetchDescriptor<Medication>(
+            predicate: predicate,
+            sortBy: [SortDescriptor(\.name)]
+        )
+
+        diureticMedications = (try? context.fetch(descriptor)) ?? []
+
+        // Load today's doses from the daily entry
+        todayDiureticDoses = todayEntry?.diureticDoses ?? []
+    }
+
+    /// Log a standard dose (quick entry with medication's default dosage)
+    func logStandardDose(for medication: Medication, context: ModelContext) {
+        logDose(
+            for: medication,
+            amount: medication.dosage,
+            isExtra: false,
+            timestamp: Date(),
+            context: context
+        )
+    }
+
+    /// Log a custom dose with specific amount, extra flag, and timestamp
+    func logCustomDose(
+        for medication: Medication,
+        amount: Double,
+        isExtra: Bool,
+        timestamp: Date,
+        context: ModelContext
+    ) {
+        logDose(for: medication, amount: amount, isExtra: isExtra, timestamp: timestamp, context: context)
+    }
+
+    private func logDose(
+        for medication: Medication,
+        amount: Double,
+        isExtra: Bool,
+        timestamp: Date,
+        context: ModelContext
+    ) {
+        // Ensure we have a daily entry
+        if todayEntry == nil {
+            todayEntry = DailyEntry.getOrCreate(for: Date(), in: context)
+        }
+
+        guard let entry = todayEntry else { return }
+
+        let dose = DiureticDose(
+            dosageAmount: amount,
+            timestamp: timestamp,
+            isExtraDose: isExtra,
+            medication: medication,
+            dailyEntry: entry
+        )
+
+        context.insert(dose)
+
+        // Update local state
+        var doses = entry.diureticDoses ?? []
+        doses.append(dose)
+        entry.diureticDoses = doses
+        entry.updatedAt = Date()
+
+        do {
+            try context.save()
+            todayDiureticDoses = entry.diureticDoses ?? []
+        } catch {
+            #if DEBUG
+            print("Diuretic dose save error: \(error.localizedDescription)")
+            #endif
+        }
+    }
+
+    /// Delete a logged dose
+    func deleteDose(_ dose: DiureticDose, context: ModelContext) {
+        context.delete(dose)
+
+        do {
+            try context.save()
+            todayDiureticDoses.removeAll { $0.persistentModelID == dose.persistentModelID }
+            showDeleteError = false
+        } catch {
+            showDeleteError = true
+            #if DEBUG
+            print("Diuretic dose delete error: \(error.localizedDescription)")
+            #endif
+        }
+    }
+
     // MARK: - Symptom Methods
 
     func loadSymptoms(context: ModelContext) {

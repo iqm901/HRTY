@@ -1,58 +1,58 @@
 # Tasks: Today View - Diuretic Logging
 
 ## ViewModel Extension
-- [ ] Add diuretic medications list to TodayViewModel (filtered)
-- [ ] Add today's diuretic doses property
-- [ ] Add method to log standard dose (quick entry)
-- [ ] Add method to log custom dose (with amount, extra flag)
-- [ ] Add method to fetch doses for specific medication today
+- [x] Add diuretic medications list to TodayViewModel (filtered)
+- [x] Add today's diuretic doses property
+- [x] Add method to log standard dose (quick entry)
+- [x] Add method to log custom dose (with amount, extra flag)
+- [x] Add method to fetch doses for specific medication today
 
 ## UI Components
-- [ ] Create DiureticSectionView for Today view
-- [ ] Create DiureticRowView for each diuretic medication
-- [ ] Display medication name and standard dosage
-- [ ] Show "Log Standard Dose" button
-- [ ] Show "Log Custom Dose" option
-- [ ] Display today's logged doses with timestamps
+- [x] Create DiureticSectionView for Today view
+- [x] Create DiureticRowView for each diuretic medication
+- [x] Display medication name and standard dosage
+- [x] Show "Log Standard Dose" button
+- [x] Show "Log Custom Dose" option
+- [x] Display today's logged doses with timestamps
 
 ## Custom Dose Entry
-- [ ] Create CustomDoseSheet for logging non-standard doses
-- [ ] Add dosage amount field (pre-filled, editable)
-- [ ] Add "Extra Dose" toggle
-- [ ] Add time picker (default to now)
-- [ ] Add Save and Cancel buttons
+- [x] Create CustomDoseSheet for logging non-standard doses
+- [x] Add dosage amount field (pre-filled, editable)
+- [x] Add "Extra Dose" toggle
+- [x] Add time picker (default to now)
+- [x] Add Save and Cancel buttons
 
 ## Today's Doses Display
-- [ ] Show logged doses under each medication
-- [ ] Display timestamp in friendly format
-- [ ] Display dosage amount
-- [ ] Show "extra" badge for extra doses
-- [ ] Allow deleting logged doses (swipe or button)
+- [x] Show logged doses under each medication
+- [x] Display timestamp in friendly format
+- [x] Display dosage amount
+- [x] Show "extra" badge for extra doses
+- [x] Allow deleting logged doses (swipe or button)
 
 ## TodayView Integration
-- [ ] Add diuretic section to TodayView
-- [ ] Position after symptoms section
-- [ ] Add section header
-- [ ] Handle empty state (no diuretics configured)
-- [ ] Link to Medications tab if no diuretics
+- [x] Add diuretic section to TodayView
+- [x] Position after symptoms section
+- [x] Add section header
+- [x] Handle empty state (no diuretics configured)
+- [x] Link to Medications tab if no diuretics
 
 ## Data Persistence
-- [ ] Create DiureticDose linked to DailyEntry
-- [ ] Link DiureticDose to Medication
-- [ ] Save dose with timestamp and extra flag
-- [ ] Query today's doses on view appear
+- [x] Create DiureticDose linked to DailyEntry
+- [x] Link DiureticDose to Medication
+- [x] Save dose with timestamp and extra flag
+- [x] Query today's doses on view appear
 
 ## Accessibility
-- [ ] Add accessibility labels for diuretic rows
-- [ ] Add accessibility labels for dose timestamps
-- [ ] Add accessibility hint for extra dose indicator
-- [ ] Ensure VoiceOver announces logged doses
+- [x] Add accessibility labels for diuretic rows
+- [x] Add accessibility labels for dose timestamps
+- [x] Add accessibility hint for extra dose indicator
+- [x] Ensure VoiceOver announces logged doses
 
 ## Quality Checks
-- [ ] Diuretic list displays correctly
-- [ ] Standard dose logging works
-- [ ] Custom dose logging works
-- [ ] Extra dose flag saves correctly
-- [ ] Multiple doses per day supported
-- [ ] Data persists across app restarts
-- [ ] App builds without errors
+- [x] Diuretic list displays correctly
+- [x] Standard dose logging works
+- [x] Custom dose logging works
+- [x] Extra dose flag saves correctly
+- [x] Multiple doses per day supported
+- [x] Data persists across app restarts
+- [x] App builds without errors
