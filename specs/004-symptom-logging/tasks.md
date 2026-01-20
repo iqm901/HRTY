@@ -36,6 +36,6 @@
 ## Quality Checks
 - [x] All 8 symptoms display correctly
 - [x] Severity selection works for all symptoms
-- [ ] Data persists across app restarts
+- [x] Data persists across app restarts
 - [x] Defaults to 1 for new entries
 - [x] App builds without errors

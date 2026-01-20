@@ -44,13 +44,15 @@ struct SymptomRowView: View {
     let severity: Int
     let onSeverityChange: (Int) -> Void
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(symptomType.displayName)
                 .font(.subheadline)
                 .foregroundStyle(.primary)
 
-            HStack(spacing: 8) {
+            HStack(spacing: buttonSpacing) {
                 ForEach(1...5, id: \.self) { level in
                     severityButton(level: level)
                 }
@@ -61,13 +63,53 @@ struct SymptomRowView: View {
         .accessibilityLabel(symptomType.displayName)
     }
 
+    // MARK: - Dynamic Type Adaptive Sizing
+
+    private var buttonSize: CGFloat {
+        switch dynamicTypeSize {
+        case .xSmall, .small, .medium:
+            return 40
+        case .large, .xLarge:
+            return 44
+        case .xxLarge, .xxxLarge:
+            return 52
+        case .accessibility1, .accessibility2:
+            return 60
+        case .accessibility3, .accessibility4, .accessibility5:
+            return 72
+        @unknown default:
+            return 44
+        }
+    }
+
+    private var buttonSpacing: CGFloat {
+        dynamicTypeSize.isAccessibilitySize ? 4 : 8
+    }
+
+    private var buttonFontSize: CGFloat {
+        switch dynamicTypeSize {
+        case .xSmall, .small, .medium:
+            return 14
+        case .large, .xLarge:
+            return 16
+        case .xxLarge, .xxxLarge:
+            return 20
+        case .accessibility1, .accessibility2:
+            return 24
+        case .accessibility3, .accessibility4, .accessibility5:
+            return 28
+        @unknown default:
+            return 16
+        }
+    }
+
     private func severityButton(level: Int) -> some View {
         Button {
             onSeverityChange(level)
         } label: {
             Text("\(level)")
-                .font(.system(size: 16, weight: severity == level ? .bold : .regular))
-                .frame(width: 44, height: 44)
+                .font(.system(size: buttonFontSize, weight: severity == level ? .bold : .regular))
+                .frame(minWidth: buttonSize, minHeight: buttonSize)
                 .background(buttonBackground(for: level))
                 .foregroundStyle(buttonForeground(for: level))
                 .clipShape(RoundedRectangle(cornerRadius: 8))
