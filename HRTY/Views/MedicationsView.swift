@@ -32,16 +32,16 @@ struct MedicationsView: View {
             .sheet(isPresented: $viewModel.showingEditMedication) {
                 MedicationFormView(viewModel: viewModel, isEditing: true)
             }
-            .alert("Delete Medication", isPresented: $viewModel.showingDeleteConfirmation) {
+            .alert("Remove Medication", isPresented: $viewModel.showingDeleteConfirmation) {
                 Button("Cancel", role: .cancel) {
                     viewModel.medicationToDelete = nil
                 }
-                Button("Delete", role: .destructive) {
+                Button("Remove", role: .destructive) {
                     viewModel.deleteMedication(context: modelContext)
                 }
             } message: {
                 if let medication = viewModel.medicationToDelete {
-                    Text("Are you sure you want to remove \(medication.name) from your medications list?")
+                    Text("Are you sure you want to remove \(medication.name) from your medications list? You can always add it back later.")
                 }
             }
             .onAppear {
