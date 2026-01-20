@@ -1,6 +1,6 @@
 import SwiftUI
 
-enum Tab: Hashable {
+enum Tab: Hashable, CaseIterable {
     case today
     case trends
     case medications

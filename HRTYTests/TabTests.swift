@@ -4,9 +4,13 @@ import XCTest
 final class TabTests: XCTestCase {
 
     func testTabCasesExist() {
-        // Verify all five tabs are defined
-        let tabs: [Tab] = [.today, .trends, .medications, .export, .settings]
-        XCTAssertEqual(tabs.count, 5, "Should have exactly 5 tabs")
+        // Verify all five tabs are defined using CaseIterable
+        XCTAssertEqual(Tab.allCases.count, 5, "Should have exactly 5 tabs")
+        XCTAssertTrue(Tab.allCases.contains(.today))
+        XCTAssertTrue(Tab.allCases.contains(.trends))
+        XCTAssertTrue(Tab.allCases.contains(.medications))
+        XCTAssertTrue(Tab.allCases.contains(.export))
+        XCTAssertTrue(Tab.allCases.contains(.settings))
     }
 
     func testTabHashable() {
@@ -21,8 +25,8 @@ final class TabTests: XCTestCase {
 
     func testTabCanBeUsedInSet() {
         // Verify tabs can be stored in a Set (requires Hashable)
-        let tabSet: Set<Tab> = [.today, .trends, .medications, .export, .settings]
-        XCTAssertEqual(tabSet.count, 5, "Set should contain all 5 unique tabs")
+        let tabSet = Set(Tab.allCases)
+        XCTAssertEqual(tabSet.count, Tab.allCases.count, "Set should contain all unique tabs")
     }
 
     func testTabCanBeUsedAsDictionaryKey() {
