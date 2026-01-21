@@ -52,7 +52,7 @@ final class TrendsViewModel {
         } else if change < -0.1 {
             return "-\(formattedChange) lbs"
         } else {
-            return "No change"
+            return "Stable"
         }
     }
 
@@ -139,9 +139,14 @@ final class TrendsViewModel {
             summary += "Current weight: \(current). "
         }
 
-        if let change = weightChange, let direction = weightTrendDescription {
+        if let change = weightChange {
             let absChange = abs(change)
-            summary += "Over 30 days, you have \(direction) \(String(format: "%.1f", absChange)) pounds."
+            if absChange < 0.1 {
+                summary += "Your weight has been stable over the past 30 days."
+            } else {
+                let direction = change > 0 ? "up" : "down"
+                summary += "Your weight is \(direction) \(String(format: "%.1f", absChange)) pounds over 30 days."
+            }
         }
 
         return summary

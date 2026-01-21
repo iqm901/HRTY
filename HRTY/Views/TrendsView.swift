@@ -109,15 +109,15 @@ struct TrendsView: View {
         if let change = viewModel.weightChange {
             if change > 0.1 {
                 Image(systemName: "arrow.up")
-                    .foregroundStyle(.orange)
+                    .foregroundStyle(.blue)
                     .accessibilityLabel("increased")
             } else if change < -0.1 {
                 Image(systemName: "arrow.down")
-                    .foregroundStyle(.green)
+                    .foregroundStyle(.blue)
                     .accessibilityLabel("decreased")
             } else {
-                Image(systemName: "equal")
-                    .foregroundStyle(.secondary)
+                Image(systemName: "checkmark.circle.fill")
+                    .foregroundStyle(.blue)
                     .accessibilityLabel("stable")
             }
         }

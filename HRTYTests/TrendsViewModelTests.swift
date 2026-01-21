@@ -153,7 +153,7 @@ final class TrendsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.weightChangeText, "-2.5 lbs")
     }
 
-    func testWeightChangeTextShowsNoChange() {
+    func testWeightChangeTextShowsStable() {
         // Given: weight stayed the same (within 0.1 threshold)
         let calendar = Calendar.current
         viewModel.weightEntries = [
@@ -161,8 +161,8 @@ final class TrendsViewModelTests: XCTestCase {
             WeightDataPoint(date: Date(), weight: 180.05)
         ]
 
-        // Then: should show "No change"
-        XCTAssertEqual(viewModel.weightChangeText, "No change")
+        // Then: should show "Stable" - warmer messaging for patients
+        XCTAssertEqual(viewModel.weightChangeText, "Stable")
     }
 
     func testWeightChangeTextReturnsNilWhenNoData() {
@@ -319,8 +319,8 @@ final class TrendsViewModelTests: XCTestCase {
             WeightDataPoint(date: Date(), weight: 185.0)
         ]
 
-        // Then: should mention trend direction
-        XCTAssertTrue(viewModel.accessibilitySummary.contains("gained"))
+        // Then: should mention trend direction with warm, neutral language
+        XCTAssertTrue(viewModel.accessibilitySummary.contains("up"))
     }
 
     // MARK: - Loading State Tests
@@ -340,8 +340,8 @@ final class TrendsViewModelTests: XCTestCase {
             WeightDataPoint(date: Date(), weight: 180.1)
         ]
 
-        // Then: should be considered "No change" (0.1 is not > 0.1)
-        XCTAssertEqual(viewModel.weightChangeText, "No change")
+        // Then: should be considered "Stable" (0.1 is not > 0.1)
+        XCTAssertEqual(viewModel.weightChangeText, "Stable")
     }
 
     func testWeightChangeJustAboveThreshold() {
