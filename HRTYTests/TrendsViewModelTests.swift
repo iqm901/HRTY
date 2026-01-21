@@ -399,23 +399,43 @@ final class WeightDataPointTests: XCTestCase {
         // Then: values should be set correctly
         XCTAssertEqual(dataPoint.date, date)
         XCTAssertEqual(dataPoint.weight, weight)
-        XCTAssertNotNil(dataPoint.id)
+        XCTAssertEqual(dataPoint.id, date)
     }
 
-    func testWeightDataPointHasUniqueIds() {
-        // Given: two data points
-        let point1 = WeightDataPoint(date: Date(), weight: 180.0)
-        let point2 = WeightDataPoint(date: Date(), weight: 180.0)
+    func testWeightDataPointIdIsDate() {
+        // Given: a specific date
+        let date = Date()
+        let dataPoint = WeightDataPoint(date: date, weight: 180.0)
 
-        // Then: IDs should be unique
-        XCTAssertNotEqual(point1.id, point2.id)
+        // Then: ID should be the date (semantic identifier for daily entries)
+        XCTAssertEqual(dataPoint.id, date)
     }
 
     func testWeightDataPointIsIdentifiable() {
         // Given: a data point
         let dataPoint = WeightDataPoint(date: Date(), weight: 180.0)
 
-        // Then: should conform to Identifiable (has id property)
-        let _: UUID = dataPoint.id
+        // Then: should conform to Identifiable (id is Date type)
+        let _: Date = dataPoint.id
+    }
+
+    func testWeightDataPointEquatable() {
+        // Given: two data points with same date and weight
+        let date = Date()
+        let point1 = WeightDataPoint(date: date, weight: 180.0)
+        let point2 = WeightDataPoint(date: date, weight: 180.0)
+
+        // Then: should be equal
+        XCTAssertEqual(point1, point2)
+    }
+
+    func testWeightDataPointNotEqualWithDifferentWeight() {
+        // Given: two data points with same date but different weight
+        let date = Date()
+        let point1 = WeightDataPoint(date: date, weight: 180.0)
+        let point2 = WeightDataPoint(date: date, weight: 185.0)
+
+        // Then: should not be equal
+        XCTAssertNotEqual(point1, point2)
     }
 }

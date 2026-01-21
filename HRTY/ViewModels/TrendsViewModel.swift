@@ -2,10 +2,11 @@ import Foundation
 import SwiftData
 
 /// Data point for weight chart visualization
-struct WeightDataPoint: Identifiable {
-    let id = UUID()
+struct WeightDataPoint: Identifiable, Equatable {
     let date: Date
     let weight: Double
+
+    var id: Date { date }
 }
 
 @Observable
