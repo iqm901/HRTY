@@ -3,6 +3,9 @@ import SwiftUI
 struct SettingsView: View {
     @State private var viewModel = SettingsViewModel()
 
+    /// Icon size that scales with Dynamic Type settings for accessibility
+    @ScaledMetric(relativeTo: .title3) private var privacyIconSize: CGFloat = 20
+
     var body: some View {
         NavigationStack {
             Form {
@@ -112,9 +115,9 @@ struct SettingsView: View {
     private func privacyRow(icon: String, title: String, description: String) -> some View {
         HStack(alignment: .top, spacing: 12) {
             Image(systemName: icon)
-                .font(.title3)
+                .font(.system(size: privacyIconSize))
                 .foregroundStyle(.blue)
-                .frame(width: 28)
+                .frame(minWidth: 28)
                 .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: 2) {
