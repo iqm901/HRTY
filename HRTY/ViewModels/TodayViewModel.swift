@@ -106,11 +106,16 @@ final class TodayViewModel {
         previousWeight == nil
     }
 
-    var yesterdayDateText: String {
+    /// Static formatter for yesterday's date (DateFormatter is expensive to create)
+    private static let yesterdayDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
+        return formatter
+    }()
+
+    var yesterdayDateText: String {
         let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: Date()) ?? Date()
-        return formatter.string(from: yesterday)
+        return Self.yesterdayDateFormatter.string(from: yesterday)
     }
 
     /// Returns true when the patient has actively engaged with symptom logging
