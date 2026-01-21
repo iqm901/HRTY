@@ -455,41 +455,34 @@ final class TodayViewModel {
                     healthKitWeight = weight
                     weightInput = weight.formattedWeight
                     showHealthKitTimestamp = true
-                    isLoadingHealthKit = false
-
-                    // Provide haptic feedback on successful import
-                    let generator = UINotificationFeedbackGenerator()
-                    generator.notificationOccurred(.success)
+                    finishHealthKitImport(feedback: .success)
                 }
             } else {
                 await MainActor.run {
                     healthKitError = "No weight data found in Health yet. You can record your weight in the Health app, or simply enter it manually below."
-                    isLoadingHealthKit = false
-
-                    // Provide subtle haptic feedback for no data found
-                    let generator = UINotificationFeedbackGenerator()
-                    generator.notificationOccurred(.warning)
+                    finishHealthKitImport(feedback: .warning)
                 }
             }
         } catch let error as HealthKitError {
             await MainActor.run {
                 healthKitError = error.errorDescription
-                isLoadingHealthKit = false
-
-                // Provide haptic feedback on error
-                let generator = UINotificationFeedbackGenerator()
-                generator.notificationOccurred(.error)
+                finishHealthKitImport(feedback: .error)
             }
         } catch {
             await MainActor.run {
                 healthKitError = "Could not import weight: \(error.localizedDescription)"
-                isLoadingHealthKit = false
-
-                // Provide haptic feedback on error
-                let generator = UINotificationFeedbackGenerator()
-                generator.notificationOccurred(.error)
+                finishHealthKitImport(feedback: .error)
             }
         }
+    }
+
+    /// Consolidates common state cleanup and haptic feedback for HealthKit import completion
+    /// Called at the end of each import path (success, no data, or error)
+    @MainActor
+    private func finishHealthKitImport(feedback: UINotificationFeedbackGenerator.FeedbackType) {
+        isLoadingHealthKit = false
+        let generator = UINotificationFeedbackGenerator()
+        generator.notificationOccurred(feedback)
     }
 
     /// Clear the HealthKit imported weight state (when user edits manually)
