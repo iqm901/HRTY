@@ -1,5 +1,6 @@
 import Foundation
 import SwiftData
+import UIKit
 
 @Observable
 final class TodayViewModel {
@@ -447,22 +448,38 @@ final class TodayViewModel {
                     weightInput = weight.formattedWeight
                     showHealthKitTimestamp = true
                     isLoadingHealthKit = false
+
+                    // Provide haptic feedback on successful import
+                    let generator = UINotificationFeedbackGenerator()
+                    generator.notificationOccurred(.success)
                 }
             } else {
                 await MainActor.run {
                     healthKitError = "No weight data found in Health. Make sure you have recorded your weight in the Health app."
                     isLoadingHealthKit = false
+
+                    // Provide subtle haptic feedback for no data found
+                    let generator = UINotificationFeedbackGenerator()
+                    generator.notificationOccurred(.warning)
                 }
             }
         } catch let error as HealthKitError {
             await MainActor.run {
                 healthKitError = error.errorDescription
                 isLoadingHealthKit = false
+
+                // Provide haptic feedback on error
+                let generator = UINotificationFeedbackGenerator()
+                generator.notificationOccurred(.error)
             }
         } catch {
             await MainActor.run {
                 healthKitError = "Could not import weight: \(error.localizedDescription)"
                 isLoadingHealthKit = false
+
+                // Provide haptic feedback on error
+                let generator = UINotificationFeedbackGenerator()
+                generator.notificationOccurred(.error)
             }
         }
     }
