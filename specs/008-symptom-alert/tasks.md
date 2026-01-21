@@ -29,3 +29,14 @@
 - [x] Multiple severe symptoms shown in one alert
 - [x] Alert persists to data store
 - [x] App builds without errors
+
+---
+
+## Iteration History
+
+### Iteration 1 - System Architect
+- Reviewed file structure and dependencies
+- Identified code duplication in alert acknowledgment
+- Extracted `AlertAcknowledgeable` protocol with default implementation
+- Both `WeightAlertServiceProtocol` and `SymptomAlertServiceProtocol` now inherit from it
+- Build passes, tests pass
