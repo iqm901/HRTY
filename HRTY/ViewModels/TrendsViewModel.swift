@@ -1,10 +1,17 @@
 import Foundation
 import SwiftData
 
+/// Data point for weight chart visualization
+struct WeightDataPoint: Identifiable {
+    let id = UUID()
+    let date: Date
+    let weight: Double
+}
+
 @Observable
 final class TrendsViewModel {
     // MARK: - Weight Data
-    var weightEntries: [(date: Date, weight: Double)] = []
+    var weightEntries: [WeightDataPoint] = []
     var isLoading: Bool = false
 
     // MARK: - Computed Properties
@@ -17,6 +24,11 @@ final class TrendsViewModel {
     /// The earliest weight in the 30-day range
     var startingWeight: Double? {
         weightEntries.first?.weight
+    }
+
+    /// The most recent weight entry date
+    var latestEntryDate: Date? {
+        weightEntries.last?.date
     }
 
     /// Weight change over the 30-day period
@@ -98,11 +110,11 @@ final class TrendsViewModel {
 
         let entries = DailyEntry.fetchForDateRange(from: startDate, to: endDate, in: context)
 
-        // Filter to entries with weight and map to tuples
+        // Filter to entries with weight and map to WeightDataPoint
         weightEntries = entries
-            .compactMap { entry -> (date: Date, weight: Double)? in
+            .compactMap { entry -> WeightDataPoint? in
                 guard let weight = entry.weight else { return nil }
-                return (date: entry.date, weight: weight)
+                return WeightDataPoint(date: entry.date, weight: weight)
             }
             .sorted { $0.date < $1.date }
 

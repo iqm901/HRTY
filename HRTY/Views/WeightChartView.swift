@@ -2,7 +2,7 @@ import SwiftUI
 import Charts
 
 struct WeightChartView: View {
-    let weightEntries: [(date: Date, weight: Double)]
+    let weightEntries: [WeightDataPoint]
 
     private var minWeight: Double {
         let min = weightEntries.map(\.weight).min() ?? 0
@@ -22,7 +22,7 @@ struct WeightChartView: View {
 
     var body: some View {
         Chart {
-            ForEach(weightEntries, id: \.date) { entry in
+            ForEach(weightEntries) { entry in
                 LineMark(
                     x: .value("Date", entry.date, unit: .day),
                     y: .value("Weight", entry.weight)
@@ -63,15 +63,15 @@ struct WeightChartView: View {
 }
 
 #Preview {
-    let sampleData: [(date: Date, weight: Double)] = {
+    let sampleData: [WeightDataPoint] = {
         let calendar = Calendar.current
-        var entries: [(Date, Double)] = []
+        var entries: [WeightDataPoint] = []
         for i in 0..<30 {
             if let date = calendar.date(byAdding: .day, value: -29 + i, to: Date()) {
                 // Skip some days to show gaps
                 if i % 5 != 2 {
                     let weight = 180.0 + Double.random(in: -3...3)
-                    entries.append((date, weight))
+                    entries.append(WeightDataPoint(date: date, weight: weight))
                 }
             }
         }
