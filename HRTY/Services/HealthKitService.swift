@@ -118,25 +118,20 @@ final class HealthKitService: HealthKitServiceProtocol {
         healthStore != nil && weightType != nil
     }
 
+    /// Tracks whether we've attempted authorization for read access.
+    /// Since HealthKit doesn't expose read authorization status, we track it ourselves.
+    private var hasAttemptedAuthorization = false
+
     var authorizationStatus: HealthKitAuthorizationStatus {
-        guard isHealthKitAvailable,
-              let healthStore = healthStore,
-              let weightType = weightType else {
+        guard isHealthKitAvailable else {
             return .unavailable
         }
 
-        let status = healthStore.authorizationStatus(for: weightType)
-        switch status {
-        case .notDetermined:
-            return .notDetermined
-        case .sharingAuthorized:
-            // Note: For read-only access, sharingAuthorized means we have read access
-            return .authorized
-        case .sharingDenied:
-            return .denied
-        @unknown default:
-            return .notDetermined
-        }
+        // Note: HealthKit's authorizationStatus(for:) only reports WRITE authorization status.
+        // For read-only access, Apple intentionally hides whether user granted or denied
+        // to protect privacy. We cannot determine read authorization status via API.
+        // Instead, we rely on attempting to fetch and handling the result.
+        return hasAttemptedAuthorization ? .authorized : .notDetermined
     }
 
     func requestAuthorization() async throws {
@@ -150,6 +145,9 @@ final class HealthKitService: HealthKitServiceProtocol {
         let typesToRead: Set<HKObjectType> = [weightType]
 
         try await healthStore.requestAuthorization(toShare: [], read: typesToRead)
+
+        // Mark that we've attempted authorization (user has seen the prompt or already responded)
+        hasAttemptedAuthorization = true
     }
 
     func fetchLatestWeight() async throws -> HealthKitWeight? {
