@@ -52,3 +52,14 @@
 - [x] Alerts persist to data store
 - [x] Dismiss functionality works
 - [x] App builds without errors
+
+## Test Coverage (WeightAlertTests.swift)
+- [x] Alert threshold values (24h = 2.0 lbs, 7d = 5.0 lbs)
+- [x] Weight validation bounds (50-500 lbs)
+- [x] Boundary conditions (exact threshold, above, below)
+- [x] Weight loss does not trigger alerts
+- [x] Both thresholds exceeded simultaneously
+- [x] AlertType display names and accessibility descriptions
+- [x] AlertEvent initialization and acknowledgement
+- [x] Warm/supportive language verification (no alarmist words)
+- [x] Weight change text formatting
