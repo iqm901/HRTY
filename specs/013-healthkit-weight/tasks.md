@@ -96,6 +96,7 @@ Quality improvements made during the multi-persona review cycle:
 | 14 | Frontend Designer | Added dynamic VoiceOver labels for HealthKit import loading state |
 | 15 | QA Engineer | Added test for generic error handling in HealthKit import |
 | 16 | Project Manager | Verified all acceptance criteria, tasks, build, and tests pass |
+| 17 | Business Analyst | Replaced technical error with patient-friendly message |
 
 ## Acceptance Criteria Verification (Iteration 16)
 
