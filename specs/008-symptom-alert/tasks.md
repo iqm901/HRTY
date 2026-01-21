@@ -1,31 +1,31 @@
 # Tasks: Symptom Severity Alert Logic
 
 ## Alert Logic
-- [ ] Add symptom severity check after symptoms are saved
-- [ ] Trigger alert when any symptom is 4 or 5
-- [ ] Identify which symptoms triggered the alert
-- [ ] Prevent duplicate alerts for same symptoms same day
+- [x] Add symptom severity check after symptoms are saved
+- [x] Trigger alert when any symptom is 4 or 5
+- [x] Identify which symptoms triggered the alert
+- [x] Prevent duplicate alerts for same symptoms same day
 
 ## Alert Messages
-- [ ] Create warm, supportive symptom alert message
-- [ ] Include specific symptom names in message
-- [ ] Ensure message is non-prescriptive
+- [x] Create warm, supportive symptom alert message
+- [x] Include specific symptom names in message
+- [x] Ensure message is non-prescriptive
 
 ## AlertEvent Persistence
-- [ ] Create AlertEvent for symptom alerts
-- [ ] Set AlertType to symptomSeverity
-- [ ] Store which symptoms triggered alert
-- [ ] Link to relevant DailyEntry
+- [x] Create AlertEvent for symptom alerts
+- [x] Set AlertType to symptomSeverity
+- [x] Store which symptoms triggered alert
+- [x] Link to relevant DailyEntry
 
 ## UI Integration
-- [ ] Display symptom alert on Today view
-- [ ] Reuse or adapt WeightAlertView component
-- [ ] Show after symptom save completes
-- [ ] Handle dismiss/acknowledge
+- [x] Display symptom alert on Today view
+- [x] Reuse or adapt WeightAlertView component
+- [x] Show after symptom save completes
+- [x] Handle dismiss/acknowledge
 
 ## Quality Checks
-- [ ] Alert triggers at severity 4 or 5
-- [ ] Alert message is warm and supportive
-- [ ] Multiple severe symptoms shown in one alert
-- [ ] Alert persists to data store
-- [ ] App builds without errors
+- [x] Alert triggers at severity 4 or 5
+- [x] Alert message is warm and supportive
+- [x] Multiple severe symptoms shown in one alert
+- [x] Alert persists to data store
+- [x] App builds without errors

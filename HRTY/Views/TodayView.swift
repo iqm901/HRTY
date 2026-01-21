@@ -25,12 +25,19 @@ struct TodayView: View {
                 viewModel.loadSymptoms(context: modelContext)
                 viewModel.loadDiuretics(context: modelContext)
                 viewModel.loadWeightAlerts(context: modelContext)
+                viewModel.loadSymptomAlerts(context: modelContext)
                 isWeightFieldFocused = true
             }
             .onChange(of: viewModel.activeWeightAlerts.count) { oldCount, newCount in
                 // Announce new alerts to VoiceOver users
                 if newCount > oldCount {
-                    announceAlertForVoiceOver()
+                    announceWeightAlertForVoiceOver()
+                }
+            }
+            .onChange(of: viewModel.activeSymptomAlerts.count) { oldCount, newCount in
+                // Announce new symptom alerts to VoiceOver users
+                if newCount > oldCount {
+                    announceSymptomAlertForVoiceOver()
                 }
             }
         }
@@ -38,7 +45,7 @@ struct TodayView: View {
 
     // MARK: - VoiceOver Support
 
-    private func announceAlertForVoiceOver() {
+    private func announceWeightAlertForVoiceOver() {
         guard let firstAlert = viewModel.activeWeightAlerts.first else { return }
         let announcement = "Weight alert: \(firstAlert.alertType.accessibilityDescription)"
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -46,12 +53,32 @@ struct TodayView: View {
         }
     }
 
-    // MARK: - Weight Alerts Section
+    private func announceSymptomAlertForVoiceOver() {
+        guard let firstAlert = viewModel.activeSymptomAlerts.first else { return }
+        let announcement = "Symptom alert: \(firstAlert.alertType.accessibilityDescription)"
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            UIAccessibility.post(notification: .announcement, argument: announcement)
+        }
+    }
+
+    // MARK: - Alerts Section
     @ViewBuilder
     private var weightAlertsSection: some View {
-        if !viewModel.activeWeightAlerts.isEmpty {
+        let hasAlerts = !viewModel.activeWeightAlerts.isEmpty || !viewModel.activeSymptomAlerts.isEmpty
+
+        if hasAlerts {
             VStack(spacing: 12) {
+                // Weight alerts
                 ForEach(viewModel.activeWeightAlerts, id: \.persistentModelID) { alert in
+                    WeightAlertView(alert: alert) {
+                        withAnimation(.easeInOut(duration: 0.3)) {
+                            viewModel.acknowledgeAlert(alert, context: modelContext)
+                        }
+                    }
+                }
+
+                // Symptom alerts
+                ForEach(viewModel.activeSymptomAlerts, id: \.persistentModelID) { alert in
                     WeightAlertView(alert: alert) {
                         withAnimation(.easeInOut(duration: 0.3)) {
                             viewModel.acknowledgeAlert(alert, context: modelContext)

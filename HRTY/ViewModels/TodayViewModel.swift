@@ -16,16 +16,24 @@ final class TodayViewModel {
     var activeWeightAlerts: [AlertEvent] = []
     var showAlertDismissedEncouragement: Bool = false
 
+    // MARK: - Symptom Alert State
+    var activeSymptomAlerts: [AlertEvent] = []
+
     // MARK: - Data State
     var todayEntry: DailyEntry?
     var yesterdayEntry: DailyEntry?
 
     // MARK: - Services
     private let weightAlertService: WeightAlertServiceProtocol
+    private let symptomAlertService: SymptomAlertServiceProtocol
 
     // MARK: - Initialization
-    init(weightAlertService: WeightAlertServiceProtocol = WeightAlertService()) {
+    init(
+        weightAlertService: WeightAlertServiceProtocol = WeightAlertService(),
+        symptomAlertService: SymptomAlertServiceProtocol = SymptomAlertService()
+    ) {
         self.weightAlertService = weightAlertService
+        self.symptomAlertService = symptomAlertService
     }
 
     // MARK: - Validation Constants (reference AlertConstants for thresholds)
@@ -308,6 +316,9 @@ final class TodayViewModel {
         do {
             try context.save()
             symptomSaveError = false
+
+            // Check for symptom alerts after successful save
+            checkSymptomAlerts(context: context)
         } catch {
             // Track error state for potential UI indication
             // Auto-save errors are non-blocking but trackable
@@ -316,6 +327,25 @@ final class TodayViewModel {
             print("Symptom save error: \(error.localizedDescription)")
             #endif
         }
+    }
+
+    // MARK: - Symptom Alert Methods
+
+    /// Load unacknowledged symptom alerts for display
+    func loadSymptomAlerts(context: ModelContext) {
+        activeSymptomAlerts = symptomAlertService.loadUnacknowledgedSymptomAlerts(context: context)
+    }
+
+    /// Check symptom severities and create alerts if any are severe
+    func checkSymptomAlerts(context: ModelContext) {
+        symptomAlertService.checkSymptomAlerts(
+            symptomSeverities: symptomSeverities,
+            todayEntry: todayEntry,
+            context: context
+        )
+
+        // Reload alerts to show any new ones
+        loadSymptomAlerts(context: context)
     }
 
     // MARK: - Weight Alert Methods
@@ -340,12 +370,23 @@ final class TodayViewModel {
         loadWeightAlerts(context: context)
     }
 
-    /// Acknowledge (dismiss) an alert
+    /// Acknowledge (dismiss) an alert (works for both weight and symptom alerts)
     func acknowledgeAlert(_ alert: AlertEvent, context: ModelContext) {
-        let success = weightAlertService.acknowledgeAlert(alert, context: context)
+        // Use the appropriate service based on alert type
+        let success: Bool
+        if alert.alertType == .severeSymptom {
+            success = symptomAlertService.acknowledgeAlert(alert, context: context)
+        } else {
+            success = weightAlertService.acknowledgeAlert(alert, context: context)
+        }
 
         if success {
-            activeWeightAlerts.removeAll { $0.persistentModelID == alert.persistentModelID }
+            // Remove from the appropriate list
+            if alert.alertType == .severeSymptom {
+                activeSymptomAlerts.removeAll { $0.persistentModelID == alert.persistentModelID }
+            } else {
+                activeWeightAlerts.removeAll { $0.persistentModelID == alert.persistentModelID }
+            }
 
             // Show brief encouragement message after dismissing alert
             showAlertDismissedEncouragement = true

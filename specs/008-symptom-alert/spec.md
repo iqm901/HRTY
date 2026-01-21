@@ -22,11 +22,11 @@ As a patient, I want to be alerted when I log severe symptoms so I know to conta
 > "You've noted that [symptom name] is bothering you more than usual today. This is helpful information to share with your care team when you get a chance."
 
 ## Acceptance Criteria
-- [ ] Alert triggers if any symptom is logged as 4 or 5
-- [ ] Alert message advises discussing with clinician
-- [ ] Alert is non-prescriptive and reassuring
-- [ ] Alert displayed after saving symptoms
-- [ ] AlertEvent saved to data store
+- [x] Alert triggers if any symptom is logged as 4 or 5
+- [x] Alert message advises discussing with clinician
+- [x] Alert is non-prescriptive and reassuring
+- [x] Alert displayed after saving symptoms
+- [x] AlertEvent saved to data store
 
 ## UI/UX Notes
 - Use same alert banner style as weight alerts
