@@ -51,8 +51,10 @@
 
 ## Review Cycle Progress
 - Iteration 0: Code Reviewer - [completed] - Renamed PDFDocument to PDFShareItem to avoid naming conflict with PDFKit
-- Iteration 1: System Architect - [pending]
+- Iteration 1: System Architect - [completed] - Extracted shared WeightDataPoint and SymptomDataPoint to Models/TrendDataPoints.swift
 - Iteration 2: Frontend Designer - [completed] - Added Dynamic Type support and UI animations
 - Iteration 3: QA Engineer - [completed] - Added unit tests for ExportViewModel, PDFGenerationState, and export data structures
 - Iteration 4: Project Manager - [completed] - Verified all acceptance criteria met, all tasks complete, build and tests pass
 - Iteration 5: Business Analyst - [completed] - Softened PDF messaging from clinical "Alert Events" to patient-friendly "Items to Discuss"
+- Iteration 6: Code Reviewer - [pending]
+- Iteration 7: System Architect - [completed] - Extracted shared WeightDataPoint and SymptomDataPoint to Models/TrendDataPoints.swift
