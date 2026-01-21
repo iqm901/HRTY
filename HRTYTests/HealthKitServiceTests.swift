@@ -107,23 +107,23 @@ final class HealthKitErrorTests: XCTestCase {
         // Given: unavailable error
         let error = HealthKitError.unavailable
 
-        // Then: should have appropriate description
-        XCTAssertEqual(error.errorDescription, "HealthKit is not available on this device")
+        // Then: should have patient-friendly description
+        XCTAssertEqual(error.errorDescription, "Health app is not available on this device")
     }
 
     func testAuthorizationDeniedErrorDescription() {
         // Given: authorization denied error
         let error = HealthKitError.authorizationDenied
 
-        // Then: should have appropriate description
-        XCTAssertEqual(error.errorDescription, "Permission to access Health data was denied")
+        // Then: should have patient-friendly description explaining what's needed
+        XCTAssertEqual(error.errorDescription, "HRTY needs permission to read your weight from the Health app")
     }
 
     func testNoDataErrorDescription() {
         // Given: no data error
         let error = HealthKitError.noData
 
-        // Then: should have appropriate description
+        // Then: should have patient-friendly description
         XCTAssertEqual(error.errorDescription, "No weight data found in Health")
     }
 
@@ -132,9 +132,8 @@ final class HealthKitErrorTests: XCTestCase {
         let underlyingError = NSError(domain: "test", code: 1, userInfo: [NSLocalizedDescriptionKey: "Test error"])
         let error = HealthKitError.queryFailed(underlyingError)
 
-        // Then: should include underlying error description
-        XCTAssertTrue(error.errorDescription?.contains("Could not read Health data") ?? false)
-        XCTAssertTrue(error.errorDescription?.contains("Test error") ?? false)
+        // Then: should have patient-friendly description (doesn't expose technical details)
+        XCTAssertEqual(error.errorDescription, "We couldn't read your weight from Health right now")
     }
 
     func testUnavailableRecoverySuggestion() {
@@ -473,9 +472,9 @@ final class TodayViewModelHealthKitTests: XCTestCase {
         // When: importing weight
         await viewModel.importWeightFromHealthKit()
 
-        // Then: should show authorization error
+        // Then: should show authorization error (patient-friendly message about permission)
         XCTAssertNotNil(viewModel.healthKitError)
-        XCTAssertTrue(viewModel.healthKitError?.contains("denied") ?? false)
+        XCTAssertTrue(viewModel.healthKitError?.contains("permission") ?? false)
     }
 
     func testImportWeightQueryError() async {

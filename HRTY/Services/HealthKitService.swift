@@ -160,13 +160,6 @@ final class HealthKitService: HealthKitServiceProtocol {
             ascending: false
         )
 
-        let query = HKSampleQuery(
-            sampleType: weightType,
-            predicate: nil,
-            limit: 1,
-            sortDescriptors: [sortDescriptor]
-        ) { _, _, _ in }
-
         // Execute query using async/await pattern
         return try await withCheckedThrowingContinuation { continuation in
             let asyncQuery = HKSampleQuery(
