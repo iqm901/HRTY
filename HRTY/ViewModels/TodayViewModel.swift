@@ -28,6 +28,7 @@ final class TodayViewModel {
     var healthKitWeight: HealthKitWeight?
     var isLoadingHealthKit: Bool = false
     var healthKitError: String?
+    var healthKitRecoverySuggestion: String?
     var showHealthKitTimestamp: Bool = false
 
     // MARK: - Services
@@ -444,6 +445,7 @@ final class TodayViewModel {
 
         isLoadingHealthKit = true
         healthKitError = nil
+        healthKitRecoverySuggestion = nil
 
         do {
             // Request authorization if not already granted
@@ -466,6 +468,7 @@ final class TodayViewModel {
         } catch let error as HealthKitError {
             await MainActor.run {
                 healthKitError = error.errorDescription
+                healthKitRecoverySuggestion = error.recoverySuggestion
                 finishHealthKitImport(feedback: .error)
             }
         } catch {

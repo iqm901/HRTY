@@ -328,8 +328,8 @@ struct TodayView: View {
                 Text(error)
                     .font(.footnote)
                     .foregroundStyle(.secondary)
-                if viewModel.isHealthKitAuthorizationDenied {
-                    Text("You can enable Health access in Settings.")
+                if let recoverySuggestion = viewModel.healthKitRecoverySuggestion {
+                    Text(recoverySuggestion)
                         .font(.caption)
                         .foregroundStyle(.tertiary)
                 }
