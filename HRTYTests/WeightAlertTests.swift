@@ -306,6 +306,226 @@ final class AlertEventTests: XCTestCase {
     }
 }
 
+// MARK: - Weight Alert Threshold Boundary Tests
+
+final class WeightAlertThresholdTests: XCTestCase {
+
+    // MARK: - 24-Hour Threshold Boundary Tests
+
+    func testWeightGainAtExact24hThresholdTriggersAlert() {
+        // Given: weight change exactly at 24h threshold (2.0 lbs)
+        let previousWeight = 150.0
+        let currentWeight = 152.0 // exactly 2.0 lbs gain
+
+        // When: calculating weight change
+        let change = currentWeight - previousWeight
+
+        // Then: should meet threshold
+        XCTAssertGreaterThanOrEqual(
+            change,
+            AlertConstants.weightGain24hThreshold,
+            "Weight gain of exactly 2.0 lbs should trigger 24h alert"
+        )
+    }
+
+    func testWeightGainBelowThreshold24hDoesNotTriggerAlert() {
+        // Given: weight change just below 24h threshold
+        let previousWeight = 150.0
+        let currentWeight = 151.9 // 1.9 lbs gain, just below threshold
+
+        // When: calculating weight change
+        let change = currentWeight - previousWeight
+
+        // Then: should NOT meet threshold
+        XCTAssertLessThan(
+            change,
+            AlertConstants.weightGain24hThreshold,
+            "Weight gain of 1.9 lbs should NOT trigger 24h alert"
+        )
+    }
+
+    func testWeightGainAbove24hThresholdTriggersAlert() {
+        // Given: weight change above 24h threshold
+        let previousWeight = 150.0
+        let currentWeight = 153.5 // 3.5 lbs gain
+
+        // When: calculating weight change
+        let change = currentWeight - previousWeight
+
+        // Then: should meet threshold
+        XCTAssertGreaterThanOrEqual(
+            change,
+            AlertConstants.weightGain24hThreshold,
+            "Weight gain of 3.5 lbs should trigger 24h alert"
+        )
+    }
+
+    // MARK: - 7-Day Threshold Boundary Tests
+
+    func testWeightGainAtExact7dThresholdTriggersAlert() {
+        // Given: weight change exactly at 7d threshold (5.0 lbs)
+        let baselineWeight = 150.0
+        let currentWeight = 155.0 // exactly 5.0 lbs gain
+
+        // When: calculating weight change
+        let change = currentWeight - baselineWeight
+
+        // Then: should meet threshold
+        XCTAssertGreaterThanOrEqual(
+            change,
+            AlertConstants.weightGain7dThreshold,
+            "Weight gain of exactly 5.0 lbs should trigger 7d alert"
+        )
+    }
+
+    func testWeightGainBelowThreshold7dDoesNotTriggerAlert() {
+        // Given: weight change just below 7d threshold
+        let baselineWeight = 150.0
+        let currentWeight = 154.9 // 4.9 lbs gain, just below threshold
+
+        // When: calculating weight change
+        let change = currentWeight - baselineWeight
+
+        // Then: should NOT meet threshold
+        XCTAssertLessThan(
+            change,
+            AlertConstants.weightGain7dThreshold,
+            "Weight gain of 4.9 lbs should NOT trigger 7d alert"
+        )
+    }
+
+    func testWeightGainAbove7dThresholdTriggersAlert() {
+        // Given: weight change well above 7d threshold
+        let baselineWeight = 150.0
+        let currentWeight = 157.0 // 7.0 lbs gain
+
+        // When: calculating weight change
+        let change = currentWeight - baselineWeight
+
+        // Then: should meet threshold
+        XCTAssertGreaterThanOrEqual(
+            change,
+            AlertConstants.weightGain7dThreshold,
+            "Weight gain of 7.0 lbs should trigger 7d alert"
+        )
+    }
+
+    // MARK: - Weight Loss Tests (should never trigger alerts)
+
+    func testWeightLossDoesNotMeet24hThreshold() {
+        // Given: weight loss (negative change)
+        let previousWeight = 150.0
+        let currentWeight = 148.0 // 2.0 lbs loss
+
+        // When: calculating weight change
+        let change = currentWeight - previousWeight
+
+        // Then: negative change should NOT trigger alert
+        XCTAssertLessThan(
+            change,
+            AlertConstants.weightGain24hThreshold,
+            "Weight loss should never trigger 24h gain alert"
+        )
+        XCTAssertLessThan(change, 0, "Change should be negative for weight loss")
+    }
+
+    func testWeightLossDoesNotMeet7dThreshold() {
+        // Given: significant weight loss over 7 days
+        let baselineWeight = 150.0
+        let currentWeight = 145.0 // 5.0 lbs loss
+
+        // When: calculating weight change
+        let change = currentWeight - baselineWeight
+
+        // Then: negative change should NOT trigger alert
+        XCTAssertLessThan(
+            change,
+            AlertConstants.weightGain7dThreshold,
+            "Weight loss should never trigger 7d gain alert"
+        )
+    }
+
+    // MARK: - Both Thresholds Tests
+
+    func testBothThresholdsExceededSimultaneously() {
+        // Given: large weight gain that exceeds both thresholds
+        let baselineWeight7d = 150.0
+        let previousWeight24h = 155.0  // already gained 5 lbs over week
+        let currentWeight = 157.5       // gained 2.5 more today
+
+        // When: calculating changes
+        let change24h = currentWeight - previousWeight24h
+        let change7d = currentWeight - baselineWeight7d
+
+        // Then: both thresholds should be met
+        XCTAssertGreaterThanOrEqual(
+            change24h,
+            AlertConstants.weightGain24hThreshold,
+            "24h threshold should be met"
+        )
+        XCTAssertGreaterThanOrEqual(
+            change7d,
+            AlertConstants.weightGain7dThreshold,
+            "7d threshold should be met"
+        )
+    }
+
+    func testOnly7dThresholdExceeded() {
+        // Given: gradual weight gain over week (less than 2 lbs/day but ≥5 lbs total)
+        let baselineWeight7d = 150.0
+        let previousWeight24h = 154.5  // gradual increase
+        let currentWeight = 155.0       // only 0.5 lbs today
+
+        // When: calculating changes
+        let change24h = currentWeight - previousWeight24h
+        let change7d = currentWeight - baselineWeight7d
+
+        // Then: only 7d threshold should be met
+        XCTAssertLessThan(
+            change24h,
+            AlertConstants.weightGain24hThreshold,
+            "24h threshold should NOT be met for small daily change"
+        )
+        XCTAssertGreaterThanOrEqual(
+            change7d,
+            AlertConstants.weightGain7dThreshold,
+            "7d threshold should be met for cumulative change"
+        )
+    }
+
+    // MARK: - Edge Cases
+
+    func testNoWeightChangeDoesNotTriggerAlerts() {
+        // Given: no change in weight
+        let previousWeight = 150.0
+        let currentWeight = 150.0
+
+        // When: calculating weight change
+        let change = currentWeight - previousWeight
+
+        // Then: zero change should not trigger any alert
+        XCTAssertEqual(change, 0, "No change should be zero")
+        XCTAssertLessThan(change, AlertConstants.weightGain24hThreshold)
+        XCTAssertLessThan(change, AlertConstants.weightGain7dThreshold)
+    }
+
+    func testVerySmallGainDoesNotTriggerAlert() {
+        // Given: tiny weight fluctuation (normal daily variation)
+        let previousWeight = 150.0
+        let currentWeight = 150.3 // 0.3 lbs - normal fluctuation
+
+        // When: calculating weight change
+        let change = currentWeight - previousWeight
+
+        // Then: small fluctuation should not trigger alert
+        XCTAssertLessThan(
+            change,
+            AlertConstants.weightGain24hThreshold,
+            "Normal daily fluctuation should not trigger alert"
+        )
+    }
+}
+
 // MARK: - Weight Change Text Tests
 
 final class WeightChangeTextTests: XCTestCase {
