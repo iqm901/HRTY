@@ -157,15 +157,25 @@ final class HealthKitService: HealthKitServiceProtocol {
             throw HealthKitError.unavailable
         }
 
+        return try await executeWeightQuery(healthStore: healthStore, weightType: weightType)
+    }
+
+    // MARK: - Private Helpers
+
+    /// Executes a HealthKit query for the most recent weight sample.
+    /// Isolated to encapsulate the continuation-based async pattern.
+    private func executeWeightQuery(
+        healthStore: HKHealthStore,
+        weightType: HKQuantityType
+    ) async throws -> HealthKitWeight? {
         // Create a query for the most recent weight sample
         let sortDescriptor = NSSortDescriptor(
             key: HKSampleSortIdentifierEndDate,
             ascending: false
         )
 
-        // Execute query using async/await pattern
         return try await withCheckedThrowingContinuation { continuation in
-            let asyncQuery = HKSampleQuery(
+            let query = HKSampleQuery(
                 sampleType: weightType,
                 predicate: nil,
                 limit: 1,
@@ -183,17 +193,15 @@ final class HealthKitService: HealthKitServiceProtocol {
 
                 // Convert to pounds
                 let weightInPounds = quantitySample.quantity.doubleValue(for: .pound())
-                let timestamp = quantitySample.endDate
-
                 let healthKitWeight = HealthKitWeight(
                     weight: weightInPounds,
-                    timestamp: timestamp
+                    timestamp: quantitySample.endDate
                 )
 
                 continuation.resume(returning: healthKitWeight)
             }
 
-            healthStore.execute(asyncQuery)
+            healthStore.execute(query)
         }
     }
 }
