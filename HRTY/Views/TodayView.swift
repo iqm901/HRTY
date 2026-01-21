@@ -301,8 +301,8 @@ struct TodayView: View {
             .clipShape(RoundedRectangle(cornerRadius: 10))
         }
         .disabled(viewModel.isLoadingHealthKit)
-        .accessibilityLabel("Import weight from Health app")
-        .accessibilityHint("Tap to import your most recent weight from Apple Health")
+        .accessibilityLabel(viewModel.isLoadingHealthKit ? "Importing weight from Health" : "Import weight from Health app")
+        .accessibilityHint(viewModel.isLoadingHealthKit ? "Please wait while importing" : "Tap to import your most recent weight from Apple Health")
     }
 
     private func healthKitTimestampView(_ text: String) -> some View {
