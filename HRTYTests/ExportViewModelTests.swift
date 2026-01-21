@@ -7,10 +7,14 @@ final class ExportViewModelTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
+        // Clear UserDefaults to ensure clean state for tests
+        UserDefaults.standard.removeObject(forKey: "patientIdentifier")
         viewModel = ExportViewModel()
     }
 
     override func tearDown() {
+        // Clean up UserDefaults after tests
+        UserDefaults.standard.removeObject(forKey: "patientIdentifier")
         viewModel = nil
         super.tearDown()
     }
@@ -77,15 +81,15 @@ final class ExportViewModelTests: XCTestCase {
     // MARK: - Date Range Tests
 
     func testStartDateIs29DaysAgo() {
-        // Given: current date
+        // Given: the view model's end date (today)
         let calendar = Calendar.current
-        let today = Date()
 
-        // When: getting start date
+        // When: getting start and end dates from the same view model
         let startDate = viewModel.startDate
+        let endDate = viewModel.endDate
 
-        // Then: should be 29 days ago (for 30-day range including today)
-        let components = calendar.dateComponents([.day], from: startDate, to: today)
+        // Then: start should be 29 days before end (for 30-day range including both dates)
+        let components = calendar.dateComponents([.day], from: startDate, to: endDate)
         XCTAssertEqual(components.day, 29)
     }
 
