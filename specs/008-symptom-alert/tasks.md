@@ -74,3 +74,16 @@
 - All tests pass (including 27 SymptomAlertService tests)
 - No gaps or remaining work identified
 - Feature is complete and ready for next persona review
+
+### Iteration 5 - Business Analyst
+- Reviewed feature from patient perspective
+- Evaluated symptom names for patient-friendliness ✓
+- Assessed alert title and dismiss button language ✓
+- **Identified UX issue:** Grammar error in multi-symptom alert messages
+  - Bug: "chest discomfort and dizziness **is** bothering you" (incorrect)
+  - Fix: "chest discomfort and dizziness **are** bothering you" (correct)
+- Implemented subject-verb agreement: "is" for singular, "are" for plural symptoms
+- Added 2 unit tests for verb conjugation (singular/plural)
+- Build passes
+- All tests pass (29 SymptomAlertService tests total)
+- Patient-facing messaging is now grammatically correct and professional
