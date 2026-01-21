@@ -20,13 +20,7 @@ final class TodayViewModel {
     var todayEntry: DailyEntry?
     var yesterdayEntry: DailyEntry?
 
-    // MARK: - Validation Constants
-    static let minimumWeight: Double = 50.0
-    static let maximumWeight: Double = 500.0
-
-    // MARK: - Weight Alert Constants
-    static let weightGain24hThreshold: Double = 2.0  // lbs
-    static let weightGain7dThreshold: Double = 5.0   // lbs
+    // MARK: - Validation Constants (reference AlertConstants for thresholds)
 
     // MARK: - Computed Properties
     var parsedWeight: Double? {
@@ -35,7 +29,7 @@ final class TodayViewModel {
 
     var isValidWeight: Bool {
         guard let weight = parsedWeight else { return false }
-        return weight >= Self.minimumWeight && weight <= Self.maximumWeight
+        return weight >= AlertConstants.minimumWeight && weight <= AlertConstants.maximumWeight
     }
 
     var previousWeight: Double? {
@@ -107,13 +101,13 @@ final class TodayViewModel {
             return false
         }
 
-        guard weight >= Self.minimumWeight else {
-            validationError = "Weight must be at least \(Int(Self.minimumWeight)) lbs"
+        guard weight >= AlertConstants.minimumWeight else {
+            validationError = "Weight must be at least \(Int(AlertConstants.minimumWeight)) lbs"
             return false
         }
 
-        guard weight <= Self.maximumWeight else {
-            validationError = "Weight must be less than \(Int(Self.maximumWeight)) lbs"
+        guard weight <= AlertConstants.maximumWeight else {
+            validationError = "Weight must be less than \(Int(AlertConstants.maximumWeight)) lbs"
             return false
         }
 
@@ -354,7 +348,7 @@ final class TodayViewModel {
 
         let weightChange = currentWeight - previousWeight
 
-        if weightChange >= Self.weightGain24hThreshold {
+        if weightChange >= AlertConstants.weightGain24hThreshold {
             // Check for existing alert of same type today
             if hasAlertToday(ofType: .weightGain24h, context: context) { return }
 
@@ -378,7 +372,7 @@ final class TodayViewModel {
 
         let weightChange = currentWeight - baselineWeight
 
-        if weightChange >= Self.weightGain7dThreshold {
+        if weightChange >= AlertConstants.weightGain7dThreshold {
             // Check for existing alert of same type today
             if hasAlertToday(ofType: .weightGain7d, context: context) { return }
 

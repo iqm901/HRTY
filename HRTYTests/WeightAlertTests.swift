@@ -21,25 +21,25 @@ final class WeightAlertTests: XCTestCase {
 
     func testWeightGain24hThreshold() {
         // Given/Then: threshold should be 2.0 lbs as per spec
-        XCTAssertEqual(TodayViewModel.weightGain24hThreshold, 2.0, "24-hour threshold should be 2.0 lbs")
+        XCTAssertEqual(AlertConstants.weightGain24hThreshold, 2.0, "24-hour threshold should be 2.0 lbs")
     }
 
     func testWeightGain7dThreshold() {
         // Given/Then: threshold should be 5.0 lbs as per spec
-        XCTAssertEqual(TodayViewModel.weightGain7dThreshold, 5.0, "7-day threshold should be 5.0 lbs")
+        XCTAssertEqual(AlertConstants.weightGain7dThreshold, 5.0, "7-day threshold should be 5.0 lbs")
     }
 
     func testThresholdsArePositive() {
         // Then: both thresholds should be positive values
-        XCTAssertGreaterThan(TodayViewModel.weightGain24hThreshold, 0, "24-hour threshold should be positive")
-        XCTAssertGreaterThan(TodayViewModel.weightGain7dThreshold, 0, "7-day threshold should be positive")
+        XCTAssertGreaterThan(AlertConstants.weightGain24hThreshold, 0, "24-hour threshold should be positive")
+        XCTAssertGreaterThan(AlertConstants.weightGain7dThreshold, 0, "7-day threshold should be positive")
     }
 
     func test7DayThresholdGreaterThan24Hour() {
         // Then: 7-day threshold should be greater than 24-hour threshold
         XCTAssertGreaterThan(
-            TodayViewModel.weightGain7dThreshold,
-            TodayViewModel.weightGain24hThreshold,
+            AlertConstants.weightGain7dThreshold,
+            AlertConstants.weightGain24hThreshold,
             "7-day threshold should be greater than 24-hour threshold"
         )
     }
@@ -47,11 +47,11 @@ final class WeightAlertTests: XCTestCase {
     // MARK: - Weight Validation Tests
 
     func testMinimumWeightConstant() {
-        XCTAssertEqual(TodayViewModel.minimumWeight, 50.0, "Minimum weight should be 50 lbs")
+        XCTAssertEqual(AlertConstants.minimumWeight, 50.0, "Minimum weight should be 50 lbs")
     }
 
     func testMaximumWeightConstant() {
-        XCTAssertEqual(TodayViewModel.maximumWeight, 500.0, "Maximum weight should be 500 lbs")
+        XCTAssertEqual(AlertConstants.maximumWeight, 500.0, "Maximum weight should be 500 lbs")
     }
 
     func testValidWeightAtLowerBound() {
