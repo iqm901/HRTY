@@ -3,6 +3,7 @@ import SwiftData
 
 struct TodayView: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @State private var viewModel = TodayViewModel()
     @FocusState private var isWeightFieldFocused: Bool
 
@@ -285,16 +286,17 @@ struct TodayView: View {
                 if viewModel.isLoadingHealthKit {
                     ProgressView()
                         .progressViewStyle(CircularProgressViewStyle())
-                        .scaleEffect(0.8)
+                        .scaleEffect(healthKitIconScale)
                 } else {
                     Image(systemName: "heart.fill")
                         .foregroundStyle(.pink)
+                        .imageScale(healthKitImageScale)
                 }
                 Text(viewModel.isLoadingHealthKit ? "Importing..." : "Import from Health")
                     .font(.subheadline)
             }
             .frame(maxWidth: .infinity)
-            .padding(.vertical, 12)
+            .padding(.vertical, healthKitButtonVerticalPadding)
             .background(Color(.secondarySystemBackground))
             .clipShape(RoundedRectangle(cornerRadius: 10))
         }
@@ -307,7 +309,7 @@ struct TodayView: View {
         HStack(spacing: 6) {
             Image(systemName: "heart.fill")
                 .foregroundStyle(.pink)
-                .font(.caption)
+                .imageScale(healthKitTimestampImageScale)
             Text(text)
                 .font(.caption)
                 .foregroundStyle(.secondary)
@@ -461,6 +463,54 @@ struct TodayView: View {
         case .lost: return Color(.secondarySystemBackground)
         case .stable: return .green.opacity(0.1)
         }
+    }
+
+    // MARK: - Dynamic Type Support for HealthKit UI
+
+    /// Scale factor for ProgressView spinner based on Dynamic Type size
+    private var healthKitIconScale: CGFloat {
+        switch dynamicTypeSize {
+        case .xSmall, .small, .medium:
+            return 0.8
+        case .large, .xLarge:
+            return 0.9
+        case .xxLarge, .xxxLarge:
+            return 1.0
+        case .accessibility1, .accessibility2:
+            return 1.1
+        case .accessibility3, .accessibility4, .accessibility5:
+            return 1.2
+        @unknown default:
+            return 0.9
+        }
+    }
+
+    /// Image scale for HealthKit heart icon in import button
+    private var healthKitImageScale: Image.Scale {
+        dynamicTypeSize.isAccessibilitySize ? .large : .medium
+    }
+
+    /// Vertical padding for HealthKit import button
+    private var healthKitButtonVerticalPadding: CGFloat {
+        switch dynamicTypeSize {
+        case .xSmall, .small, .medium:
+            return 12
+        case .large, .xLarge:
+            return 14
+        case .xxLarge, .xxxLarge:
+            return 16
+        case .accessibility1, .accessibility2:
+            return 18
+        case .accessibility3, .accessibility4, .accessibility5:
+            return 20
+        @unknown default:
+            return 14
+        }
+    }
+
+    /// Image scale for HealthKit timestamp heart icon
+    private var healthKitTimestampImageScale: Image.Scale {
+        dynamicTypeSize.isAccessibilitySize ? .medium : .small
     }
 }
 
