@@ -13,17 +13,22 @@ struct TrendsView: View {
                         ProgressView("Loading trends...")
                             .frame(maxWidth: .infinity, alignment: .center)
                             .padding(.top, 40)
-                    } else if viewModel.hasWeightData {
-                        weightSection
                     } else {
-                        emptyStateView
+                        if viewModel.hasWeightData {
+                            weightSection
+                        } else {
+                            emptyWeightStateView
+                        }
+
+                        // Symptom trends section
+                        symptomSection
                     }
                 }
                 .padding()
             }
             .navigationTitle("Trends")
             .onAppear {
-                viewModel.loadWeightData(context: modelContext)
+                viewModel.loadAllTrendData(context: modelContext)
             }
         }
     }
@@ -123,28 +128,109 @@ struct TrendsView: View {
         }
     }
 
-    // MARK: - Empty State
+    // MARK: - Symptom Section
 
-    private var emptyStateView: some View {
-        VStack(spacing: 16) {
-            Image(systemName: "chart.line.uptrend.xyaxis")
-                .font(.system(size: 48))
+    private var symptomSection: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            // Section header
+            Text("Symptoms")
+                .font(.title2)
+                .fontWeight(.semibold)
+                .accessibilityAddTraits(.isHeader)
+
+            if viewModel.hasSymptomData {
+                // Toggle controls
+                SymptomToggleView(
+                    toggleStates: Binding(
+                        get: { viewModel.symptomToggleStates },
+                        set: { viewModel.symptomToggleStates = $0 }
+                    ),
+                    onToggle: { symptomType in
+                        viewModel.toggleSymptom(symptomType)
+                    }
+                )
+
+                // Alert legend (if there are alert days)
+                if !viewModel.alertDates.isEmpty {
+                    alertLegend
+                }
+
+                // Chart
+                SymptomTrendChart(
+                    symptomEntries: viewModel.symptomEntries,
+                    visibleSymptomTypes: viewModel.visibleSymptomTypes,
+                    alertDates: viewModel.alertDates
+                )
+                .accessibilityLabel(viewModel.symptomAccessibilitySummary)
+
+                // Date range
+                Text(viewModel.dateRangeText)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .center)
+            } else {
+                emptySymptomStateView
+            }
+        }
+    }
+
+    private var alertLegend: some View {
+        HStack(spacing: 4) {
+            RoundedRectangle(cornerRadius: 2)
+                .fill(Color.red.opacity(0.2))
+                .frame(width: 16, height: 12)
+            Text("Days with symptoms that may need attention")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Highlighted days show symptoms that may need attention")
+    }
+
+    // MARK: - Empty States
+
+    private var emptyWeightStateView: some View {
+        VStack(spacing: 12) {
+            Image(systemName: "scalemass")
+                .font(.system(size: 32))
                 .foregroundStyle(.secondary)
 
             Text("No Weight Data Yet")
-                .font(.title3)
-                .fontWeight(.medium)
+                .font(.headline)
 
             Text("Start logging your daily weight on the Today tab to see your trends here.")
-                .font(.body)
+                .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
-                .padding(.horizontal)
         }
         .frame(maxWidth: .infinity)
-        .padding(.top, 60)
+        .padding(.vertical, 24)
+        .background(Color(.secondarySystemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
         .accessibilityElement(children: .combine)
         .accessibilityLabel("No weight data yet. Start logging your daily weight on the Today tab to see your trends here.")
+    }
+
+    private var emptySymptomStateView: some View {
+        VStack(spacing: 12) {
+            Image(systemName: "waveform.path.ecg")
+                .font(.system(size: 32))
+                .foregroundStyle(.secondary)
+
+            Text("No Symptom Data Yet")
+                .font(.headline)
+
+            Text("Log how you're feeling on the Today tab to track your symptoms over time.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 24)
+        .background(Color(.secondarySystemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("No symptom data yet. Log how you're feeling on the Today tab to track your symptoms over time.")
     }
 }
 

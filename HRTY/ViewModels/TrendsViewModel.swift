@@ -1,5 +1,6 @@
 import Foundation
 import SwiftData
+import SwiftUI
 
 /// Data point for weight chart visualization
 struct WeightDataPoint: Identifiable, Equatable {
@@ -9,11 +10,26 @@ struct WeightDataPoint: Identifiable, Equatable {
     var id: Date { date }
 }
 
+/// Data point for symptom trend chart visualization
+struct SymptomDataPoint: Identifiable, Equatable {
+    let date: Date
+    let symptomType: SymptomType
+    let severity: Int
+    let hasAlert: Bool
+
+    var id: String { "\(date.timeIntervalSince1970)-\(symptomType.rawValue)" }
+}
+
 @Observable
 final class TrendsViewModel {
     // MARK: - Weight Data
     var weightEntries: [WeightDataPoint] = []
     var isLoading: Bool = false
+
+    // MARK: - Symptom Data
+    var symptomEntries: [SymptomDataPoint] = []
+    var symptomToggleStates: [SymptomType: Bool] = [:]
+    var alertDates: Set<Date> = []
 
     // MARK: - Computed Properties
 
@@ -151,5 +167,152 @@ final class TrendsViewModel {
         }
 
         return summary
+    }
+
+    // MARK: - Symptom Computed Properties
+
+    /// Whether there is symptom data to display
+    var hasSymptomData: Bool {
+        !symptomEntries.isEmpty
+    }
+
+    /// Number of unique days with symptom data
+    var daysWithSymptomData: Int {
+        Set(symptomEntries.map { Calendar.current.startOfDay(for: $0.date) }).count
+    }
+
+    /// Filtered symptom entries based on toggle states
+    var filteredSymptomEntries: [SymptomDataPoint] {
+        symptomEntries.filter { symptomToggleStates[$0.symptomType] ?? true }
+    }
+
+    /// Get symptom entries grouped by symptom type
+    func symptomEntries(for symptomType: SymptomType) -> [SymptomDataPoint] {
+        symptomEntries.filter { $0.symptomType == symptomType }
+            .sorted { $0.date < $1.date }
+    }
+
+    /// Visible symptom types based on toggle states
+    var visibleSymptomTypes: [SymptomType] {
+        SymptomType.allCases.filter { symptomToggleStates[$0] ?? true }
+    }
+
+    /// Check if a specific date has an alert
+    func hasAlert(on date: Date) -> Bool {
+        let normalizedDate = Calendar.current.startOfDay(for: date)
+        return alertDates.contains(normalizedDate)
+    }
+
+    /// Toggle visibility for a symptom type
+    func toggleSymptom(_ symptomType: SymptomType) {
+        symptomToggleStates[symptomType] = !(symptomToggleStates[symptomType] ?? true)
+    }
+
+    /// Check if a symptom type is currently visible
+    func isSymptomVisible(_ symptomType: SymptomType) -> Bool {
+        symptomToggleStates[symptomType] ?? true
+    }
+
+    // MARK: - Symptom Data Loading
+
+    /// Load symptom data for the past 30 days
+    func loadSymptomData(context: ModelContext) {
+        let endDate = Date()
+        guard let startDate = Calendar.current.date(byAdding: .day, value: -29, to: endDate) else {
+            return
+        }
+
+        // Initialize toggle states with all symptoms visible
+        if symptomToggleStates.isEmpty {
+            for symptomType in SymptomType.allCases {
+                symptomToggleStates[symptomType] = true
+            }
+        }
+
+        let entries = DailyEntry.fetchForDateRange(from: startDate, to: endDate, in: context)
+
+        // Collect all symptom data points and identify alert days
+        var dataPoints: [SymptomDataPoint] = []
+        var alertDateSet: Set<Date> = []
+
+        for entry in entries {
+            guard let symptoms = entry.symptoms else { continue }
+
+            let entryDate = Calendar.current.startOfDay(for: entry.date)
+
+            // Check if this entry has any symptom alerts
+            let hasSymptomAlert = entry.alertEvents?.contains { $0.alertType == .severeSymptom } ?? false
+            if hasSymptomAlert {
+                alertDateSet.insert(entryDate)
+            }
+
+            for symptom in symptoms {
+                let hasAlert = symptom.severity >= AlertConstants.severeSymptomThreshold
+                dataPoints.append(SymptomDataPoint(
+                    date: entryDate,
+                    symptomType: symptom.symptomType,
+                    severity: symptom.severity,
+                    hasAlert: hasAlert
+                ))
+            }
+        }
+
+        symptomEntries = dataPoints.sorted { $0.date < $1.date }
+        alertDates = alertDateSet
+    }
+
+    /// Load all trend data (weight and symptoms)
+    func loadAllTrendData(context: ModelContext) {
+        isLoading = true
+        loadWeightData(context: context)
+        loadSymptomData(context: context)
+        isLoading = false
+    }
+
+    // MARK: - Symptom Accessibility
+
+    /// Accessibility summary for symptom trends
+    var symptomAccessibilitySummary: String {
+        guard hasSymptomData else {
+            return "No symptom data recorded in the past 30 days"
+        }
+
+        let visibleCount = visibleSymptomTypes.count
+        let alertCount = alertDates.count
+
+        var summary = "Symptom trends showing \(daysWithSymptomData) days of data. "
+        summary += "\(visibleCount) of 8 symptoms visible. "
+
+        if alertCount > 0 {
+            summary += "\(alertCount) day\(alertCount == 1 ? "" : "s") with symptoms that needed attention."
+        } else {
+            summary += "No symptom alerts in this period."
+        }
+
+        return summary
+    }
+
+    // MARK: - Symptom Colors
+
+    /// Get a distinct color for each symptom type
+    static func color(for symptomType: SymptomType) -> Color {
+        switch symptomType {
+        case .dyspneaAtRest:
+            return .blue
+        case .dyspneaOnExertion:
+            return .cyan
+        case .orthopnea:
+            return .indigo
+        case .pnd:
+            return .purple
+        case .chestPain:
+            return .red
+        case .dizziness:
+            return .orange
+        case .syncope:
+            return .pink
+        case .reducedUrineOutput:
+            return .teal
+        }
     }
 }
