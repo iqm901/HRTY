@@ -44,7 +44,7 @@ final class ExportViewModel {
 
     /// Patient identifier from Settings (shared via @AppStorage)
     @ObservationIgnored
-    @AppStorage("patientIdentifier") var patientIdentifier: String = ""
+    @AppStorage(AppStorageKeys.patientIdentifier) var patientIdentifier: String = ""
 
     var generationState: PDFGenerationState = .idle
     var showShareSheet: Bool = false

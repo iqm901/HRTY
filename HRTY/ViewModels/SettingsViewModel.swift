@@ -5,17 +5,17 @@ import SwiftUI
 final class SettingsViewModel {
     // MARK: - Reminder Settings
     @ObservationIgnored
-    @AppStorage("reminderEnabled") var reminderEnabled: Bool = false
+    @AppStorage(AppStorageKeys.reminderEnabled) var reminderEnabled: Bool = false
 
     @ObservationIgnored
-    @AppStorage("reminderHour") private var reminderHour: Int = 8
+    @AppStorage(AppStorageKeys.reminderHour) private var reminderHour: Int = 8
 
     @ObservationIgnored
-    @AppStorage("reminderMinute") private var reminderMinute: Int = 0
+    @AppStorage(AppStorageKeys.reminderMinute) private var reminderMinute: Int = 0
 
     // MARK: - Patient Identifier
     @ObservationIgnored
-    @AppStorage("patientIdentifier") var patientIdentifier: String = ""
+    @AppStorage(AppStorageKeys.patientIdentifier) var patientIdentifier: String = ""
 
     // MARK: - Computed Properties
 
