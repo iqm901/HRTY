@@ -34,10 +34,8 @@ struct WeightAlertView: View {
             RoundedRectangle(cornerRadius: 12)
                 .stroke(Color.alertBorder, lineWidth: 1)
         )
-        .accessibilityElement(children: .combine)
+        .accessibilityElement(children: .contain)
         .accessibilityLabel(accessibilityLabelText)
-        .accessibilityHint("Double tap dismiss button to acknowledge this alert")
-        .accessibilityAddTraits(.isStaticText)
     }
 
     // MARK: - Subviews
@@ -54,6 +52,7 @@ struct WeightAlertView: View {
             .font(.subheadline)
             .fontWeight(.semibold)
             .foregroundStyle(Color.alertAccent)
+            .accessibilityHidden(true)
     }
 
     private var alertMessage: some View {
@@ -61,6 +60,7 @@ struct WeightAlertView: View {
             .font(.subheadline)
             .foregroundStyle(.primary)
             .fixedSize(horizontal: false, vertical: true)
+            .accessibilityLabel("\(alert.alertType.displayName): \(alert.message)")
     }
 
     private var dismissButton: some View {
