@@ -65,7 +65,7 @@ struct WeightAlertView: View {
 
     private var dismissButton: some View {
         Button(action: onDismiss) {
-            Text("Got it")
+            Text("Got it, thanks")
                 .font(.subheadline)
                 .fontWeight(.medium)
                 .padding(.horizontal, 16)
@@ -74,8 +74,8 @@ struct WeightAlertView: View {
                 .foregroundStyle(Color.alertAccent)
                 .clipShape(RoundedRectangle(cornerRadius: 8))
         }
-        .accessibilityLabel("Dismiss alert")
-        .accessibilityHint("Acknowledges this weight alert")
+        .accessibilityLabel("Acknowledge alert")
+        .accessibilityHint("Marks this weight alert as reviewed")
     }
 
     // MARK: - Accessibility
