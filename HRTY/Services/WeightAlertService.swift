@@ -167,13 +167,8 @@ final class WeightAlertService {
 
         context.insert(alert)
 
-        // Link to daily entry
-        if var alerts = todayEntry?.alertEvents {
-            alerts.append(alert)
-            todayEntry?.alertEvents = alerts
-        } else {
-            todayEntry?.alertEvents = [alert]
-        }
+        // Note: SwiftData automatically manages the inverse relationship
+        // via @Relationship(inverse:) on DailyEntry.alertEvents
 
         do {
             try context.save()
