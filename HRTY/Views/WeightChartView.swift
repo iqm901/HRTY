@@ -4,6 +4,9 @@ import Charts
 struct WeightChartView: View {
     let weightEntries: [WeightDataPoint]
 
+    /// Chart height that scales with Dynamic Type settings
+    @ScaledMetric(relativeTo: .body) private var chartHeight: CGFloat = 220
+
     private var minWeight: Double {
         guard let min = weightEntries.map(\.weight).min() else { return 0 }
         return max(0, min - 5) // 5 lb padding below
@@ -31,7 +34,7 @@ struct WeightChartView: View {
     private var emptyChartPlaceholder: some View {
         RoundedRectangle(cornerRadius: 8)
             .fill(Color(.secondarySystemBackground))
-            .frame(height: 220)
+            .frame(height: chartHeight)
             .overlay {
                 Text("No data to display")
                     .foregroundStyle(.secondary)
@@ -90,7 +93,7 @@ struct WeightChartView: View {
                 }
             }
         }
-        .frame(height: 220)
+        .frame(height: chartHeight)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Weight trend chart")
         .accessibilityHint("Shows your weight measurements over the past 30 days")

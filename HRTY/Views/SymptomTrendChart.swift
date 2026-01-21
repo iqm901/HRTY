@@ -6,6 +6,9 @@ struct SymptomTrendChart: View {
     let visibleSymptomTypes: [SymptomType]
     let alertDates: Set<Date>
 
+    /// Chart height that scales with Dynamic Type settings
+    @ScaledMetric(relativeTo: .body) private var chartHeight: CGFloat = 220
+
     private var dateRange: ClosedRange<Date> {
         let endDate = Date()
         let startDate = Calendar.current.date(byAdding: .day, value: -29, to: endDate) ?? endDate
@@ -27,7 +30,7 @@ struct SymptomTrendChart: View {
     private var emptyChartPlaceholder: some View {
         RoundedRectangle(cornerRadius: 8)
             .fill(Color(.secondarySystemBackground))
-            .frame(height: 220)
+            .frame(height: chartHeight)
             .overlay {
                 VStack(spacing: 8) {
                     Image(systemName: "waveform.path.ecg")
@@ -70,7 +73,7 @@ struct SymptomTrendChart: View {
             }
         }
         .chartLegend(.hidden)
-        .frame(height: 220)
+        .frame(height: chartHeight)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Symptom trend chart")
         .accessibilityHint("Shows your symptom severity over the past 30 days. Days with concerning symptoms are highlighted.")
