@@ -328,8 +328,8 @@ struct TodayView: View {
 
     private var weightChangeCategory: WeightChangeCategory {
         guard let change = viewModel.weightChange else { return .stable }
-        if change > 0.05 { return .gained }
-        if change < -0.05 { return .lost }
+        if change > AlertConstants.weightStabilityThreshold { return .gained }
+        if change < -AlertConstants.weightStabilityThreshold { return .lost }
         return .stable
     }
 

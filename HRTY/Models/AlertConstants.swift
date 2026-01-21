@@ -34,4 +34,10 @@ enum AlertConstants {
 
     /// Symptom severity at or above this level triggers severe symptom alert
     static let severeSymptomThreshold: Int = 4
+
+    // MARK: - Weight Display Thresholds
+
+    /// Minimum weight change (in lbs) to be considered "up" or "down" rather than "stable"
+    /// Changes smaller than this are treated as normal daily fluctuation
+    static let weightStabilityThreshold: Double = 0.05
 }
