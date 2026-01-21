@@ -687,4 +687,28 @@ final class AlertMessageFormattingTests: XCTestCase {
         XCTAssertTrue(message24h.contains("increased"), "24h message should use 'increased' instead of 'gained'")
         XCTAssertTrue(message7d.contains("increased"), "7d message should use 'increased' instead of 'gained'")
     }
+
+    func testWeightChangeFormattingRoundsCorrectly() {
+        // Given: weight changes with many decimal places that need rounding
+        // Using String(format: "%.1f", ...) which is what the service uses
+        let testCases: [(Double, String)] = [
+            (2.04, "2.0"),   // rounds down
+            (2.05, "2.0"),   // banker's rounding (rounds to even)
+            (2.06, "2.1"),   // rounds up
+            (2.94, "2.9"),   // rounds down
+            (2.95, "3.0"),   // banker's rounding (rounds to even)
+            (2.96, "3.0"),   // rounds up
+            (5.999, "6.0"),  // rounds up to next whole number
+            (2.0001, "2.0"), // near integer rounds correctly
+        ]
+
+        for (input, expected) in testCases {
+            let formatted = String(format: "%.1f", input)
+            XCTAssertEqual(
+                formatted,
+                expected,
+                "Weight change \(input) should format to '\(expected)' but got '\(formatted)'"
+            )
+        }
+    }
 }
