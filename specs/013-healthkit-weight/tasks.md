@@ -93,3 +93,4 @@ Quality improvements made during the multi-persona review cycle:
 | 11 | Business Analyst | Improved no-data message with warmer fallback guidance |
 | 12 | Code Reviewer | Static DateFormatter for yesterdayDateText in TodayViewModel |
 | 13 | System Architect | Extracted finishHealthKitImport helper to consolidate code |
+| 14 | Frontend Designer | Added dynamic VoiceOver labels for HealthKit import loading state |
