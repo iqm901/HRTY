@@ -359,6 +359,14 @@ final class TodayViewModelHealthKitTests: XCTestCase {
         XCTAssertFalse(viewModel.isHealthKitAuthorizationDenied)
     }
 
+    func testIsHealthKitAuthorizationDeniedWhenUnavailable() {
+        // Given: HealthKit is unavailable (e.g., iPad without HealthKit)
+        mockHealthKitService.mockAuthorizationStatus = .unavailable
+
+        // Then: should not report denied (unavailable is different from denied)
+        XCTAssertFalse(viewModel.isHealthKitAuthorizationDenied)
+    }
+
     // MARK: - Initial State Tests
 
     func testHealthKitWeightIsNilInitially() {
