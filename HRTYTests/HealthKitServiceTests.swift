@@ -512,4 +512,18 @@ final class TodayViewModelHealthKitTests: XCTestCase {
         // Then: weight input should be updated to new value
         XCTAssertEqual(viewModel.weightInput, "175.5")
     }
+
+    func testImportWeightIgnoresConcurrentRequests() async {
+        // Given: viewModel is already loading
+        viewModel.isLoadingHealthKit = true
+        mockHealthKitService.mockWeight = HealthKitWeight(weight: 175.5, timestamp: Date())
+
+        // When: attempting to import while already loading
+        await viewModel.importWeightFromHealthKit()
+
+        // Then: the request should be ignored, no weight imported
+        XCTAssertNil(viewModel.healthKitWeight)
+        // Loading state should remain true (not reset)
+        XCTAssertTrue(viewModel.isLoadingHealthKit)
+    }
 }
