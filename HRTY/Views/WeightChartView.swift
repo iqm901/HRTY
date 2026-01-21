@@ -23,12 +23,27 @@ struct WeightChartView: View {
     var body: some View {
         Chart {
             ForEach(weightEntries) { entry in
+                // Gradient area fill under the line
+                AreaMark(
+                    x: .value("Date", entry.date, unit: .day),
+                    y: .value("Weight", entry.weight)
+                )
+                .foregroundStyle(
+                    LinearGradient(
+                        colors: [Color.blue.opacity(0.2), Color.blue.opacity(0.05)],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                )
+                .interpolationMethod(.catmullRom)
+
                 LineMark(
                     x: .value("Date", entry.date, unit: .day),
                     y: .value("Weight", entry.weight)
                 )
                 .foregroundStyle(Color.blue)
                 .lineStyle(StrokeStyle(lineWidth: 2))
+                .interpolationMethod(.catmullRom)
 
                 PointMark(
                     x: .value("Date", entry.date, unit: .day),
@@ -59,6 +74,7 @@ struct WeightChartView: View {
         .frame(height: 220)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Weight trend chart")
+        .accessibilityHint("Shows your weight measurements over the past 30 days")
     }
 }
 
