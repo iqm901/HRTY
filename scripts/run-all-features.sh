@@ -1,10 +1,9 @@
 #!/bin/bash
 #
-# Run all remaining features sequentially (unattended)
-# Usage: ./scripts/run-all-features.sh
+# Run all remaining features sequentially (unattended overnight run)
+# Usage: caffeinate -i ./scripts/run-all-features.sh
 #
-# This script will run through all features without stopping.
-# Keep your laptop awake (plugged in, prevent sleep).
+# IMPORTANT: Run with 'caffeinate -i' to prevent Mac from sleeping
 #
 
 set -e
@@ -16,66 +15,92 @@ cd "$PROJECT_DIR"
 # Colors
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
+YELLOW='\033[1;33m'
+RED='\033[0;31m'
 NC='\033[0m'
 
-log() { echo -e "${BLUE}[Auto]${NC} $1"; }
-success() { echo -e "${GREEN}[Auto]${NC} $1"; }
+log() { echo -e "${BLUE}[Auto]${NC} $(date '+%H:%M:%S') $1"; }
+success() { echo -e "${GREEN}[Auto]${NC} $(date '+%H:%M:%S') $1"; }
+warn() { echo -e "${YELLOW}[Auto]${NC} $(date '+%H:%M:%S') $1"; }
+error() { echo -e "${RED}[Auto]${NC} $(date '+%H:%M:%S') $1"; }
 
-# Features to run (add specs inline for each)
+# All features to process
+FEATURES=(
+    "008-symptom-alert"
+    "009-weight-chart"
+    "010-symptom-trends"
+    "011-pdf-export"
+    "012-settings"
+    "013-healthkit-weight"
+    "014-healthkit-heartrate"
+    "015-daily-reminder"
+    "016-onboarding"
+    "017-medication-photo"
+    "018-dizziness-bp-prompt"
+)
+
 run_feature() {
     local FEATURE_ID="$1"
-    local PREV_FEATURE="$2"
 
     log "=========================================="
     log "Starting feature: $FEATURE_ID"
     log "=========================================="
 
-    # Merge previous feature if exists
-    if [[ -n "$PREV_FEATURE" ]]; then
-        git checkout main
-        git merge "$PREV_FEATURE" || true
+    # Check if specs exist
+    if [[ ! -d "specs/$FEATURE_ID" ]]; then
+        error "Specs not found for $FEATURE_ID, skipping"
+        return 1
     fi
 
-    # Create branch
+    # Create branch from main
+    git checkout main
     git checkout -b "$FEATURE_ID" 2>/dev/null || git checkout "$FEATURE_ID"
 
-    # Run the persona loop
-    ./scripts/ralph-persona.sh "$FEATURE_ID" 25
+    # Run the persona loop (max 25 iterations)
+    if ./scripts/ralph-persona.sh "$FEATURE_ID" 25; then
+        success "Feature $FEATURE_ID completed successfully"
 
-    # Push results
-    git push origin "$FEATURE_ID" || true
-    git push origin main || true
+        # Push feature branch
+        git push origin "$FEATURE_ID" || warn "Push failed for $FEATURE_ID"
 
-    success "Feature $FEATURE_ID complete!"
+        # Merge to main
+        git checkout main
+        git merge "$FEATURE_ID" -m "Merge $FEATURE_ID into main"
+        git push origin main || warn "Push main failed"
+
+        return 0
+    else
+        error "Feature $FEATURE_ID failed or hit max iterations"
+        git checkout main
+        return 1
+    fi
 }
 
-log "Starting unattended feature run"
-log "Keep laptop awake and plugged in"
-echo ""
+# Main execution
+log "=========================================="
+log "HRTY Overnight Feature Run"
+log "=========================================="
+log "Features to process: ${#FEATURES[@]}"
+log ""
 
-# Run remaining features in order
-# (You already have 007 running, this picks up from 008)
+COMPLETED=0
+FAILED=0
 
-# Wait for current feature to finish if running
-if pgrep -f "ralph-persona.sh" > /dev/null; then
-    log "Waiting for current feature to complete..."
-    while pgrep -f "ralph-persona.sh" > /dev/null; do
-        sleep 30
-    done
-fi
-
-# Continue with remaining features
-PREV=""
-for FEATURE in 008-symptom-alert 009-weight-chart 010-symptom-trends 011-pdf-export 012-settings 013-healthkit-weight 014-healthkit-heartrate 015-daily-reminder 016-onboarding 017-medication-photo 018-dizziness-bp-prompt; do
-    # Check if specs exist, if not skip (you'll need to create them)
-    if [[ -d "specs/$FEATURE" ]]; then
-        run_feature "$FEATURE" "$PREV"
-        PREV="$FEATURE"
+for FEATURE in "${FEATURES[@]}"; do
+    if run_feature "$FEATURE"; then
+        ((COMPLETED++))
     else
-        log "Skipping $FEATURE - no specs found (create specs/$FEATURE/spec.md and tasks.md)"
+        ((FAILED++))
     fi
+
+    log "Progress: $COMPLETED completed, $FAILED failed"
+    log ""
 done
 
-success "=========================================="
-success "All features complete!"
-success "=========================================="
+log "=========================================="
+success "Overnight run complete!"
+success "Completed: $COMPLETED / ${#FEATURES[@]}"
+if [[ $FAILED -gt 0 ]]; then
+    warn "Failed: $FAILED"
+fi
+log "=========================================="
