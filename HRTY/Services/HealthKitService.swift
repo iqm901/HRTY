@@ -1,19 +1,6 @@
 import Foundation
 import HealthKit
 
-/// Data point for heart rate readings from HealthKit
-struct HeartRateReading: Identifiable, Equatable {
-    let id: UUID
-    let heartRate: Int
-    let date: Date
-
-    init(heartRate: Int, date: Date) {
-        self.id = UUID()
-        self.heartRate = heartRate
-        self.date = date
-    }
-}
-
 /// Protocol for HealthKit service operations
 /// Enables dependency injection and testability
 protocol HealthKitServiceProtocol {

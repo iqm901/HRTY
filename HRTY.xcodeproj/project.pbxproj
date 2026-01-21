@@ -9,8 +9,10 @@
 /* Begin PBXBuildFile section */
 		1AF9431892C3E7B5D8C4EE03 /* HeartRateSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4E646B7A5AB199BF8D29DB9 /* HeartRateSectionView.swift */; };
 		353643CAB1C4A76C2E27DBE6 /* HeartRateTrendChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = F895498FAFEA9C574FD944BE /* HeartRateTrendChart.swift */; };
+		39F445D88F5E159013E6EC8A /* HeartRateReading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EF04028AE7D71BCAA7EA96C /* HeartRateReading.swift */; };
 		39F5445DABE3B8A3163C6E29 /* HeartRateAlertService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 326045A69E90D70EEBA45812 /* HeartRateAlertService.swift */; };
 		4D8A49FF80365F7A21DD1B2E /* HeartRateAlertService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 326045A69E90D70EEBA45812 /* HeartRateAlertService.swift */; };
+		71C64B1393006B13494C3B1B /* HeartRateReading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EF04028AE7D71BCAA7EA96C /* HeartRateReading.swift */; };
 		A1000001200000010000000100000001 /* HRTYApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002200000010000000100000001 /* HRTYApp.swift */; };
 		A1000001200000010000000100000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002200000010000000100000002 /* ContentView.swift */; };
 		A1000001200000010000000100000003 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1000002200000010000000100000003 /* Assets.xcassets */; };
@@ -76,6 +78,7 @@
 /* Begin PBXFileReference section */
 		015C484EB0C714313F98B0BF /* HealthKitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HealthKitService.swift; path = HRTY/Services/HealthKitService.swift; sourceTree = SOURCE_ROOT; };
 		326045A69E90D70EEBA45812 /* HeartRateAlertService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HeartRateAlertService.swift; path = HRTY/Services/HeartRateAlertService.swift; sourceTree = SOURCE_ROOT; };
+		6EF04028AE7D71BCAA7EA96C /* HeartRateReading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HeartRateReading.swift; path = HRTY/Models/HeartRateReading.swift; sourceTree = SOURCE_ROOT; };
 		A1000002200000010000000100000001 /* HRTYApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HRTYApp.swift; sourceTree = "<group>"; };
 		A1000002200000010000000100000002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		A1000002200000010000000100000003 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -156,6 +159,7 @@
 				326045A69E90D70EEBA45812 /* HeartRateAlertService.swift */,
 				E4E646B7A5AB199BF8D29DB9 /* HeartRateSectionView.swift */,
 				F895498FAFEA9C574FD944BE /* HeartRateTrendChart.swift */,
+				6EF04028AE7D71BCAA7EA96C /* HeartRateReading.swift */,
 			);
 			sourceTree = "<group>";
 		};
@@ -400,6 +404,7 @@
 				4D8A49FF80365F7A21DD1B2E /* HeartRateAlertService.swift in Sources */,
 				1AF9431892C3E7B5D8C4EE03 /* HeartRateSectionView.swift in Sources */,
 				BBEB42D594C1A7C00B1643E2 /* HeartRateTrendChart.swift in Sources */,
+				71C64B1393006B13494C3B1B /* HeartRateReading.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -419,6 +424,7 @@
 				39F5445DABE3B8A3163C6E29 /* HeartRateAlertService.swift in Sources */,
 				E5C14116953F65885209755D /* HeartRateSectionView.swift in Sources */,
 				353643CAB1C4A76C2E27DBE6 /* HeartRateTrendChart.swift in Sources */,
+				39F445D88F5E159013E6EC8A /* HeartRateReading.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -574,6 +580,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(SRCROOT)/HRTY/Services",
 					"$(SRCROOT)/HRTY/Views",
+					"$(SRCROOT)/HRTY/Models",
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hrty.app;
@@ -606,6 +613,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(SRCROOT)/HRTY/Services",
 					"$(SRCROOT)/HRTY/Views",
+					"$(SRCROOT)/HRTY/Models",
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hrty.app;
@@ -628,6 +636,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(SRCROOT)/HRTY/Services",
 					"$(SRCROOT)/HRTY/Views",
+					"$(SRCROOT)/HRTY/Models",
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hrty.app.tests;
@@ -651,6 +660,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(SRCROOT)/HRTY/Services",
 					"$(SRCROOT)/HRTY/Views",
+					"$(SRCROOT)/HRTY/Models",
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hrty.app.tests;
