@@ -45,13 +45,21 @@ struct SettingsView: View {
 
     // MARK: - Patient Identifier Section
 
+    /// Maximum characters allowed for patient identifier to ensure proper PDF formatting
+    private let patientIdentifierMaxLength = 50
+
     private var patientIdentifierSection: some View {
         Section {
             HStack {
                 TextField("Name or ID (optional)", text: $viewModel.patientIdentifier)
                     .textContentType(.name)
+                    .onChange(of: viewModel.patientIdentifier) { _, newValue in
+                        if newValue.count > patientIdentifierMaxLength {
+                            viewModel.patientIdentifier = String(newValue.prefix(patientIdentifierMaxLength))
+                        }
+                    }
                     .accessibilityLabel("Patient identifier")
-                    .accessibilityHint("Enter your name or patient ID for PDF exports")
+                    .accessibilityHint("Enter your name or patient ID for PDF exports, up to \(patientIdentifierMaxLength) characters")
 
                 if !viewModel.patientIdentifier.isEmpty {
                     Button {
