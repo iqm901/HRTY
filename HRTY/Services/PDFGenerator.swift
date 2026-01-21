@@ -379,7 +379,7 @@ final class PDFGenerator {
         let alertCount = data.symptomEntries.filter { $0.hasAlert }.count
         if alertCount > 0 {
             currentY += 4
-            let noteText = "Orange indicates symptoms rated 4 or 5 (may need attention)"
+            let noteText = "Orange items may be helpful to discuss with your care team"
             let noteAttributes: [NSAttributedString.Key: Any] = [
                 .font: captionFont,
                 .foregroundColor: alertColor
@@ -462,10 +462,10 @@ final class PDFGenerator {
     private func drawAlertSection(at y: CGFloat, data: ExportData, in context: CGContext) -> CGFloat {
         var currentY = y
 
-        currentY = drawSectionHeading("Alert Events (30 Days)", at: currentY)
+        currentY = drawSectionHeading("Items to Discuss (30 Days)", at: currentY)
 
         if data.alertEvents.isEmpty {
-            currentY = drawEmptyState("No alerts during this period", at: currentY)
+            currentY = drawEmptyState("No items flagged for discussion", at: currentY)
             return currentY
         }
 
