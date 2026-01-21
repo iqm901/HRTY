@@ -13,17 +13,25 @@ struct TrendsView: View {
                         ProgressView("Loading trends...")
                             .frame(maxWidth: .infinity, alignment: .center)
                             .padding(.top, 40)
-                    } else if viewModel.hasWeightData {
-                        weightSection
                     } else {
-                        emptyStateView
+                        if viewModel.hasWeightData {
+                            weightSection
+                        }
+
+                        if viewModel.hasSymptomData {
+                            symptomSection
+                        }
+
+                        if !viewModel.hasWeightData && !viewModel.hasSymptomData {
+                            emptyStateView
+                        }
                     }
                 }
                 .padding()
             }
             .navigationTitle("Trends")
             .onAppear {
-                viewModel.loadWeightData(context: modelContext)
+                viewModel.loadAllData(context: modelContext)
             }
         }
     }
@@ -123,6 +131,54 @@ struct TrendsView: View {
         }
     }
 
+    // MARK: - Symptom Section
+
+    private var symptomSection: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            // Section header
+            Text("Symptoms")
+                .font(.title2)
+                .fontWeight(.semibold)
+                .accessibilityAddTraits(.isHeader)
+
+            // Toggle chips
+            SymptomToggleChips(
+                symptoms: SymptomType.allCases,
+                isVisible: { viewModel.isSymptomVisible($0) },
+                colorForSymptom: { viewModel.colorForSymptom($0) },
+                onToggle: { viewModel.toggleSymptom($0) }
+            )
+
+            // Chart
+            SymptomTrendChart(
+                symptomEntries: viewModel.symptomEntries,
+                visibleSymptoms: Set(SymptomType.allCases.filter { viewModel.isSymptomVisible($0) }),
+                alertDates: viewModel.alertDates,
+                colorForSymptom: { viewModel.colorForSymptom($0) }
+            )
+            .accessibilityLabel(viewModel.symptomAccessibilitySummary)
+
+            // Legend hint
+            if !viewModel.alertDates.isEmpty {
+                HStack(spacing: 6) {
+                    Rectangle()
+                        .fill(Color.orange.opacity(0.3))
+                        .frame(width: 16, height: 2)
+
+                    Text("Days with alerts")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+
+            // Date range
+            Text(viewModel.dateRangeText)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .frame(maxWidth: .infinity, alignment: .center)
+        }
+    }
+
     // MARK: - Empty State
 
     private var emptyStateView: some View {
@@ -131,11 +187,11 @@ struct TrendsView: View {
                 .font(.system(size: 48))
                 .foregroundStyle(.secondary)
 
-            Text("No Weight Data Yet")
+            Text("No Data Yet")
                 .font(.title3)
                 .fontWeight(.medium)
 
-            Text("Start logging your daily weight on the Today tab to see your trends here.")
+            Text("Start logging your daily check-ins on the Today tab to see your trends here.")
                 .font(.body)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -144,7 +200,7 @@ struct TrendsView: View {
         .frame(maxWidth: .infinity)
         .padding(.top, 60)
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("No weight data yet. Start logging your daily weight on the Today tab to see your trends here.")
+        .accessibilityLabel("No data yet. Start logging your daily check-ins on the Today tab to see your trends here.")
     }
 }
 
