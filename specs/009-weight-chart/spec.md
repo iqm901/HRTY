@@ -21,11 +21,11 @@ As a patient, I want to see my weight trend over 30 days so I can understand my 
 - Date range displayed
 
 ## Acceptance Criteria
-- [ ] Line chart showing daily weight for past 30 days
-- [ ] X-axis shows dates, Y-axis shows weight in lbs
-- [ ] Missing days shown as gaps (not interpolated)
-- [ ] Chart is scrollable/zoomable if needed
-- [ ] Shows current weight and 30-day change summary
+- [x] Line chart showing daily weight for past 30 days
+- [x] X-axis shows dates, Y-axis shows weight in lbs
+- [x] Missing days shown as gaps (not interpolated)
+- [x] Chart is scrollable/zoomable if needed (30-day fixed view fits on screen - no scroll needed)
+- [x] Shows current weight and 30-day change summary
 
 ## UI/UX Notes
 - Use Swift Charts framework (iOS 16+)
