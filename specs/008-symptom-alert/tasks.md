@@ -40,3 +40,11 @@
 - Extracted `AlertAcknowledgeable` protocol with default implementation
 - Both `WeightAlertServiceProtocol` and `SymptomAlertServiceProtocol` now inherit from it
 - Build passes, tests pass
+
+### Iteration 2 - Frontend Designer
+- Reviewed UI/UX for symptom alert feature
+- Checked SwiftUI best practices and accessibility support
+- Found accessibility bug: `WeightAlertView` always announced "Weight alert" for VoiceOver
+- Fixed accessibility labels to be context-aware for all alert types (symptom, weight, heart rate)
+- Added Symptom Alert preview to WeightAlertView for testing
+- Build passes
