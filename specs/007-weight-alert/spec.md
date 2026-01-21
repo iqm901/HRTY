@@ -34,11 +34,11 @@ As a patient, I want to be alerted when my weight increases significantly so I c
 > "Over the past week, your weight has increased by [X] lbs. Your clinician may want to know about this trend. It might be a good time to check in with them."
 
 ## Acceptance Criteria
-- [ ] Alert triggers if weight increases ≥2 lbs in 24 hours
-- [ ] Alert triggers if weight increases ≥5 lbs over 7 days
-- [ ] Alert message is warm, non-alarmist, suggests contacting clinician
-- [ ] Alert displayed prominently on Today view
-- [ ] AlertEvent saved to data store
+- [x] Alert triggers if weight increases ≥2 lbs in 24 hours
+- [x] Alert triggers if weight increases ≥5 lbs over 7 days
+- [x] Alert message is warm, non-alarmist, suggests contacting clinician
+- [x] Alert displayed prominently on Today view
+- [x] AlertEvent saved to data store
 
 ## UI/UX Notes
 - Display alert in a card/banner at top of Today view
