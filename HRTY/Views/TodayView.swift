@@ -212,6 +212,7 @@ struct TodayView: View {
 
             if viewModel.showHealthKitTimestamp, let timestampText = viewModel.healthKitTimestampText {
                 healthKitTimestampView(timestampText)
+                    .transition(.opacity.combined(with: .scale(scale: 0.95)))
             }
 
             if viewModel.isHealthKitAvailable {
@@ -238,6 +239,7 @@ struct TodayView: View {
         .background(Color(.systemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 2)
+        .animation(.easeInOut(duration: 0.25), value: viewModel.showHealthKitTimestamp)
     }
 
     private var sectionHeader: some View {
