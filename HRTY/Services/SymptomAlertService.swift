@@ -3,15 +3,14 @@ import SwiftData
 
 /// Protocol defining symptom alert service operations.
 /// Enables dependency injection and testability for symptom alert checking logic.
-protocol SymptomAlertServiceProtocol {
+/// Inherits AlertAcknowledgeable to share the acknowledge implementation with WeightAlertService.
+protocol SymptomAlertServiceProtocol: AlertAcknowledgeable {
     func checkSymptomAlerts(
         symptomSeverities: [SymptomType: Int],
         todayEntry: DailyEntry?,
         context: ModelContext
     )
     func loadUnacknowledgedSymptomAlerts(context: ModelContext) -> [AlertEvent]
-    @discardableResult
-    func acknowledgeAlert(_ alert: AlertEvent, context: ModelContext) -> Bool
 }
 
 /// Service responsible for checking symptom severities and managing symptom-related alerts.
@@ -72,27 +71,7 @@ final class SymptomAlertService: SymptomAlertServiceProtocol {
         }
     }
 
-    // MARK: - Alert Acknowledgement
-
-    /// Acknowledge (dismiss) an alert
-    /// - Parameters:
-    ///   - alert: The alert to acknowledge
-    ///   - context: SwiftData model context
-    /// - Returns: True if acknowledgement was successful
-    @discardableResult
-    func acknowledgeAlert(_ alert: AlertEvent, context: ModelContext) -> Bool {
-        alert.isAcknowledged = true
-
-        do {
-            try context.save()
-            return true
-        } catch {
-            #if DEBUG
-            print("Alert acknowledge error: \(error.localizedDescription)")
-            #endif
-            return false
-        }
-    }
+    // Note: acknowledgeAlert is provided by AlertAcknowledgeable protocol extension
 
     // MARK: - Private Methods
 

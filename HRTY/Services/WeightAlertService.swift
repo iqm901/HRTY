@@ -1,9 +1,39 @@
 import Foundation
 import SwiftData
 
+// MARK: - Shared Alert Service Protocol
+
+/// Base protocol for alert acknowledgment functionality.
+/// Provides default implementation for acknowledging alerts to avoid code duplication.
+protocol AlertAcknowledgeable {
+    @discardableResult
+    func acknowledgeAlert(_ alert: AlertEvent, context: ModelContext) -> Bool
+}
+
+/// Default implementation of alert acknowledgment.
+/// Both WeightAlertService and SymptomAlertService share this behavior.
+extension AlertAcknowledgeable {
+    @discardableResult
+    func acknowledgeAlert(_ alert: AlertEvent, context: ModelContext) -> Bool {
+        alert.isAcknowledged = true
+
+        do {
+            try context.save()
+            return true
+        } catch {
+            #if DEBUG
+            print("Alert acknowledge error: \(error.localizedDescription)")
+            #endif
+            return false
+        }
+    }
+}
+
+// MARK: - Weight Alert Service Protocol
+
 /// Protocol defining weight alert service operations.
 /// Enables dependency injection and testability for alert checking logic.
-protocol WeightAlertServiceProtocol {
+protocol WeightAlertServiceProtocol: AlertAcknowledgeable {
     func checkWeightAlerts(
         currentWeight: Double,
         todayEntry: DailyEntry?,
@@ -11,8 +41,6 @@ protocol WeightAlertServiceProtocol {
         context: ModelContext
     )
     func loadUnacknowledgedAlerts(context: ModelContext) -> [AlertEvent]
-    @discardableResult
-    func acknowledgeAlert(_ alert: AlertEvent, context: ModelContext) -> Bool
 }
 
 /// Service responsible for checking weight thresholds and managing weight-related alerts.
@@ -68,27 +96,7 @@ final class WeightAlertService: WeightAlertServiceProtocol {
         }
     }
 
-    // MARK: - Alert Acknowledgement
-
-    /// Acknowledge (dismiss) an alert
-    /// - Parameters:
-    ///   - alert: The alert to acknowledge
-    ///   - context: SwiftData model context
-    /// - Returns: True if acknowledgement was successful
-    @discardableResult
-    func acknowledgeAlert(_ alert: AlertEvent, context: ModelContext) -> Bool {
-        alert.isAcknowledged = true
-
-        do {
-            try context.save()
-            return true
-        } catch {
-            #if DEBUG
-            print("Alert acknowledge error: \(error.localizedDescription)")
-            #endif
-            return false
-        }
-    }
+    // Note: acknowledgeAlert is provided by AlertAcknowledgeable protocol extension
 
     // MARK: - Private Methods
 
