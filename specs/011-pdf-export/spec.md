@@ -26,12 +26,12 @@ As a patient, I want to export my data as a PDF so I can share it with my clinic
 > "This summary reflects patient-entered data for self-management and discussion with a clinician. It is not a medical record."
 
 ## Acceptance Criteria
-- [ ] One-tap PDF generation from Export tab
-- [ ] PDF includes: date range, 30-day weight trend, symptom trends, diuretic history, alert events
-- [ ] Optional patient identifier field
-- [ ] Footer disclaimer present
-- [ ] Share sheet opens after generation
-- [ ] PDF is readable and professionally formatted
+- [x] One-tap PDF generation from Export tab
+- [x] PDF includes: date range, 30-day weight trend, symptom trends, diuretic history, alert events
+- [x] Optional patient identifier field
+- [x] Footer disclaimer present
+- [x] Share sheet opens after generation
+- [x] PDF is readable and professionally formatted
 
 ## UI/UX Notes
 - Simple "Generate PDF" button on Export tab
