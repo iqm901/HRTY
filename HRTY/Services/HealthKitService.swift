@@ -60,26 +60,26 @@ enum HealthKitError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .unavailable:
-            return "HealthKit is not available on this device"
+            return "Health app is not available on this device"
         case .authorizationDenied:
-            return "Permission to access Health data was denied"
+            return "HRTY needs permission to read your weight from the Health app"
         case .noData:
             return "No weight data found in Health"
-        case .queryFailed(let error):
-            return "Could not read Health data: \(error.localizedDescription)"
+        case .queryFailed:
+            return "We couldn't read your weight from Health right now"
         }
     }
 
     var recoverySuggestion: String? {
         switch self {
         case .unavailable:
-            return "This device does not support HealthKit. You can enter your weight manually."
+            return "No worries! You can enter your weight manually below."
         case .authorizationDenied:
-            return "You can enable Health access in Settings > Privacy & Security > Health > HRTY."
+            return "You can enable this in Settings > Privacy & Security > Health > HRTY."
         case .noData:
-            return "Make sure you have weight data recorded in the Health app."
+            return "Make sure you have weight data recorded in the Health app, or enter it manually below."
         case .queryFailed:
-            return "Please try again or enter your weight manually."
+            return "Please try again in a moment, or enter your weight manually."
         }
     }
 }

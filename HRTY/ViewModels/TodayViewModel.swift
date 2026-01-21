@@ -429,7 +429,7 @@ final class TodayViewModel {
     /// Requests authorization if needed, then fetches the latest weight
     func importWeightFromHealthKit() async {
         guard isHealthKitAvailable else {
-            healthKitError = "Health data is not available on this device"
+            healthKitError = "Health app is not available on this device. No worries! You can enter your weight manually below."
             return
         }
 
