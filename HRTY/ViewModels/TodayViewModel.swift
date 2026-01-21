@@ -21,7 +21,12 @@ final class TodayViewModel {
     var yesterdayEntry: DailyEntry?
 
     // MARK: - Services
-    private let weightAlertService = WeightAlertService()
+    private let weightAlertService: WeightAlertServiceProtocol
+
+    // MARK: - Initialization
+    init(weightAlertService: WeightAlertServiceProtocol = WeightAlertService()) {
+        self.weightAlertService = weightAlertService
+    }
 
     // MARK: - Validation Constants (reference AlertConstants for thresholds)
 

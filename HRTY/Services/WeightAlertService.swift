@@ -1,9 +1,23 @@
 import Foundation
 import SwiftData
 
+/// Protocol defining weight alert service operations.
+/// Enables dependency injection and testability for alert checking logic.
+protocol WeightAlertServiceProtocol {
+    func checkWeightAlerts(
+        currentWeight: Double,
+        todayEntry: DailyEntry?,
+        yesterdayEntry: DailyEntry?,
+        context: ModelContext
+    )
+    func loadUnacknowledgedAlerts(context: ModelContext) -> [AlertEvent]
+    @discardableResult
+    func acknowledgeAlert(_ alert: AlertEvent, context: ModelContext) -> Bool
+}
+
 /// Service responsible for checking weight thresholds and managing weight-related alerts.
 /// Extracted from TodayViewModel to follow Single Responsibility Principle.
-final class WeightAlertService {
+final class WeightAlertService: WeightAlertServiceProtocol {
 
     // MARK: - Alert Checking
 
