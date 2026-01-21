@@ -11,6 +11,7 @@
 		A1000001200000010000000100000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002200000010000000100000002 /* ContentView.swift */; };
 		A1000001200000010000000100000003 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1000002200000010000000100000003 /* Assets.xcassets */; };
 		A1000001200000010000000100000004 /* TodayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002200000010000000100000004 /* TodayView.swift */; };
+		A1000001200000010000000100000021 /* WeightAlertService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002200000010000000100000021 /* WeightAlertService.swift */; };
 		A1000001200000010000000100000005 /* TrendsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002200000010000000100000005 /* TrendsView.swift */; };
 		A1000001200000010000000100000006 /* MedicationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002200000010000000100000006 /* MedicationsView.swift */; };
 		A1000001200000010000000100000007 /* ExportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002200000010000000100000007 /* ExportView.swift */; };
@@ -76,6 +77,7 @@
 		A1000002200000010000000100000017 /* DiureticRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiureticRowView.swift; sourceTree = "<group>"; };
 		A1000002200000010000000100000018 /* CustomDoseSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDoseSheet.swift; sourceTree = "<group>"; };
 		A1000002200000010000000100000019 /* WeightAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightAlertView.swift; sourceTree = "<group>"; };
+		A1000002200000010000000100000021 /* WeightAlertService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightAlertService.swift; sourceTree = "<group>"; };
 		A1000003200000010000000100000001 /* HRTY.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HRTY.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1000002200000010000000200000001 /* TabTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabTests.swift; sourceTree = "<group>"; };
 		B1000002200000010000000200000002 /* SymptomTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymptomTests.swift; sourceTree = "<group>"; };
@@ -119,6 +121,7 @@
 				A1000005200000010000000100000005 /* Models */,
 				A1000005200000010000000100000004 /* Views */,
 				A1000005200000010000000100000006 /* ViewModels */,
+				A1000005200000010000000100000007 /* Services */,
 				A1000002200000010000000100000003 /* Assets.xcassets */,
 			);
 			path = HRTY;
@@ -175,6 +178,14 @@
 				A1000002200000010000000100000013 /* MedicationsViewModel.swift */,
 			);
 			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		A1000005200000010000000100000007 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				A1000002200000010000000100000021 /* WeightAlertService.swift */,
+			);
+			path = Services;
 			sourceTree = "<group>";
 		};
 		B1000006200000010000000200000001 /* HRTYTests */ = {
@@ -312,6 +323,7 @@
 				A1000001200000010000000100000017 /* DiureticRowView.swift in Sources */,
 				A1000001200000010000000100000018 /* CustomDoseSheet.swift in Sources */,
 				A1000001200000010000000100000019 /* WeightAlertView.swift in Sources */,
+				A1000001200000010000000100000021 /* WeightAlertService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
