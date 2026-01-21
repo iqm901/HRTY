@@ -527,7 +527,7 @@ final class TodayViewModelHealthKitTests: XCTestCase {
         XCTAssertTrue(viewModel.isLoadingHealthKit)
     }
 
-    func testImportWeightGenericErrorShowsDescription() async {
+    func testImportWeightGenericErrorShowsPatientFriendlyMessage() async {
         // Given: HealthKit throws a generic (non-HealthKitError) error
         let genericError = NSError(
             domain: "com.test.generic",
@@ -539,10 +539,13 @@ final class TodayViewModelHealthKitTests: XCTestCase {
         // When: importing weight
         await viewModel.importWeightFromHealthKit()
 
-        // Then: should show error that includes the underlying description
+        // Then: should show patient-friendly error (not exposing technical details)
         XCTAssertNotNil(viewModel.healthKitError)
-        XCTAssertTrue(viewModel.healthKitError?.contains("Something unexpected happened") ?? false)
-        XCTAssertTrue(viewModel.healthKitError?.contains("Could not import weight") ?? false)
+        // Should use warm, patient-friendly messaging
+        XCTAssertTrue(viewModel.healthKitError?.contains("Something went wrong") ?? false)
+        XCTAssertTrue(viewModel.healthKitError?.contains("try again") ?? false)
+        // Should NOT expose raw error description to patient
+        XCTAssertFalse(viewModel.healthKitError?.contains("Something unexpected happened") ?? true)
         XCTAssertFalse(viewModel.isLoadingHealthKit)
     }
 }

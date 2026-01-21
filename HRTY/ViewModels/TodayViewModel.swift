@@ -470,7 +470,7 @@ final class TodayViewModel {
             }
         } catch {
             await MainActor.run {
-                healthKitError = "Could not import weight: \(error.localizedDescription)"
+                healthKitError = "Something went wrong while reading from Health. Please try again, or enter your weight manually below."
                 finishHealthKitImport(feedback: .error)
             }
         }
