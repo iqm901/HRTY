@@ -88,12 +88,38 @@ struct WeightAlertView: View {
 // MARK: - Custom Colors
 
 private extension Color {
-    static let alertBackground = Color(red: 255/255, green: 248/255, blue: 235/255)
-    static let alertBorder = Color(red: 245/255, green: 215/255, blue: 160/255)
-    static let alertAccent = Color(red: 180/255, green: 120/255, blue: 50/255)
+    /// Warm amber background that adapts to Dark Mode
+    /// Light: soft peach/cream | Dark: warm brown
+    static let alertBackground = Color(
+        light: Color(red: 255/255, green: 248/255, blue: 235/255),
+        dark: Color(red: 50/255, green: 40/255, blue: 30/255)
+    )
+
+    /// Subtle border that complements the background in both modes
+    /// Light: golden amber | Dark: muted amber
+    static let alertBorder = Color(
+        light: Color(red: 245/255, green: 215/255, blue: 160/255),
+        dark: Color(red: 100/255, green: 80/255, blue: 55/255)
+    )
+
+    /// Accent color for text and icons, warm and readable
+    /// Light: warm brown | Dark: soft amber
+    static let alertAccent = Color(
+        light: Color(red: 180/255, green: 120/255, blue: 50/255),
+        dark: Color(red: 230/255, green: 180/255, blue: 100/255)
+    )
+
+    /// Creates a color that adapts to light/dark mode
+    init(light: Color, dark: Color) {
+        self.init(uiColor: UIColor { traitCollection in
+            traitCollection.userInterfaceStyle == .dark
+                ? UIColor(dark)
+                : UIColor(light)
+        })
+    }
 }
 
-#Preview {
+#Preview("Light Mode") {
     VStack(spacing: 16) {
         WeightAlertView(
             alert: AlertEvent(
@@ -113,4 +139,27 @@ private extension Color {
     }
     .padding()
     .background(Color(.systemGroupedBackground))
+}
+
+#Preview("Dark Mode") {
+    VStack(spacing: 16) {
+        WeightAlertView(
+            alert: AlertEvent(
+                alertType: .weightGain24h,
+                message: "Your weight has increased by 2.5 lbs since yesterday. This is good information to share with your care team. Consider reaching out to discuss."
+            ),
+            onDismiss: {}
+        )
+
+        WeightAlertView(
+            alert: AlertEvent(
+                alertType: .weightGain7d,
+                message: "Over the past week, your weight has increased by 5.5 lbs. Your clinician may want to know about this trend. It might be a good time to check in with them."
+            ),
+            onDismiss: {}
+        )
+    }
+    .padding()
+    .background(Color(.systemGroupedBackground))
+    .preferredColorScheme(.dark)
 }
