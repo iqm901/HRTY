@@ -53,6 +53,8 @@
 		A100000120000001000000010000002A /* TrendDataPoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000220000001000000010000002A /* TrendDataPoints.swift */; };
 		A100000120000001000000010000002B /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000220000001000000010000002B /* SettingsViewModel.swift */; };
 		A100000120000001000000010000002C /* AppStorageKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000220000001000000010000002C /* AppStorageKeys.swift */; };
+		A100000120000001000000010000002D /* HealthKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000220000001000000010000002D /* HealthKitService.swift */; };
+		A100000120000001000000010000002E /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A100000220000001000000010000002E /* HealthKit.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -113,6 +115,9 @@
 		A100000220000001000000010000002A /* TrendDataPoints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendDataPoints.swift; sourceTree = "<group>"; };
 		A100000220000001000000010000002B /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 		A100000220000001000000010000002C /* AppStorageKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStorageKeys.swift; sourceTree = "<group>"; };
+		A100000220000001000000010000002D /* HealthKitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitService.swift; sourceTree = "<group>"; };
+		A100000220000001000000010000002E /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
+		A100000220000001000000010000002F /* HRTY.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = HRTY.entitlements; sourceTree = "<group>"; };
 		B1000004200000010000000200000001 /* HRTYTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HRTYTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -121,6 +126,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A100000120000001000000010000002E /* HealthKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -140,7 +146,16 @@
 				A1000005200000010000000100000002 /* HRTY */,
 				B1000006200000010000000200000001 /* HRTYTests */,
 				A1000005200000010000000100000003 /* Products */,
+				A1000005200000010000000100000008 /* Frameworks */,
 			);
+			sourceTree = "<group>";
+		};
+		A1000005200000010000000100000008 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A100000220000001000000010000002E /* HealthKit.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		A1000005200000010000000100000002 /* HRTY */ = {
@@ -153,6 +168,7 @@
 				A1000005200000010000000100000006 /* ViewModels */,
 				A1000005200000010000000100000007 /* Services */,
 				A1000002200000010000000100000003 /* Assets.xcassets */,
+				A100000220000001000000010000002F /* HRTY.entitlements */,
 			);
 			path = HRTY;
 			sourceTree = "<group>";
@@ -225,6 +241,7 @@
 				A1000002200000010000000100000021 /* WeightAlertService.swift */,
 				A1000002200000010000000100000022 /* SymptomAlertService.swift */,
 				A1000002200000010000000100000029 /* PDFGenerator.swift */,
+				A100000220000001000000010000002D /* HealthKitService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -380,6 +397,7 @@
 				A100000120000001000000010000002A /* TrendDataPoints.swift in Sources */,
 				A100000120000001000000010000002B /* SettingsViewModel.swift in Sources */,
 				A100000120000001000000010000002C /* AppStorageKeys.swift in Sources */,
+				A100000120000001000000010000002D /* HealthKitService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -533,11 +551,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = HRTY/HRTY.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "HRTY uses your weight data from Health to help track your daily check-ins. This makes logging faster and more convenient.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -561,11 +581,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = HRTY/HRTY.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "HRTY uses your weight data from Health to help track your daily check-ins. This makes logging faster and more convenient.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

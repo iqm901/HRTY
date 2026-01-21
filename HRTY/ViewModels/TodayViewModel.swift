@@ -23,20 +23,47 @@ final class TodayViewModel {
     var todayEntry: DailyEntry?
     var yesterdayEntry: DailyEntry?
 
+    // MARK: - HealthKit State
+    var healthKitWeight: HealthKitWeight?
+    var isLoadingHealthKit: Bool = false
+    var healthKitError: String?
+    var showHealthKitTimestamp: Bool = false
+
     // MARK: - Services
     private let weightAlertService: WeightAlertServiceProtocol
     private let symptomAlertService: SymptomAlertServiceProtocol
+    private let healthKitService: HealthKitServiceProtocol
 
     // MARK: - Initialization
     init(
         weightAlertService: WeightAlertServiceProtocol = WeightAlertService(),
-        symptomAlertService: SymptomAlertServiceProtocol = SymptomAlertService()
+        symptomAlertService: SymptomAlertServiceProtocol = SymptomAlertService(),
+        healthKitService: HealthKitServiceProtocol = HealthKitService()
     ) {
         self.weightAlertService = weightAlertService
         self.symptomAlertService = symptomAlertService
+        self.healthKitService = healthKitService
     }
 
     // MARK: - Validation Constants (reference AlertConstants for thresholds)
+
+    // MARK: - HealthKit Computed Properties
+
+    /// Whether HealthKit is available on this device
+    var isHealthKitAvailable: Bool {
+        healthKitService.isHealthKitAvailable
+    }
+
+    /// Whether HealthKit authorization has been denied (for showing settings hint)
+    var isHealthKitAuthorizationDenied: Bool {
+        healthKitService.authorizationStatus == .denied
+    }
+
+    /// Formatted text for the imported weight timestamp
+    var healthKitTimestampText: String? {
+        guard let healthKitWeight = healthKitWeight else { return nil }
+        return "From Health: \(healthKitWeight.formattedTimestamp)"
+    }
 
     // MARK: - Computed Properties
     var parsedWeight: Double? {
@@ -394,5 +421,55 @@ final class TodayViewModel {
                 self?.showAlertDismissedEncouragement = false
             }
         }
+    }
+
+    // MARK: - HealthKit Methods
+
+    /// Import weight from HealthKit
+    /// Requests authorization if needed, then fetches the latest weight
+    func importWeightFromHealthKit() async {
+        guard isHealthKitAvailable else {
+            healthKitError = "Health data is not available on this device"
+            return
+        }
+
+        isLoadingHealthKit = true
+        healthKitError = nil
+
+        do {
+            // Request authorization if not already granted
+            try await healthKitService.requestAuthorization()
+
+            // Fetch the latest weight
+            if let weight = try await healthKitService.fetchLatestWeight() {
+                await MainActor.run {
+                    healthKitWeight = weight
+                    weightInput = weight.formattedWeight
+                    showHealthKitTimestamp = true
+                    isLoadingHealthKit = false
+                }
+            } else {
+                await MainActor.run {
+                    healthKitError = "No weight data found in Health. Make sure you have recorded your weight in the Health app."
+                    isLoadingHealthKit = false
+                }
+            }
+        } catch let error as HealthKitError {
+            await MainActor.run {
+                healthKitError = error.errorDescription
+                isLoadingHealthKit = false
+            }
+        } catch {
+            await MainActor.run {
+                healthKitError = "Could not import weight: \(error.localizedDescription)"
+                isLoadingHealthKit = false
+            }
+        }
+    }
+
+    /// Clear the HealthKit imported weight state (when user edits manually)
+    func clearHealthKitWeight() {
+        healthKitWeight = nil
+        showHealthKitTimestamp = false
     }
 }

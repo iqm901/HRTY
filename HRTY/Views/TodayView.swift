@@ -209,6 +209,18 @@ struct TodayView: View {
 
             weightInputField
 
+            if viewModel.showHealthKitTimestamp, let timestampText = viewModel.healthKitTimestampText {
+                healthKitTimestampView(timestampText)
+            }
+
+            if viewModel.isHealthKitAvailable {
+                importFromHealthButton
+            }
+
+            if let healthKitError = viewModel.healthKitError {
+                healthKitErrorView(healthKitError)
+            }
+
             if let error = viewModel.validationError {
                 validationErrorView(error)
             }
@@ -250,11 +262,78 @@ struct TodayView: View {
                 .focused($isWeightFieldFocused)
                 .accessibilityLabel("Weight input")
                 .accessibilityHint("Enter your weight in pounds")
+                .onChange(of: viewModel.weightInput) { _, _ in
+                    // Clear HealthKit timestamp when user manually edits
+                    if viewModel.showHealthKitTimestamp {
+                        viewModel.clearHealthKitWeight()
+                    }
+                }
 
             Text("lbs")
                 .font(.title2)
                 .foregroundStyle(.secondary)
         }
+    }
+
+    private var importFromHealthButton: some View {
+        Button {
+            Task {
+                await viewModel.importWeightFromHealthKit()
+            }
+        } label: {
+            HStack(spacing: 8) {
+                if viewModel.isLoadingHealthKit {
+                    ProgressView()
+                        .progressViewStyle(CircularProgressViewStyle())
+                        .scaleEffect(0.8)
+                } else {
+                    Image(systemName: "heart.fill")
+                        .foregroundStyle(.pink)
+                }
+                Text(viewModel.isLoadingHealthKit ? "Importing..." : "Import from Health")
+                    .font(.subheadline)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 12)
+            .background(Color(.secondarySystemBackground))
+            .clipShape(RoundedRectangle(cornerRadius: 10))
+        }
+        .disabled(viewModel.isLoadingHealthKit)
+        .accessibilityLabel("Import weight from Health app")
+        .accessibilityHint("Tap to import your most recent weight from Apple Health")
+    }
+
+    private func healthKitTimestampView(_ text: String) -> some View {
+        HStack(spacing: 6) {
+            Image(systemName: "heart.fill")
+                .foregroundStyle(.pink)
+                .font(.caption)
+            Text(text)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(text)
+    }
+
+    private func healthKitErrorView(_ error: String) -> some View {
+        HStack(alignment: .top, spacing: 8) {
+            Image(systemName: "exclamationmark.circle.fill")
+                .foregroundStyle(.orange)
+            VStack(alignment: .leading, spacing: 4) {
+                Text(error)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                if viewModel.isHealthKitAuthorizationDenied {
+                    Text("You can enable Health access in Settings.")
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Health import issue: \(error)")
     }
 
     private func validationErrorView(_ error: String) -> some View {
