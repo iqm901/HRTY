@@ -139,7 +139,7 @@ struct SettingsView: View {
                 .accessibilityElement(children: .combine)
                 .accessibilityLabel("HRTY \(viewModel.versionString)")
 
-                Text("A simple, private way to track your heart health journey. Log your weight, symptoms, and medications to share with your care team.")
+                Text("Your personal companion for managing heart health. Track your daily progress in just a couple of minutes, and feel confident when sharing updates with your care team.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
