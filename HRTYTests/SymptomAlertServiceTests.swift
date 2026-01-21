@@ -242,6 +242,24 @@ final class SevereSymptomAlertEventTests: XCTestCase {
         )
     }
 
+    func testSingleSymptomUsesIsVerb() {
+        // Per grammar rules: single symptom should use "is"
+        let exampleMessage = "You've noted that chest discomfort is bothering you more than usual today."
+        XCTAssertTrue(
+            exampleMessage.contains(" is bothering"),
+            "Single symptom message should use 'is bothering' (singular verb)"
+        )
+    }
+
+    func testMultipleSymptomsUseAreVerb() {
+        // Per grammar rules: multiple symptoms should use "are"
+        let exampleMessage = "You've noted that chest discomfort and dizziness are bothering you more than usual today."
+        XCTAssertTrue(
+            exampleMessage.contains(" are bothering"),
+            "Multiple symptom message should use 'are bothering' (plural verb)"
+        )
+    }
+
     func testSymptomAlertMessageIsWarmAndSupportive() {
         // Per spec: message should be warm, non-alarmist
         let exampleMessage = "You've noted that chest discomfort is bothering you more than usual today. This is helpful information to share with your care team when you get a chance."

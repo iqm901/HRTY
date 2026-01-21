@@ -147,6 +147,9 @@ final class SymptomAlertService: SymptomAlertServiceProtocol {
             symptomList = "\(allButLast), and \(symptomNames.last!)"
         }
 
-        return "You've noted that \(symptomList) is bothering you more than usual today. This is helpful information to share with your care team when you get a chance."
+        // Use correct subject-verb agreement: "is" for singular, "are" for plural
+        let verb = symptomNames.count == 1 ? "is" : "are"
+
+        return "You've noted that \(symptomList) \(verb) bothering you more than usual today. This is helpful information to share with your care team when you get a chance."
     }
 }
