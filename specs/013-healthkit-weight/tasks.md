@@ -95,3 +95,17 @@ Quality improvements made during the multi-persona review cycle:
 | 13 | System Architect | Extracted finishHealthKitImport helper to consolidate code |
 | 14 | Frontend Designer | Added dynamic VoiceOver labels for HealthKit import loading state |
 | 15 | QA Engineer | Added test for generic error handling in HealthKit import |
+| 16 | Project Manager | Verified all acceptance criteria, tasks, build, and tests pass |
+
+## Acceptance Criteria Verification (Iteration 16)
+
+| Criterion | Verified |
+|-----------|----------|
+| Request HealthKit authorization for body mass (read-only) | ✓ |
+| Option to import today's weight from HealthKit | ✓ |
+| Shows most recent HealthKit weight with timestamp | ✓ |
+| User can override with manual entry | ✓ |
+| Graceful handling if HealthKit unavailable | ✓ |
+
+**Build Status:** PASSED
+**Test Status:** ALL TESTS PASSED
