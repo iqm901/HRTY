@@ -26,11 +26,11 @@ As a patient, I want to import my weight from Apple Health so I don't have to en
 - Manual entry always available as fallback
 
 ## Acceptance Criteria
-- [ ] Request HealthKit authorization for body mass (read-only)
-- [ ] Option to import today's weight from HealthKit
-- [ ] Shows most recent HealthKit weight with timestamp
-- [ ] User can override with manual entry
-- [ ] Graceful handling if HealthKit unavailable
+- [x] Request HealthKit authorization for body mass (read-only)
+- [x] Option to import today's weight from HealthKit
+- [x] Shows most recent HealthKit weight with timestamp
+- [x] User can override with manual entry
+- [x] Graceful handling if HealthKit unavailable
 
 ## UI/UX Notes
 - "Import from Health" button near weight input
