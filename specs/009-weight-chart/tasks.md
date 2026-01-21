@@ -1,39 +1,39 @@
 # Tasks: Trends View - Weight Chart
 
 ## ViewModel Setup
-- [ ] Create TrendsViewModel with @Observable
-- [ ] Add property for 30-day weight data
-- [ ] Add computed property for weight change summary
-- [ ] Query DailyEntry for date range
+- [x] Create TrendsViewModel with @Observable
+- [x] Add property for 30-day weight data
+- [x] Add computed property for weight change summary
+- [x] Query DailyEntry for date range
 
 ## Chart Implementation
-- [ ] Import Swift Charts framework
-- [ ] Create WeightChartView component
-- [ ] Configure LineMark for weight data
-- [ ] Set up X-axis with date labels
-- [ ] Set up Y-axis with weight values
-- [ ] Handle missing days (gaps, not interpolation)
+- [x] Import Swift Charts framework
+- [x] Create WeightChartView component
+- [x] Configure LineMark for weight data
+- [x] Set up X-axis with date labels
+- [x] Set up Y-axis with weight values
+- [x] Handle missing days (gaps, not interpolation)
 
 ## Summary Display
-- [ ] Show current/latest weight
-- [ ] Calculate 30-day weight change
-- [ ] Display change with +/- indicator
-- [ ] Show date range for chart
+- [x] Show current/latest weight
+- [x] Calculate 30-day weight change
+- [x] Display change with +/- indicator
+- [x] Show date range for chart
 
 ## TrendsView Integration
-- [ ] Update TrendsView with chart
-- [ ] Add section header for weight
-- [ ] Handle empty state (no data)
-- [ ] Add loading state if needed
+- [x] Update TrendsView with chart
+- [x] Add section header for weight
+- [x] Handle empty state (no data)
+- [x] Add loading state if needed
 
 ## Accessibility
-- [ ] Add accessibility label for chart
-- [ ] Provide text summary for VoiceOver users
-- [ ] Ensure chart data is accessible
+- [x] Add accessibility label for chart
+- [x] Provide text summary for VoiceOver users
+- [x] Ensure chart data is accessible
 
 ## Quality Checks
-- [ ] Chart displays correctly with data
-- [ ] Missing days show as gaps
-- [ ] Summary calculations are accurate
-- [ ] Empty state displays properly
-- [ ] App builds without errors
+- [x] Chart displays correctly with data
+- [x] Missing days show as gaps
+- [x] Summary calculations are accurate
+- [x] Empty state displays properly
+- [x] App builds without errors
