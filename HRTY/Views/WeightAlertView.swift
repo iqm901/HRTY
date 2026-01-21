@@ -75,13 +75,25 @@ struct WeightAlertView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 8))
         }
         .accessibilityLabel("Acknowledge alert")
-        .accessibilityHint("Marks this weight alert as reviewed")
+        .accessibilityHint("Marks this \(alertCategoryLabel) alert as reviewed")
     }
 
     // MARK: - Accessibility
 
+    /// Returns context-appropriate label based on alert type
+    private var alertCategoryLabel: String {
+        switch alert.alertType {
+        case .severeSymptom:
+            return "symptom"
+        case .weightGain24h, .weightGain7d:
+            return "weight"
+        case .heartRateLow, .heartRateHigh:
+            return "heart rate"
+        }
+    }
+
     private var accessibilityLabelText: String {
-        "Weight alert: \(alert.alertType.accessibilityDescription)"
+        "\(alertCategoryLabel.capitalized) alert: \(alert.alertType.accessibilityDescription)"
     }
 }
 
@@ -162,4 +174,18 @@ private extension Color {
     .padding()
     .background(Color(.systemGroupedBackground))
     .preferredColorScheme(.dark)
+}
+
+#Preview("Symptom Alert") {
+    VStack(spacing: 16) {
+        WeightAlertView(
+            alert: AlertEvent(
+                alertType: .severeSymptom,
+                message: "You've noted that shortness of breath at rest is bothering you more than usual today. This is helpful information to share with your care team when you get a chance."
+            ),
+            onDismiss: {}
+        )
+    }
+    .padding()
+    .background(Color(.systemGroupedBackground))
 }
