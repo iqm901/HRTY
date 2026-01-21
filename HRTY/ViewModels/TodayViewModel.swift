@@ -365,15 +365,18 @@ final class TodayViewModel {
 
     private func check7DayAlert(currentWeight: Double, context: ModelContext) {
         let calendar = Calendar.current
-        let today = Date()
+        let today = calendar.startOfDay(for: Date())
         guard let sevenDaysAgo = calendar.date(byAdding: .day, value: -7, to: today) else { return }
+        // Exclude today to ensure we compare against a historical baseline
+        guard let yesterday = calendar.date(byAdding: .day, value: -1, to: today) else { return }
 
-        let entries = DailyEntry.fetchForDateRange(from: sevenDaysAgo, to: today, in: context)
+        let entries = DailyEntry.fetchForDateRange(from: sevenDaysAgo, to: yesterday, in: context)
 
-        // Find the earliest entry with weight in the range
-        guard let earliestWeight = entries.first(where: { $0.weight != nil })?.weight else { return }
+        // Find the earliest entry with weight in the historical range (excluding today)
+        guard let baselineEntry = entries.first(where: { $0.weight != nil }),
+              let baselineWeight = baselineEntry.weight else { return }
 
-        let weightChange = currentWeight - earliestWeight
+        let weightChange = currentWeight - baselineWeight
 
         if weightChange >= Self.weightGain7dThreshold {
             // Check for existing alert of same type today
