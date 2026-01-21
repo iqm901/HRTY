@@ -27,6 +27,22 @@ struct TodayView: View {
                 viewModel.loadWeightAlerts(context: modelContext)
                 isWeightFieldFocused = true
             }
+            .onChange(of: viewModel.activeWeightAlerts.count) { oldCount, newCount in
+                // Announce new alerts to VoiceOver users
+                if newCount > oldCount {
+                    announceAlertForVoiceOver()
+                }
+            }
+        }
+    }
+
+    // MARK: - VoiceOver Support
+
+    private func announceAlertForVoiceOver() {
+        guard let firstAlert = viewModel.activeWeightAlerts.first else { return }
+        let announcement = "Weight alert: \(firstAlert.alertType.accessibilityDescription)"
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            UIAccessibility.post(notification: .announcement, argument: announcement)
         }
     }
 
