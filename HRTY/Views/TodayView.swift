@@ -44,7 +44,26 @@ struct TodayView: View {
                 }
             }
             .transition(.opacity.combined(with: .move(edge: .top)))
+        } else if viewModel.showAlertDismissedEncouragement {
+            alertDismissedEncouragement
+                .transition(.opacity.combined(with: .scale))
         }
+    }
+
+    private var alertDismissedEncouragement: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "heart.fill")
+                .foregroundStyle(.pink)
+            Text("Thanks for staying on top of your health!")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+        }
+        .padding()
+        .frame(maxWidth: .infinity)
+        .background(Color(.systemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Thanks for staying on top of your health")
     }
 
     // MARK: - Header Section

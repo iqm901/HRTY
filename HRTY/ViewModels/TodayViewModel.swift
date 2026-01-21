@@ -14,6 +14,7 @@ final class TodayViewModel {
 
     // MARK: - Weight Alert State
     var activeWeightAlerts: [AlertEvent] = []
+    var showAlertDismissedEncouragement: Bool = false
 
     // MARK: - Data State
     var todayEntry: DailyEntry?
@@ -444,6 +445,12 @@ final class TodayViewModel {
         do {
             try context.save()
             activeWeightAlerts.removeAll { $0.persistentModelID == alert.persistentModelID }
+
+            // Show brief encouragement message after dismissing alert
+            showAlertDismissedEncouragement = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) { [weak self] in
+                self?.showAlertDismissedEncouragement = false
+            }
         } catch {
             #if DEBUG
             print("Alert acknowledge error: \(error.localizedDescription)")
