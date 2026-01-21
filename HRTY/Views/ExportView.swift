@@ -46,7 +46,7 @@ struct ExportView: View {
             .navigationTitle("Export")
             .sheet(isPresented: $viewModel.showShareSheet) {
                 if let pdfData = viewModel.pdfData {
-                    ShareSheet(activityItems: [PDFDocument(data: pdfData)])
+                    ShareSheet(activityItems: [PDFShareItem(data: pdfData)])
                         .presentationDetents([.medium, .large])
                 }
             }
@@ -268,10 +268,11 @@ struct ShareSheet: UIViewControllerRepresentable {
     func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }
 
-// MARK: - PDF Document Wrapper
+// MARK: - PDF Share Item Wrapper
 
 /// Wrapper for PDF data that provides a proper filename for sharing
-class PDFDocument: NSObject {
+/// Named PDFShareItem to avoid conflict with PDFKit.PDFDocument
+class PDFShareItem: NSObject {
     let data: Data
     let filename: String
 
@@ -282,7 +283,7 @@ class PDFDocument: NSObject {
     }
 }
 
-extension PDFDocument: UIActivityItemSource {
+extension PDFShareItem: UIActivityItemSource {
     func activityViewControllerPlaceholderItem(_ activityViewController: UIActivityViewController) -> Any {
         return data
     }
