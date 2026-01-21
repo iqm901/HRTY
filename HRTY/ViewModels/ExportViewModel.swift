@@ -42,7 +42,10 @@ struct AlertEventData: Identifiable {
 final class ExportViewModel {
     // MARK: - Properties
 
-    var patientIdentifier: String = ""
+    /// Patient identifier from Settings (shared via @AppStorage)
+    @ObservationIgnored
+    @AppStorage("patientIdentifier") var patientIdentifier: String = ""
+
     var generationState: PDFGenerationState = .idle
     var showShareSheet: Bool = false
 
