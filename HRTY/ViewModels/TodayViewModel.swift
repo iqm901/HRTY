@@ -458,7 +458,7 @@ final class TodayViewModel {
                 }
             } else {
                 await MainActor.run {
-                    healthKitError = "No weight data found in Health. Make sure you have recorded your weight in the Health app."
+                    healthKitError = "No weight data found in Health yet. You can record your weight in the Health app, or simply enter it manually below."
                     isLoadingHealthKit = false
 
                     // Provide subtle haptic feedback for no data found
