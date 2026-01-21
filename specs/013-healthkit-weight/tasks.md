@@ -92,3 +92,4 @@ Quality improvements made during the multi-persona review cycle:
 | 10 | Project Manager | Verified all tasks/criteria complete, documented review history |
 | 11 | Business Analyst | Improved no-data message with warmer fallback guidance |
 | 12 | Code Reviewer | Static DateFormatter for yesterdayDateText in TodayViewModel |
+| 13 | System Architect | Extracted finishHealthKitImport helper to consolidate code |
