@@ -97,6 +97,7 @@ Quality improvements made during the multi-persona review cycle:
 | 15 | QA Engineer | Added test for generic error handling in HealthKit import |
 | 16 | Project Manager | Verified all acceptance criteria, tasks, build, and tests pass |
 | 17 | Business Analyst | Replaced technical error with patient-friendly message |
+| 18 | Code Reviewer | Fixed authorizationStatus to use internal tracking for read-only access |
 
 ## Acceptance Criteria Verification (Iteration 16)
 
