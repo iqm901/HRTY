@@ -8,15 +8,20 @@ struct HealthKitWeight {
     let weight: Double // in pounds
     let timestamp: Date
 
+    /// Static formatter for timestamp display (DateFormatter is expensive to create)
+    private static let timestampFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        formatter.timeStyle = .short
+        return formatter
+    }()
+
     var formattedWeight: String {
         String(format: "%.1f", weight)
     }
 
     var formattedTimestamp: String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .short
-        formatter.timeStyle = .short
-        return formatter.string(from: timestamp)
+        Self.timestampFormatter.string(from: timestamp)
     }
 }
 
