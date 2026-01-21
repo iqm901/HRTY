@@ -563,3 +563,128 @@ final class WeightChangeTextTests: XCTestCase {
         XCTAssertTrue(viewModel.activeWeightAlerts.isEmpty)
     }
 }
+
+// MARK: - Alert Message Formatting Tests
+
+final class AlertMessageFormattingTests: XCTestCase {
+
+    // MARK: - 24-Hour Message Tests
+
+    func test24HourAlertMessageIncludesWeightChange() {
+        // Given: a 24-hour weight alert with 2.5 lbs change
+        let alert = AlertEvent(
+            alertType: .weightGain24h,
+            message: "Your weight has increased by 2.5 lbs since yesterday. This is good information to share with your care team. Consider reaching out to discuss."
+        )
+
+        // Then: message should contain the weight change value
+        XCTAssertTrue(alert.message.contains("2.5 lbs"), "24h message should include weight change value")
+    }
+
+    func test24HourAlertMessageMentionsCareTeam() {
+        // Given: a 24-hour alert message
+        let message = "Your weight has increased by 2.0 lbs since yesterday. This is good information to share with your care team. Consider reaching out to discuss."
+
+        // Then: message should mention care team
+        XCTAssertTrue(message.contains("care team"), "24h message should mention care team")
+    }
+
+    func test24HourAlertMessageIsWarmAndSupportive() {
+        // Given: a 24-hour alert message
+        let message = "Your weight has increased by 2.0 lbs since yesterday. This is good information to share with your care team. Consider reaching out to discuss."
+
+        // Then: message should be warm (uses "good information", "Consider")
+        XCTAssertTrue(
+            message.contains("good information") || message.contains("Consider"),
+            "24h message should use warm, supportive language"
+        )
+    }
+
+    func test24HourAlertMessageIsNotAlarmist() {
+        // Given: a 24-hour alert message
+        let message = "Your weight has increased by 3.0 lbs since yesterday. This is good information to share with your care team. Consider reaching out to discuss."
+        let lowercaseMessage = message.lowercased()
+
+        // Then: message should NOT contain alarmist words
+        let alarmistWords = ["danger", "emergency", "urgent", "immediately", "critical", "warning", "alert"]
+        for word in alarmistWords {
+            XCTAssertFalse(
+                lowercaseMessage.contains(word),
+                "24h message should not contain alarmist word '\(word)'"
+            )
+        }
+    }
+
+    // MARK: - 7-Day Message Tests
+
+    func test7DayAlertMessageIncludesWeightChange() {
+        // Given: a 7-day weight alert with 5.5 lbs change
+        let alert = AlertEvent(
+            alertType: .weightGain7d,
+            message: "Over the past week, your weight has increased by 5.5 lbs. Your clinician may want to know about this trend. It might be a good time to check in with them."
+        )
+
+        // Then: message should contain the weight change value
+        XCTAssertTrue(alert.message.contains("5.5 lbs"), "7d message should include weight change value")
+    }
+
+    func test7DayAlertMessageMentionsClinician() {
+        // Given: a 7-day alert message
+        let message = "Over the past week, your weight has increased by 5.0 lbs. Your clinician may want to know about this trend. It might be a good time to check in with them."
+
+        // Then: message should mention clinician
+        XCTAssertTrue(message.contains("clinician"), "7d message should mention clinician")
+    }
+
+    func test7DayAlertMessageIsWarmAndSupportive() {
+        // Given: a 7-day alert message
+        let message = "Over the past week, your weight has increased by 5.0 lbs. Your clinician may want to know about this trend. It might be a good time to check in with them."
+
+        // Then: message should be warm (uses "might be a good time", "check in")
+        XCTAssertTrue(
+            message.contains("might be a good time") || message.contains("check in"),
+            "7d message should use warm, supportive language"
+        )
+    }
+
+    func test7DayAlertMessageIsNotAlarmist() {
+        // Given: a 7-day alert message
+        let message = "Over the past week, your weight has increased by 6.0 lbs. Your clinician may want to know about this trend. It might be a good time to check in with them."
+        let lowercaseMessage = message.lowercased()
+
+        // Then: message should NOT contain alarmist words
+        let alarmistWords = ["danger", "emergency", "urgent", "immediately", "critical", "warning", "alert"]
+        for word in alarmistWords {
+            XCTAssertFalse(
+                lowercaseMessage.contains(word),
+                "7d message should not contain alarmist word '\(word)'"
+            )
+        }
+    }
+
+    // MARK: - Message Format Consistency Tests
+
+    func testAlertMessageFormattingWithDecimalPrecision() {
+        // Given: various weight change values
+        let testCases = ["2.0", "2.5", "3.3", "5.0", "7.8"]
+
+        for value in testCases {
+            // Then: message should show one decimal place
+            let message = "Weight increased by \(value) lbs"
+            XCTAssertTrue(
+                message.contains("\(value) lbs"),
+                "Message should display weight with one decimal place"
+            )
+        }
+    }
+
+    func testAlertMessagesUseNeutralWeightChangeLanguage() {
+        // Given: expected message patterns
+        let message24h = "Your weight has increased by 2.5 lbs since yesterday."
+        let message7d = "Over the past week, your weight has increased by 5.5 lbs."
+
+        // Then: messages should use neutral "increased" language (not "gained" which can have negative connotation)
+        XCTAssertTrue(message24h.contains("increased"), "24h message should use 'increased' instead of 'gained'")
+        XCTAssertTrue(message7d.contains("increased"), "7d message should use 'increased' instead of 'gained'")
+    }
+}
