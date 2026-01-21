@@ -50,11 +50,11 @@ final class TodayViewModel {
         let formattedChange = String(format: "%.1f", absChange)
 
         if change > 0.05 {
-            return "You're \(formattedChange) lbs heavier than yesterday"
+            return "Your weight is up \(formattedChange) lbs from yesterday"
         } else if change < -0.05 {
-            return "You're \(formattedChange) lbs lighter than yesterday"
+            return "Your weight is down \(formattedChange) lbs from yesterday"
         } else {
-            return "Your weight is the same as yesterday"
+            return "Your weight is stable from yesterday"
         }
     }
 
