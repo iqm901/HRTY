@@ -50,6 +50,7 @@
 		B1000001200000010000000200000006 /* TrendsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000002200000010000000200000006 /* TrendsViewModelTests.swift */; };
 		B1000001200000010000000200000007 /* ExportViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000002200000010000000200000007 /* ExportViewModelTests.swift */; };
 		B1000001200000010000000200000008 /* SettingsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000002200000010000000200000008 /* SettingsViewModelTests.swift */; };
+		B1000001200000010000000200000009 /* HealthKitServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000002200000010000000200000009 /* HealthKitServiceTests.swift */; };
 		A100000120000001000000010000002A /* TrendDataPoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000220000001000000010000002A /* TrendDataPoints.swift */; };
 		A100000120000001000000010000002B /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000220000001000000010000002B /* SettingsViewModel.swift */; };
 		A100000120000001000000010000002C /* AppStorageKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000220000001000000010000002C /* AppStorageKeys.swift */; };
@@ -112,6 +113,7 @@
 		B1000002200000010000000200000006 /* TrendsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendsViewModelTests.swift; sourceTree = "<group>"; };
 		B1000002200000010000000200000007 /* ExportViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportViewModelTests.swift; sourceTree = "<group>"; };
 		B1000002200000010000000200000008 /* SettingsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModelTests.swift; sourceTree = "<group>"; };
+		B1000002200000010000000200000009 /* HealthKitServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitServiceTests.swift; sourceTree = "<group>"; };
 		A100000220000001000000010000002A /* TrendDataPoints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendDataPoints.swift; sourceTree = "<group>"; };
 		A100000220000001000000010000002B /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 		A100000220000001000000010000002C /* AppStorageKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStorageKeys.swift; sourceTree = "<group>"; };
@@ -257,6 +259,7 @@
 				B1000002200000010000000200000006 /* TrendsViewModelTests.swift */,
 				B1000002200000010000000200000007 /* ExportViewModelTests.swift */,
 				B1000002200000010000000200000008 /* SettingsViewModelTests.swift */,
+				B1000002200000010000000200000009 /* HealthKitServiceTests.swift */,
 			);
 			path = HRTYTests;
 			sourceTree = "<group>";
@@ -413,6 +416,7 @@
 				B1000001200000010000000200000006 /* TrendsViewModelTests.swift in Sources */,
 				B1000001200000010000000200000007 /* ExportViewModelTests.swift in Sources */,
 				B1000001200000010000000200000008 /* SettingsViewModelTests.swift in Sources */,
+				B1000001200000010000000200000009 /* HealthKitServiceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
