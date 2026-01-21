@@ -20,6 +20,9 @@ struct TrendsView: View {
                             emptyWeightStateView
                         }
 
+                        // Heart rate trends section
+                        heartRateSection
+
                         // Symptom trends section
                         symptomSection
                     }
@@ -27,8 +30,8 @@ struct TrendsView: View {
                 .padding()
             }
             .navigationTitle("Trends")
-            .onAppear {
-                viewModel.loadAllTrendData(context: modelContext)
+            .task {
+                await viewModel.loadAllTrendDataWithHeartRate(context: modelContext)
             }
         }
     }
@@ -126,6 +129,165 @@ struct TrendsView: View {
                     .accessibilityLabel("stable")
             }
         }
+    }
+
+    // MARK: - Heart Rate Section
+
+    @ViewBuilder
+    private var heartRateSection: some View {
+        // Only show if HealthKit is available
+        if viewModel.healthKitAvailable {
+            VStack(alignment: .leading, spacing: 16) {
+                // Section header
+                HStack {
+                    Image(systemName: "heart.fill")
+                        .foregroundStyle(.red)
+                    Text("Resting Heart Rate")
+                        .font(.title2)
+                        .fontWeight(.semibold)
+                }
+                .accessibilityAddTraits(.isHeader)
+
+                if viewModel.isLoadingHeartRate {
+                    HStack {
+                        ProgressView()
+                            .scaleEffect(0.8)
+                        Text("Loading heart rate data...")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(.vertical, 12)
+                } else if viewModel.hasHeartRateData {
+                    // Summary card
+                    heartRateSummaryCard
+
+                    // Alert legend (if there are alert days)
+                    if !viewModel.heartRateAlertDates.isEmpty {
+                        heartRateAlertLegend
+                    }
+
+                    // Chart
+                    HeartRateTrendChart(
+                        heartRateEntries: viewModel.heartRateEntries,
+                        alertDates: viewModel.heartRateAlertDates
+                    )
+                    .accessibilityLabel(viewModel.heartRateAccessibilitySummary)
+
+                    // Date range
+                    Text(viewModel.dateRangeText)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                } else {
+                    emptyHeartRateStateView
+                }
+            }
+        }
+    }
+
+    private var heartRateSummaryCard: some View {
+        HStack(spacing: 20) {
+            // Current heart rate
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Latest")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+
+                if let hr = viewModel.formattedCurrentHeartRate {
+                    Text(hr)
+                        .font(.title)
+                        .fontWeight(.bold)
+                } else {
+                    Text("--")
+                        .font(.title)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .accessibilityElement(children: .combine)
+
+            Divider()
+                .frame(height: 44)
+
+            // Average
+            VStack(alignment: .leading, spacing: 4) {
+                Text("30-Day Avg")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+
+                if let avg = viewModel.formattedAverageHeartRate {
+                    Text(avg)
+                        .font(.title3)
+                        .fontWeight(.semibold)
+                } else {
+                    Text("--")
+                        .font(.title3)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .accessibilityElement(children: .combine)
+
+            Divider()
+                .frame(height: 44)
+
+            // Range
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Range")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+
+                if let range = viewModel.formattedHeartRateRange {
+                    Text(range)
+                        .font(.title3)
+                        .fontWeight(.semibold)
+                } else {
+                    Text("--")
+                        .font(.title3)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .accessibilityElement(children: .combine)
+
+            Spacer()
+        }
+        .padding()
+        .background(Color(.secondarySystemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+    }
+
+    private var heartRateAlertLegend: some View {
+        HStack(spacing: 4) {
+            RoundedRectangle(cornerRadius: 2)
+                .fill(Color.red.opacity(0.2))
+                .frame(width: 16, height: 12)
+            Text("Days with heart rate values that may need attention")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Highlighted days show heart rate values that may need attention")
+    }
+
+    private var emptyHeartRateStateView: some View {
+        VStack(spacing: 12) {
+            Image(systemName: "heart.slash")
+                .font(.system(size: 32))
+                .foregroundStyle(.secondary)
+
+            Text("No Heart Rate Data Yet")
+                .font(.headline)
+
+            Text("Heart rate data from Apple Health will appear here when available.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 24)
+        .background(Color(.secondarySystemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("No heart rate data yet. Heart rate data from Apple Health will appear here when available.")
     }
 
     // MARK: - Symptom Section

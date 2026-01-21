@@ -13,6 +13,21 @@ final class TrendsViewModel {
     var symptomToggleStates: [SymptomType: Bool] = [:]
     var alertDates: Set<Date> = []
 
+    // MARK: - Heart Rate Data
+    var heartRateEntries: [HeartRateDataPoint] = []
+    var heartRateAlertDates: Set<Date> = []
+    var isLoadingHeartRate: Bool = false
+    var healthKitAvailable: Bool = false
+
+    // MARK: - Services
+    private let healthKitService: HealthKitServiceProtocol
+
+    // MARK: - Initialization
+    init(healthKitService: HealthKitServiceProtocol = HealthKitService()) {
+        self.healthKitService = healthKitService
+        self.healthKitAvailable = healthKitService.isAvailable
+    }
+
     // MARK: - Computed Properties
 
     /// The most recent weight entry
@@ -296,5 +311,148 @@ final class TrendsViewModel {
         case .reducedUrineOutput:
             return .teal
         }
+    }
+
+    // MARK: - Heart Rate Computed Properties
+
+    /// Whether there is heart rate data to display
+    var hasHeartRateData: Bool {
+        !heartRateEntries.isEmpty
+    }
+
+    /// Number of days with heart rate data
+    var daysWithHeartRateData: Int {
+        heartRateEntries.count
+    }
+
+    /// The most recent heart rate entry
+    var currentHeartRate: Int? {
+        heartRateEntries.last?.heartRate
+    }
+
+    /// The earliest heart rate in the 30-day range
+    var startingHeartRate: Int? {
+        heartRateEntries.first?.heartRate
+    }
+
+    /// Average heart rate over the period
+    var averageHeartRate: Int? {
+        guard !heartRateEntries.isEmpty else { return nil }
+        let sum = heartRateEntries.reduce(0) { $0 + $1.heartRate }
+        return sum / heartRateEntries.count
+    }
+
+    /// Heart rate range (min to max) over the period
+    var heartRateRange: (min: Int, max: Int)? {
+        guard !heartRateEntries.isEmpty else { return nil }
+        let heartRates = heartRateEntries.map { $0.heartRate }
+        guard let min = heartRates.min(), let max = heartRates.max() else { return nil }
+        return (min, max)
+    }
+
+    /// Formatted current heart rate for display
+    var formattedCurrentHeartRate: String? {
+        guard let hr = currentHeartRate else { return nil }
+        return "\(hr) bpm"
+    }
+
+    /// Formatted average heart rate for display
+    var formattedAverageHeartRate: String? {
+        guard let avg = averageHeartRate else { return nil }
+        return "\(avg) bpm"
+    }
+
+    /// Formatted heart rate range for display
+    var formattedHeartRateRange: String? {
+        guard let range = heartRateRange else { return nil }
+        return "\(range.min)-\(range.max) bpm"
+    }
+
+    // MARK: - Heart Rate Data Loading
+
+    /// Load heart rate data for the past 30 days from HealthKit
+    func loadHeartRateData() async {
+        guard healthKitAvailable else { return }
+
+        isLoadingHeartRate = true
+
+        // Request authorization
+        let authorized = await healthKitService.requestAuthorization()
+        guard authorized else {
+            isLoadingHeartRate = false
+            return
+        }
+
+        // Fetch heart rate history
+        let readings = await healthKitService.fetchHeartRateHistory(days: 30)
+
+        // Group by day and get daily averages (one reading per day for the chart)
+        var dailyReadings: [Date: [HeartRateReading]] = [:]
+        for reading in readings {
+            let day = Calendar.current.startOfDay(for: reading.date)
+            dailyReadings[day, default: []].append(reading)
+        }
+
+        // Convert to HeartRateDataPoints with daily averages
+        var dataPoints: [HeartRateDataPoint] = []
+        var alertDateSet: Set<Date> = []
+
+        for (day, dayReadings) in dailyReadings {
+            let avgHeartRate = dayReadings.reduce(0) { $0 + $1.heartRate } / dayReadings.count
+            let hasAlert = avgHeartRate < AlertConstants.heartRateLowThreshold ||
+                           avgHeartRate > AlertConstants.heartRateHighThreshold
+
+            if hasAlert {
+                alertDateSet.insert(day)
+            }
+
+            dataPoints.append(HeartRateDataPoint(
+                date: day,
+                heartRate: avgHeartRate,
+                hasAlert: hasAlert
+            ))
+        }
+
+        heartRateEntries = dataPoints.sorted { $0.date < $1.date }
+        heartRateAlertDates = alertDateSet
+
+        isLoadingHeartRate = false
+    }
+
+    /// Load all trend data including heart rate
+    func loadAllTrendDataWithHeartRate(context: ModelContext) async {
+        isLoading = true
+        loadWeightData(context: context)
+        loadSymptomData(context: context)
+        await loadHeartRateData()
+        isLoading = false
+    }
+
+    // MARK: - Heart Rate Accessibility
+
+    /// Accessibility summary for heart rate trends
+    var heartRateAccessibilitySummary: String {
+        guard hasHeartRateData else {
+            return "No heart rate data recorded in the past 30 days"
+        }
+
+        var summary = "Heart rate chart showing \(daysWithHeartRateData) days of data. "
+
+        if let current = formattedCurrentHeartRate {
+            summary += "Most recent: \(current). "
+        }
+
+        if let avg = formattedAverageHeartRate {
+            summary += "30-day average: \(avg). "
+        }
+
+        let alertCount = heartRateAlertDates.count
+        if alertCount > 0 {
+            summary += "\(alertCount) day\(alertCount == 1 ? "" : "s") with heart rate values that may need attention."
+        } else {
+            summary += "No heart rate alerts in this period."
+        }
+
+        return summary
     }
 }

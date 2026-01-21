@@ -10,8 +10,9 @@ struct TodayView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 24) {
-                    weightAlertsSection
+                    alertsSection
                     headerSection
+                    heartRateSection
                     weightEntrySection
                     symptomsSection
                     diureticSection
@@ -26,7 +27,11 @@ struct TodayView: View {
                 viewModel.loadDiuretics(context: modelContext)
                 viewModel.loadWeightAlerts(context: modelContext)
                 viewModel.loadSymptomAlerts(context: modelContext)
+                viewModel.loadHeartRateAlerts(context: modelContext)
                 isWeightFieldFocused = true
+            }
+            .task {
+                await viewModel.loadHeartRateData(context: modelContext)
             }
             .onChange(of: viewModel.activeWeightAlerts.count) { oldCount, newCount in
                 // Announce new alerts to VoiceOver users
@@ -38,6 +43,12 @@ struct TodayView: View {
                 // Announce new symptom alerts to VoiceOver users
                 if newCount > oldCount {
                     announceSymptomAlertForVoiceOver()
+                }
+            }
+            .onChange(of: viewModel.activeHeartRateAlerts.count) { oldCount, newCount in
+                // Announce new heart rate alerts to VoiceOver users
+                if newCount > oldCount {
+                    announceHeartRateAlertForVoiceOver()
                 }
             }
         }
@@ -61,13 +72,42 @@ struct TodayView: View {
         }
     }
 
+    private func announceHeartRateAlertForVoiceOver() {
+        guard let firstAlert = viewModel.activeHeartRateAlerts.first else { return }
+        let announcement = "Heart rate alert: \(firstAlert.alertType.accessibilityDescription)"
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            UIAccessibility.post(notification: .announcement, argument: announcement)
+        }
+    }
+
+    // MARK: - Heart Rate Section
+    private var heartRateSection: some View {
+        HeartRateSectionView(
+            heartRate: viewModel.formattedHeartRate,
+            timestamp: viewModel.heartRateTimestamp,
+            isLoading: viewModel.isLoadingHeartRate,
+            isAvailable: viewModel.healthKitAvailable
+        )
+    }
+
     // MARK: - Alerts Section
     @ViewBuilder
-    private var weightAlertsSection: some View {
-        let hasAlerts = !viewModel.activeWeightAlerts.isEmpty || !viewModel.activeSymptomAlerts.isEmpty
+    private var alertsSection: some View {
+        let hasAlerts = !viewModel.activeWeightAlerts.isEmpty ||
+                        !viewModel.activeSymptomAlerts.isEmpty ||
+                        !viewModel.activeHeartRateAlerts.isEmpty
 
         if hasAlerts {
             VStack(spacing: 12) {
+                // Heart rate alerts
+                ForEach(viewModel.activeHeartRateAlerts, id: \.persistentModelID) { alert in
+                    WeightAlertView(alert: alert) {
+                        withAnimation(.easeInOut(duration: 0.3)) {
+                            viewModel.acknowledgeAlert(alert, context: modelContext)
+                        }
+                    }
+                }
+
                 // Weight alerts
                 ForEach(viewModel.activeWeightAlerts, id: \.persistentModelID) { alert in
                     WeightAlertView(alert: alert) {

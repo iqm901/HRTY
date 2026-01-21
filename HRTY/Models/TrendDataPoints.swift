@@ -17,3 +17,12 @@ struct SymptomDataPoint: Identifiable, Equatable {
 
     var id: String { "\(date.timeIntervalSince1970)-\(symptomType.rawValue)" }
 }
+
+/// Data point for heart rate trend chart visualization and export
+struct HeartRateDataPoint: Identifiable, Equatable {
+    let date: Date
+    let heartRate: Int
+    let hasAlert: Bool
+
+    var id: Date { date }
+}

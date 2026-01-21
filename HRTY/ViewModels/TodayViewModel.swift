@@ -19,6 +19,12 @@ final class TodayViewModel {
     // MARK: - Symptom Alert State
     var activeSymptomAlerts: [AlertEvent] = []
 
+    // MARK: - Heart Rate State
+    var activeHeartRateAlerts: [AlertEvent] = []
+    var latestHeartRate: HeartRateReading?
+    var isLoadingHeartRate: Bool = false
+    var healthKitAvailable: Bool = false
+
     // MARK: - Data State
     var todayEntry: DailyEntry?
     var yesterdayEntry: DailyEntry?
@@ -26,14 +32,21 @@ final class TodayViewModel {
     // MARK: - Services
     private let weightAlertService: WeightAlertServiceProtocol
     private let symptomAlertService: SymptomAlertServiceProtocol
+    private let heartRateAlertService: HeartRateAlertServiceProtocol
+    private let healthKitService: HealthKitServiceProtocol
 
     // MARK: - Initialization
     init(
         weightAlertService: WeightAlertServiceProtocol = WeightAlertService(),
-        symptomAlertService: SymptomAlertServiceProtocol = SymptomAlertService()
+        symptomAlertService: SymptomAlertServiceProtocol = SymptomAlertService(),
+        heartRateAlertService: HeartRateAlertServiceProtocol = HeartRateAlertService(),
+        healthKitService: HealthKitServiceProtocol = HealthKitService()
     ) {
         self.weightAlertService = weightAlertService
         self.symptomAlertService = symptomAlertService
+        self.heartRateAlertService = heartRateAlertService
+        self.healthKitService = healthKitService
+        self.healthKitAvailable = healthKitService.isAvailable
     }
 
     // MARK: - Validation Constants (reference AlertConstants for thresholds)
@@ -370,21 +383,27 @@ final class TodayViewModel {
         loadWeightAlerts(context: context)
     }
 
-    /// Acknowledge (dismiss) an alert (works for both weight and symptom alerts)
+    /// Acknowledge (dismiss) an alert (works for weight, symptom, and heart rate alerts)
     func acknowledgeAlert(_ alert: AlertEvent, context: ModelContext) {
         // Use the appropriate service based on alert type
         let success: Bool
-        if alert.alertType == .severeSymptom {
+        switch alert.alertType {
+        case .severeSymptom:
             success = symptomAlertService.acknowledgeAlert(alert, context: context)
-        } else {
+        case .heartRateLow, .heartRateHigh:
+            success = heartRateAlertService.acknowledgeAlert(alert, context: context)
+        default:
             success = weightAlertService.acknowledgeAlert(alert, context: context)
         }
 
         if success {
             // Remove from the appropriate list
-            if alert.alertType == .severeSymptom {
+            switch alert.alertType {
+            case .severeSymptom:
                 activeSymptomAlerts.removeAll { $0.persistentModelID == alert.persistentModelID }
-            } else {
+            case .heartRateLow, .heartRateHigh:
+                activeHeartRateAlerts.removeAll { $0.persistentModelID == alert.persistentModelID }
+            default:
                 activeWeightAlerts.removeAll { $0.persistentModelID == alert.persistentModelID }
             }
 
@@ -394,5 +413,66 @@ final class TodayViewModel {
                 self?.showAlertDismissedEncouragement = false
             }
         }
+    }
+
+    // MARK: - Heart Rate Methods
+
+    /// Formatted heart rate text for display
+    var formattedHeartRate: String? {
+        guard let reading = latestHeartRate else { return nil }
+        return "\(reading.heartRate) bpm"
+    }
+
+    /// Formatted timestamp for heart rate reading
+    var heartRateTimestamp: String? {
+        guard let reading = latestHeartRate else { return nil }
+        let formatter = RelativeDateTimeFormatter()
+        formatter.unitsStyle = .full
+        return formatter.localizedString(for: reading.date, relativeTo: Date())
+    }
+
+    /// Request HealthKit authorization and load heart rate data
+    func loadHeartRateData(context: ModelContext) async {
+        guard healthKitAvailable else { return }
+
+        isLoadingHeartRate = true
+
+        // Request authorization
+        let authorized = await healthKitService.requestAuthorization()
+        guard authorized else {
+            isLoadingHeartRate = false
+            return
+        }
+
+        // Fetch latest heart rate
+        latestHeartRate = await healthKitService.fetchLatestRestingHeartRate()
+
+        // Check for persistent abnormal heart rate and create alerts if needed
+        await checkHeartRateAlerts(context: context)
+
+        isLoadingHeartRate = false
+    }
+
+    /// Load unacknowledged heart rate alerts for display
+    func loadHeartRateAlerts(context: ModelContext) {
+        activeHeartRateAlerts = heartRateAlertService.loadUnacknowledgedHeartRateAlerts(context: context)
+    }
+
+    /// Check for persistent abnormal heart rate and create alerts if needed
+    func checkHeartRateAlerts(context: ModelContext) async {
+        let result = await healthKitService.checkForPersistentAbnormalHeartRate()
+
+        if result.isAbnormal {
+            heartRateAlertService.checkHeartRateAlerts(
+                readings: result.readings,
+                isAbnormal: result.isAbnormal,
+                isLow: result.isLow,
+                todayEntry: todayEntry,
+                context: context
+            )
+        }
+
+        // Reload alerts to show any new ones
+        loadHeartRateAlerts(context: context)
     }
 }
