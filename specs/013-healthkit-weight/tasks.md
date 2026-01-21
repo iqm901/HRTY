@@ -98,6 +98,7 @@ Quality improvements made during the multi-persona review cycle:
 | 16 | Project Manager | Verified all acceptance criteria, tasks, build, and tests pass |
 | 17 | Business Analyst | Replaced technical error with patient-friendly message |
 | 18 | Code Reviewer | Fixed authorizationStatus to use internal tracking for read-only access |
+| 19 | System Architect | Extracted executeWeightQuery helper for better maintainability |
 
 ## Acceptance Criteria Verification (Iteration 16)
 
