@@ -35,10 +35,10 @@ As a user, I want to configure basic app settings so I can personalize my experi
 - Data stays on patient's device
 
 ## Acceptance Criteria
-- [ ] Setting for daily reminder notification time
-- [ ] Setting for patient name/identifier (optional, for PDF)
-- [ ] About section with version info
-- [ ] Privacy information explaining on-device storage
+- [x] Setting for daily reminder notification time
+- [x] Setting for patient name/identifier (optional, for PDF)
+- [x] About section with version info
+- [x] Privacy information explaining on-device storage
 
 ## UI/UX Notes
 - Standard iOS Settings-style list
