@@ -19,7 +19,7 @@ struct SettingsView: View {
 
     private var reminderSection: some View {
         Section {
-            Toggle("Daily Reminder", isOn: $viewModel.reminderEnabled)
+            Toggle("Daily Reminder", isOn: $viewModel.reminderEnabled.animation(.easeInOut(duration: 0.2)))
                 .accessibilityLabel("Daily reminder")
                 .accessibilityHint("Toggle to enable or disable daily check-in reminders")
 
@@ -34,6 +34,7 @@ struct SettingsView: View {
                 )
                 .accessibilityLabel("Reminder time")
                 .accessibilityHint("Select the time for your daily reminder")
+                .transition(.opacity.combined(with: .move(edge: .top)))
             }
         } header: {
             Text("Reminders")
