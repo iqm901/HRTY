@@ -2,24 +2,6 @@ import Foundation
 import SwiftData
 import SwiftUI
 
-/// Data point for weight chart visualization
-struct WeightDataPoint: Identifiable, Equatable {
-    let date: Date
-    let weight: Double
-
-    var id: Date { date }
-}
-
-/// Data point for symptom trend chart visualization
-struct SymptomDataPoint: Identifiable, Equatable {
-    let date: Date
-    let symptomType: SymptomType
-    let severity: Int
-    let hasAlert: Bool
-
-    var id: String { "\(date.timeIntervalSince1970)-\(symptomType.rawValue)" }
-}
-
 @Observable
 final class TrendsViewModel {
     // MARK: - Weight Data
