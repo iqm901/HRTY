@@ -37,3 +37,4 @@
 - [x] Summary calculations are accurate
 - [x] Empty state displays properly
 - [x] App builds without errors
+- [x] Unit tests for TrendsViewModel (added by QA Engineer - iteration 3)
