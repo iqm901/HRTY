@@ -5,12 +5,12 @@ struct WeightChartView: View {
     let weightEntries: [WeightDataPoint]
 
     private var minWeight: Double {
-        let min = weightEntries.map(\.weight).min() ?? 0
+        guard let min = weightEntries.map(\.weight).min() else { return 0 }
         return max(0, min - 5) // 5 lb padding below
     }
 
     private var maxWeight: Double {
-        let max = weightEntries.map(\.weight).max() ?? 200
+        guard let max = weightEntries.map(\.weight).max() else { return 200 }
         return max + 5 // 5 lb padding above
     }
 
@@ -21,6 +21,25 @@ struct WeightChartView: View {
     }
 
     var body: some View {
+        if weightEntries.isEmpty {
+            emptyChartPlaceholder
+        } else {
+            chartContent
+        }
+    }
+
+    private var emptyChartPlaceholder: some View {
+        RoundedRectangle(cornerRadius: 8)
+            .fill(Color(.secondarySystemBackground))
+            .frame(height: 220)
+            .overlay {
+                Text("No data to display")
+                    .foregroundStyle(.secondary)
+            }
+            .accessibilityLabel("Weight chart with no data")
+    }
+
+    private var chartContent: some View {
         Chart {
             ForEach(weightEntries) { entry in
                 // Gradient area fill under the line
@@ -75,6 +94,12 @@ struct WeightChartView: View {
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Weight trend chart")
         .accessibilityHint("Shows your weight measurements over the past 30 days")
+    }
+}
+
+extension WeightChartView {
+    var hasData: Bool {
+        !weightEntries.isEmpty
     }
 }
 
