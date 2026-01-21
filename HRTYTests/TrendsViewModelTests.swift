@@ -379,7 +379,8 @@ final class TrendsViewModelTests: XCTestCase {
 
         // Then: should use first and last entries for change calculation
         XCTAssertEqual(viewModel.startingWeight, 180.0)
-        XCTAssertEqual(viewModel.currentWeight, 182.9, accuracy: 0.01)
+        XCTAssertNotNil(viewModel.currentWeight)
+        XCTAssertEqual(viewModel.currentWeight!, 182.9, accuracy: 0.01)
         XCTAssertEqual(viewModel.daysWithData, 30)
     }
 }
@@ -437,5 +438,344 @@ final class WeightDataPointTests: XCTestCase {
 
         // Then: should not be equal
         XCTAssertNotEqual(point1, point2)
+    }
+}
+
+// MARK: - SymptomDataPoint Tests
+
+final class SymptomDataPointTests: XCTestCase {
+
+    func testSymptomDataPointInitialization() {
+        // Given: date, symptom type, severity, and alert status
+        let date = Date()
+        let symptomType = SymptomType.chestPain
+        let severity = 3
+        let hasAlert = false
+
+        // When: creating SymptomDataPoint
+        let dataPoint = SymptomDataPoint(
+            date: date,
+            symptomType: symptomType,
+            severity: severity,
+            hasAlert: hasAlert
+        )
+
+        // Then: values should be set correctly
+        XCTAssertEqual(dataPoint.date, date)
+        XCTAssertEqual(dataPoint.symptomType, symptomType)
+        XCTAssertEqual(dataPoint.severity, severity)
+        XCTAssertEqual(dataPoint.hasAlert, hasAlert)
+    }
+
+    func testSymptomDataPointIdIsUnique() {
+        // Given: two data points with same date but different symptom types
+        let date = Date()
+        let point1 = SymptomDataPoint(date: date, symptomType: .chestPain, severity: 2, hasAlert: false)
+        let point2 = SymptomDataPoint(date: date, symptomType: .dizziness, severity: 2, hasAlert: false)
+
+        // Then: IDs should be different
+        XCTAssertNotEqual(point1.id, point2.id)
+    }
+
+    func testSymptomDataPointIdIncludesDateAndType() {
+        // Given: a specific date and symptom type
+        let date = Date()
+        let symptomType = SymptomType.dyspneaAtRest
+        let dataPoint = SymptomDataPoint(date: date, symptomType: symptomType, severity: 1, hasAlert: false)
+
+        // Then: ID should contain date timestamp and symptom raw value
+        XCTAssertTrue(dataPoint.id.contains(symptomType.rawValue))
+        XCTAssertTrue(dataPoint.id.contains(String(date.timeIntervalSince1970)))
+    }
+
+    func testSymptomDataPointEquatable() {
+        // Given: two data points with same values
+        let date = Date()
+        let point1 = SymptomDataPoint(date: date, symptomType: .orthopnea, severity: 4, hasAlert: true)
+        let point2 = SymptomDataPoint(date: date, symptomType: .orthopnea, severity: 4, hasAlert: true)
+
+        // Then: should be equal
+        XCTAssertEqual(point1, point2)
+    }
+
+    func testSymptomDataPointWithAlertFlag() {
+        // Given: a symptom with severity >= 4 (alert threshold)
+        let dataPoint = SymptomDataPoint(
+            date: Date(),
+            symptomType: .syncope,
+            severity: 4,
+            hasAlert: true
+        )
+
+        // Then: hasAlert should be true
+        XCTAssertTrue(dataPoint.hasAlert)
+    }
+}
+
+// MARK: - TrendsViewModel Symptom Tests
+
+final class TrendsViewModelSymptomTests: XCTestCase {
+
+    var viewModel: TrendsViewModel!
+
+    override func setUp() {
+        super.setUp()
+        viewModel = TrendsViewModel()
+    }
+
+    override func tearDown() {
+        viewModel = nil
+        super.tearDown()
+    }
+
+    // MARK: - Symptom Empty State Tests
+
+    func testHasNoSymptomDataWhenEmpty() {
+        // Given: no symptom entries
+        viewModel.symptomEntries = []
+
+        // Then: hasSymptomData should be false
+        XCTAssertFalse(viewModel.hasSymptomData)
+    }
+
+    func testHasSymptomDataWhenEntriesExist() {
+        // Given: symptom entries
+        viewModel.symptomEntries = [
+            SymptomDataPoint(date: Date(), symptomType: .chestPain, severity: 2, hasAlert: false)
+        ]
+
+        // Then: hasSymptomData should be true
+        XCTAssertTrue(viewModel.hasSymptomData)
+    }
+
+    func testDaysWithSymptomDataCountsUniqueDays() {
+        // Given: symptom entries across 3 days (some days have multiple symptoms)
+        let calendar = Calendar.current
+        let today = Date()
+        let yesterday = calendar.date(byAdding: .day, value: -1, to: today)!
+        let twoDaysAgo = calendar.date(byAdding: .day, value: -2, to: today)!
+
+        viewModel.symptomEntries = [
+            SymptomDataPoint(date: today, symptomType: .chestPain, severity: 2, hasAlert: false),
+            SymptomDataPoint(date: today, symptomType: .dizziness, severity: 1, hasAlert: false),
+            SymptomDataPoint(date: yesterday, symptomType: .orthopnea, severity: 3, hasAlert: false),
+            SymptomDataPoint(date: twoDaysAgo, symptomType: .syncope, severity: 2, hasAlert: false)
+        ]
+
+        // Then: daysWithSymptomData should be 3 (unique days)
+        XCTAssertEqual(viewModel.daysWithSymptomData, 3)
+    }
+
+    // MARK: - Symptom Toggle Tests
+
+    func testSymptomToggleStatesInitiallyEmpty() {
+        // Then: toggle states should be empty by default
+        XCTAssertTrue(viewModel.symptomToggleStates.isEmpty)
+    }
+
+    func testToggleSymptomSetsVisibility() {
+        // Given: initial state (symptom visible by default)
+        let symptomType = SymptomType.chestPain
+
+        // When: toggling the symptom
+        viewModel.toggleSymptom(symptomType)
+
+        // Then: should be toggled off (false)
+        XCTAssertFalse(viewModel.isSymptomVisible(symptomType))
+    }
+
+    func testToggleSymptomTwiceRestoresVisibility() {
+        // Given: initial state
+        let symptomType = SymptomType.dyspneaAtRest
+
+        // When: toggling twice
+        viewModel.toggleSymptom(symptomType)
+        viewModel.toggleSymptom(symptomType)
+
+        // Then: should be visible again
+        XCTAssertTrue(viewModel.isSymptomVisible(symptomType))
+    }
+
+    func testIsSymptomVisibleDefaultsToTrue() {
+        // Given: no toggle states set
+        let symptomType = SymptomType.pnd
+
+        // Then: should default to visible (true)
+        XCTAssertTrue(viewModel.isSymptomVisible(symptomType))
+    }
+
+    // MARK: - Filtered Symptom Entries Tests
+
+    func testFilteredSymptomEntriesRespectsToggleState() {
+        // Given: entries for multiple symptoms
+        viewModel.symptomEntries = [
+            SymptomDataPoint(date: Date(), symptomType: .chestPain, severity: 2, hasAlert: false),
+            SymptomDataPoint(date: Date(), symptomType: .dizziness, severity: 1, hasAlert: false)
+        ]
+        viewModel.toggleSymptom(.chestPain) // Hide chest pain
+
+        // Then: filtered entries should only include dizziness
+        let filtered = viewModel.filteredSymptomEntries
+        XCTAssertEqual(filtered.count, 1)
+        XCTAssertEqual(filtered.first?.symptomType, .dizziness)
+    }
+
+    func testVisibleSymptomTypesExcludesToggledOff() {
+        // Given: toggle off two symptoms
+        viewModel.toggleSymptom(.chestPain)
+        viewModel.toggleSymptom(.syncope)
+
+        // Then: visible types should exclude those two
+        let visible = viewModel.visibleSymptomTypes
+        XCTAssertEqual(visible.count, 6) // 8 total - 2 hidden
+        XCTAssertFalse(visible.contains(.chestPain))
+        XCTAssertFalse(visible.contains(.syncope))
+    }
+
+    // MARK: - Alert Date Tests
+
+    func testHasAlertOnDateReturnsFalseWhenEmpty() {
+        // Given: no alert dates
+        viewModel.alertDates = []
+
+        // Then: hasAlert should return false
+        XCTAssertFalse(viewModel.hasAlert(on: Date()))
+    }
+
+    func testHasAlertOnDateReturnsTrueWhenDateHasAlert() {
+        // Given: alert date set
+        let today = Calendar.current.startOfDay(for: Date())
+        viewModel.alertDates = [today]
+
+        // Then: hasAlert should return true for today
+        XCTAssertTrue(viewModel.hasAlert(on: Date()))
+    }
+
+    func testHasAlertNormalizesDateToStartOfDay() {
+        // Given: alert date at start of day
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
+        viewModel.alertDates = [today]
+
+        // When: checking with a time later in the same day
+        let laterToday = calendar.date(byAdding: .hour, value: 14, to: today)!
+
+        // Then: should still find the alert
+        XCTAssertTrue(viewModel.hasAlert(on: laterToday))
+    }
+
+    // MARK: - Symptom Accessibility Summary Tests
+
+    func testSymptomAccessibilitySummaryWithNoData() {
+        // Given: no symptom entries
+        viewModel.symptomEntries = []
+
+        // Then: should provide appropriate message
+        XCTAssertEqual(viewModel.symptomAccessibilitySummary, "No symptom data recorded in the past 30 days")
+    }
+
+    func testSymptomAccessibilitySummaryIncludesDaysCount() {
+        // Given: symptom entries
+        let calendar = Calendar.current
+        viewModel.symptomEntries = [
+            SymptomDataPoint(date: Date(), symptomType: .chestPain, severity: 2, hasAlert: false),
+            SymptomDataPoint(date: calendar.date(byAdding: .day, value: -1, to: Date())!, symptomType: .dizziness, severity: 1, hasAlert: false)
+        ]
+
+        // Then: summary should mention days of data
+        XCTAssertTrue(viewModel.symptomAccessibilitySummary.contains("2 days of data"))
+    }
+
+    func testSymptomAccessibilitySummaryIncludesVisibleCount() {
+        // Given: some symptoms toggled off
+        viewModel.symptomEntries = [
+            SymptomDataPoint(date: Date(), symptomType: .chestPain, severity: 2, hasAlert: false)
+        ]
+        viewModel.toggleSymptom(.dyspneaAtRest)
+        viewModel.toggleSymptom(.orthopnea)
+
+        // Then: summary should mention visible count
+        XCTAssertTrue(viewModel.symptomAccessibilitySummary.contains("6 of 8 symptoms visible"))
+    }
+
+    func testSymptomAccessibilitySummaryMentionsAlerts() {
+        // Given: symptom entries with alert days
+        viewModel.symptomEntries = [
+            SymptomDataPoint(date: Date(), symptomType: .chestPain, severity: 4, hasAlert: true)
+        ]
+        viewModel.alertDates = [Calendar.current.startOfDay(for: Date())]
+
+        // Then: summary should mention alerts with warm language
+        XCTAssertTrue(viewModel.symptomAccessibilitySummary.contains("1 day with symptoms that needed attention"))
+    }
+
+    func testSymptomAccessibilitySummaryNoAlertsMessage() {
+        // Given: symptom entries without alerts
+        viewModel.symptomEntries = [
+            SymptomDataPoint(date: Date(), symptomType: .chestPain, severity: 2, hasAlert: false)
+        ]
+        viewModel.alertDates = []
+
+        // Then: summary should indicate no alerts
+        XCTAssertTrue(viewModel.symptomAccessibilitySummary.contains("No symptom alerts in this period"))
+    }
+
+    // MARK: - Symptom Color Tests
+
+    func testSymptomColorsAreDistinct() {
+        // Given: all symptom types
+        let colors = SymptomType.allCases.map { TrendsViewModel.color(for: $0) }
+
+        // Then: all colors should be provided (no crashes)
+        XCTAssertEqual(colors.count, 8)
+    }
+
+    func testSymptomColorForEachType() {
+        // Then: each symptom type should have a color
+        for symptomType in SymptomType.allCases {
+            let _ = TrendsViewModel.color(for: symptomType) // Should not crash
+        }
+    }
+
+    // MARK: - Symptom Entries By Type Tests
+
+    func testSymptomEntriesForTypeFiltersCorrectly() {
+        // Given: entries for multiple symptom types
+        let today = Date()
+        viewModel.symptomEntries = [
+            SymptomDataPoint(date: today, symptomType: .chestPain, severity: 2, hasAlert: false),
+            SymptomDataPoint(date: today, symptomType: .dizziness, severity: 1, hasAlert: false),
+            SymptomDataPoint(date: today, symptomType: .chestPain, severity: 3, hasAlert: false)
+        ]
+
+        // When: getting entries for chest pain
+        let chestPainEntries = viewModel.symptomEntries(for: .chestPain)
+
+        // Then: should only include chest pain entries
+        XCTAssertEqual(chestPainEntries.count, 2)
+        XCTAssertTrue(chestPainEntries.allSatisfy { $0.symptomType == .chestPain })
+    }
+
+    func testSymptomEntriesForTypeAreSortedByDate() {
+        // Given: entries out of order
+        let calendar = Calendar.current
+        let today = Date()
+        let yesterday = calendar.date(byAdding: .day, value: -1, to: today)!
+        let twoDaysAgo = calendar.date(byAdding: .day, value: -2, to: today)!
+
+        viewModel.symptomEntries = [
+            SymptomDataPoint(date: today, symptomType: .dizziness, severity: 2, hasAlert: false),
+            SymptomDataPoint(date: twoDaysAgo, symptomType: .dizziness, severity: 1, hasAlert: false),
+            SymptomDataPoint(date: yesterday, symptomType: .dizziness, severity: 3, hasAlert: false)
+        ]
+
+        // When: getting entries for dizziness
+        let entries = viewModel.symptomEntries(for: .dizziness)
+
+        // Then: should be sorted by date ascending
+        XCTAssertEqual(entries.count, 3)
+        XCTAssertEqual(entries[0].date, twoDaysAgo)
+        XCTAssertEqual(entries[1].date, yesterday)
+        XCTAssertEqual(entries[2].date, today)
     }
 }

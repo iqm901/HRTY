@@ -44,6 +44,7 @@
 		B1000001200000010000000200000003 /* MedicationsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000002200000010000000200000003 /* MedicationsViewModelTests.swift */; };
 		B1000001200000010000000200000004 /* WeightAlertTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000002200000010000000200000004 /* WeightAlertTests.swift */; };
 		B1000001200000010000000200000005 /* SymptomAlertServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000002200000010000000200000005 /* SymptomAlertServiceTests.swift */; };
+		B1000001200000010000000200000006 /* TrendsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000002200000010000000200000006 /* TrendsViewModelTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -95,6 +96,7 @@
 		B1000002200000010000000200000003 /* MedicationsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicationsViewModelTests.swift; sourceTree = "<group>"; };
 		B1000002200000010000000200000004 /* WeightAlertTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightAlertTests.swift; sourceTree = "<group>"; };
 		B1000002200000010000000200000005 /* SymptomAlertServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymptomAlertServiceTests.swift; sourceTree = "<group>"; };
+		B1000002200000010000000200000006 /* TrendsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendsViewModelTests.swift; sourceTree = "<group>"; };
 		B1000004200000010000000200000001 /* HRTYTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HRTYTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -213,6 +215,7 @@
 				B1000002200000010000000200000003 /* MedicationsViewModelTests.swift */,
 				B1000002200000010000000200000004 /* WeightAlertTests.swift */,
 				B1000002200000010000000200000005 /* SymptomAlertServiceTests.swift */,
+				B1000002200000010000000200000006 /* TrendsViewModelTests.swift */,
 			);
 			path = HRTYTests;
 			sourceTree = "<group>";
@@ -359,6 +362,7 @@
 				B1000001200000010000000200000003 /* MedicationsViewModelTests.swift in Sources */,
 				B1000001200000010000000200000004 /* WeightAlertTests.swift in Sources */,
 				B1000001200000010000000200000005 /* SymptomAlertServiceTests.swift in Sources */,
+				B1000001200000010000000200000006 /* TrendsViewModelTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
