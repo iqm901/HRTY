@@ -208,11 +208,16 @@ final class MockHealthKitService: HealthKitServiceProtocol {
     var mockAuthorizationStatus: HealthKitAuthorizationStatus = .notDetermined
     var mockWeight: HealthKitWeight?
     var mockError: HealthKitError?
+    /// Generic error for testing non-HealthKitError catch paths
+    var mockGenericError: Error?
 
     var isHealthKitAvailable: Bool { mockIsAvailable }
     var authorizationStatus: HealthKitAuthorizationStatus { mockAuthorizationStatus }
 
     func requestAuthorization() async throws {
+        if let error = mockGenericError {
+            throw error
+        }
         if let error = mockError {
             throw error
         }
@@ -220,6 +225,9 @@ final class MockHealthKitService: HealthKitServiceProtocol {
     }
 
     func fetchLatestWeight() async throws -> HealthKitWeight? {
+        if let error = mockGenericError {
+            throw error
+        }
         if let error = mockError {
             throw error
         }

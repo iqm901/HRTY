@@ -526,4 +526,23 @@ final class TodayViewModelHealthKitTests: XCTestCase {
         // Loading state should remain true (not reset)
         XCTAssertTrue(viewModel.isLoadingHealthKit)
     }
+
+    func testImportWeightGenericErrorShowsDescription() async {
+        // Given: HealthKit throws a generic (non-HealthKitError) error
+        let genericError = NSError(
+            domain: "com.test.generic",
+            code: 42,
+            userInfo: [NSLocalizedDescriptionKey: "Something unexpected happened"]
+        )
+        mockHealthKitService.mockGenericError = genericError
+
+        // When: importing weight
+        await viewModel.importWeightFromHealthKit()
+
+        // Then: should show error that includes the underlying description
+        XCTAssertNotNil(viewModel.healthKitError)
+        XCTAssertTrue(viewModel.healthKitError?.contains("Something unexpected happened") ?? false)
+        XCTAssertTrue(viewModel.healthKitError?.contains("Could not import weight") ?? false)
+        XCTAssertFalse(viewModel.isLoadingHealthKit)
+    }
 }
