@@ -301,3 +301,117 @@ final class PhotoGalleryAccessibilityTests: XCTestCase {
         XCTAssertEqual(sorted.last?.filename, "old.jpg")
     }
 }
+
+// MARK: - MedicationPhoto Codable Tests
+
+final class MedicationPhotoCodableTests: XCTestCase {
+
+    func testMedicationPhotoEncodesToJSON() throws {
+        // Given: a photo with known values
+        let id = UUID()
+        let date = Date(timeIntervalSince1970: 1704067200) // 2024-01-01 00:00:00 UTC
+        let photo = MedicationPhoto(
+            id: id,
+            filename: "test.jpg",
+            thumbnailFilename: "test_thumb.jpg",
+            capturedAt: date
+        )
+
+        // When: encoding to JSON
+        let encoder = JSONEncoder()
+        let data = try encoder.encode(photo)
+
+        // Then: should produce valid JSON data
+        XCTAssertNotNil(data)
+        XCTAssertGreaterThan(data.count, 0)
+    }
+
+    func testMedicationPhotoDecodesFromJSON() throws {
+        // Given: a photo encoded to JSON
+        let id = UUID()
+        let date = Date(timeIntervalSince1970: 1704067200)
+        let original = MedicationPhoto(
+            id: id,
+            filename: "decode_test.jpg",
+            thumbnailFilename: "decode_test_thumb.jpg",
+            capturedAt: date
+        )
+
+        let encoder = JSONEncoder()
+        let data = try encoder.encode(original)
+
+        // When: decoding from JSON
+        let decoder = JSONDecoder()
+        let decoded = try decoder.decode(MedicationPhoto.self, from: data)
+
+        // Then: decoded photo should match original
+        XCTAssertEqual(decoded.id, original.id)
+        XCTAssertEqual(decoded.filename, original.filename)
+        XCTAssertEqual(decoded.thumbnailFilename, original.thumbnailFilename)
+        XCTAssertEqual(decoded.capturedAt, original.capturedAt)
+    }
+
+    func testMedicationPhotoRoundTrip() throws {
+        // Given: a photo with all fields populated
+        let photo = MedicationPhoto(
+            id: UUID(),
+            filename: "roundtrip.jpg",
+            thumbnailFilename: "roundtrip_thumb.jpg",
+            capturedAt: Date()
+        )
+
+        // When: encoding and decoding
+        let encoder = JSONEncoder()
+        let decoder = JSONDecoder()
+        let data = try encoder.encode(photo)
+        let decoded = try decoder.decode(MedicationPhoto.self, from: data)
+
+        // Then: should be equal after round trip
+        XCTAssertEqual(photo, decoded)
+    }
+
+    func testMedicationPhotoArrayEncodesAndDecodes() throws {
+        // Given: an array of photos
+        let photos = [
+            MedicationPhoto(filename: "photo1.jpg", thumbnailFilename: "photo1_thumb.jpg"),
+            MedicationPhoto(filename: "photo2.jpg", thumbnailFilename: "photo2_thumb.jpg"),
+            MedicationPhoto(filename: "photo3.jpg", thumbnailFilename: "photo3_thumb.jpg")
+        ]
+
+        // When: encoding and decoding the array
+        let encoder = JSONEncoder()
+        let decoder = JSONDecoder()
+        let data = try encoder.encode(photos)
+        let decoded = try decoder.decode([MedicationPhoto].self, from: data)
+
+        // Then: array should have same count and matching filenames
+        XCTAssertEqual(decoded.count, photos.count)
+        for (original, restored) in zip(photos, decoded) {
+            XCTAssertEqual(original.filename, restored.filename)
+            XCTAssertEqual(original.thumbnailFilename, restored.thumbnailFilename)
+        }
+    }
+
+    func testMedicationPhotoDecodesFromExternalJSON() throws {
+        // Given: a JSON string representing a photo (simulating external data)
+        let id = UUID()
+        let jsonString = """
+        {
+            "id": "\(id.uuidString)",
+            "filename": "external.jpg",
+            "thumbnailFilename": "external_thumb.jpg",
+            "capturedAt": 1704067200
+        }
+        """
+        let data = jsonString.data(using: .utf8)!
+
+        // When: decoding from external JSON
+        let decoder = JSONDecoder()
+        let decoded = try decoder.decode(MedicationPhoto.self, from: data)
+
+        // Then: should decode correctly
+        XCTAssertEqual(decoded.id, id)
+        XCTAssertEqual(decoded.filename, "external.jpg")
+        XCTAssertEqual(decoded.thumbnailFilename, "external_thumb.jpg")
+    }
+}
