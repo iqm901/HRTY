@@ -143,21 +143,21 @@ struct SettingsView: View {
     }
 
     private func privacyRow(icon: String, title: String, description: String) -> some View {
-        HStack(alignment: .top, spacing: 12) {
+        HStack(alignment: .top, spacing: HRTSpacing.sm) {
             Image(systemName: icon)
                 .font(.system(size: privacyIconSize))
-                .foregroundStyle(.blue)
+                .foregroundStyle(Color.hrtPinkFallback)
                 .frame(minWidth: 28)
                 .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
-                    .font(.subheadline)
+                    .font(.hrtCallout)
                     .fontWeight(.medium)
 
                 Text(description)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .font(.hrtCaption)
+                    .foregroundStyle(Color.hrtTextSecondaryFallback)
             }
         }
         .accessibilityElement(children: .combine)
@@ -168,27 +168,29 @@ struct SettingsView: View {
 
     private var aboutSection: some View {
         Section {
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: HRTSpacing.sm) {
                 HStack {
                     Text("HRTY")
-                        .font(.headline)
+                        .font(.hrtHeadline)
+                        .foregroundStyle(Color.hrtPinkFallback)
                     Spacer()
                     Text(viewModel.versionString)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                        .font(.hrtCallout)
+                        .foregroundStyle(Color.hrtTextSecondaryFallback)
                 }
                 .accessibilityElement(children: .combine)
                 .accessibilityLabel("HRTY \(viewModel.versionString)")
 
                 Text("Your personal companion for managing heart health. Track your daily progress in just a couple of minutes, and feel confident when sharing updates with your care team.")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .font(.hrtCaption)
+                    .foregroundStyle(Color.hrtTextSecondaryFallback)
             }
-            .padding(.vertical, 4)
+            .padding(.vertical, HRTSpacing.xs)
         } header: {
             Text("About")
         }
     }
+
 }
 
 #Preview {

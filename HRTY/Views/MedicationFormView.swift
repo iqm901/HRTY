@@ -15,13 +15,13 @@ struct MedicationFormView: View {
                 // Success message when medication is saved
                 if let message = viewModel.medicationSavedMessage {
                     Section {
-                        HStack {
+                        HStack(spacing: HRTSpacing.sm) {
                             Image(systemName: "checkmark.circle.fill")
-                                .foregroundStyle(.green)
+                                .foregroundStyle(Color.hrtGoodFallback)
                             Text(message)
-                                .foregroundStyle(.green)
+                                .foregroundStyle(Color.hrtGoodFallback)
                         }
-                        .font(.callout)
+                        .font(.hrtCallout)
                     }
                 }
 
@@ -38,8 +38,8 @@ struct MedicationFormView: View {
                 if let error = viewModel.validationError {
                     Section {
                         Text(error)
-                            .foregroundStyle(.red)
-                            .font(.callout)
+                            .foregroundStyle(Color.hrtAlertFallback)
+                            .font(.hrtCallout)
                     }
                 }
             }
@@ -152,8 +152,8 @@ struct MedicationFormView: View {
                 } footer: {
                     if selectedMed.isDiuretic {
                         Label("This is a diuretic - doses will be tracked on the Today screen", systemImage: "drop.fill")
-                            .font(.caption)
-                            .foregroundStyle(.blue)
+                            .font(.hrtCaption)
+                            .foregroundStyle(Color.hrtPinkFallback)
                     }
                 }
             }
@@ -200,7 +200,7 @@ struct MedicationFormView: View {
             } footer: {
                 if !viewModel.dosageInput.isEmpty && viewModel.parsedDosage == nil {
                     Text("Please enter a valid number for dosage")
-                        .foregroundStyle(.red)
+                        .foregroundStyle(Color.hrtAlertFallback)
                 } else {
                     Text("Enter the medication name and dosage as shown on your prescription.")
                 }

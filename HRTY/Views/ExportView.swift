@@ -10,39 +10,46 @@ struct ExportView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: 24) {
-                    headerSection
+            ZStack {
+                Color.hrtBackgroundFallback
+                    .ignoresSafeArea()
 
-                    dateRangeSection
+                ScrollView {
+                    VStack(spacing: HRTSpacing.lg) {
+                        headerSection
 
-                    patientIdentifierSection
+                        dateRangeSection
 
-                    generateButton
+                        patientIdentifierSection
 
-                    if viewModel.didSucceed {
-                        successMessage
-                            .transition(.asymmetric(
-                                insertion: .scale(scale: 0.95).combined(with: .opacity),
-                                removal: .opacity
-                            ))
+                        generateButton
+
+                        if viewModel.didSucceed {
+                            successMessage
+                                .transition(.asymmetric(
+                                    insertion: .scale(scale: 0.95).combined(with: .opacity),
+                                    removal: .opacity
+                                ))
+                        }
+
+                        if let errorMessage = viewModel.errorMessage {
+                            errorMessageView(errorMessage)
+                                .transition(.asymmetric(
+                                    insertion: .scale(scale: 0.95).combined(with: .opacity),
+                                    removal: .opacity
+                                ))
+                        }
+
+                        Spacer(minLength: HRTSpacing.xl)
+
+                        disclaimerSection
                     }
-
-                    if let errorMessage = viewModel.errorMessage {
-                        errorMessageView(errorMessage)
-                            .transition(.asymmetric(
-                                insertion: .scale(scale: 0.95).combined(with: .opacity),
-                                removal: .opacity
-                            ))
-                    }
-
-                    Spacer(minLength: 40)
-
-                    disclaimerSection
+                    .padding(HRTSpacing.md)
+                    .animation(HRTAnimation.standard, value: viewModel.generationState)
                 }
-                .padding()
-                .animation(.easeInOut(duration: 0.3), value: viewModel.generationState)
+                .scrollContentBackground(.hidden)
             }
+            .toolbarBackground(Color.hrtBackgroundFallback, for: .navigationBar)
             .navigationTitle("Export")
             .sheet(isPresented: $viewModel.showShareSheet) {
                 if let pdfData = viewModel.pdfData {
@@ -56,23 +63,23 @@ struct ExportView: View {
     // MARK: - Header Section
 
     private var headerSection: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: HRTSpacing.sm) {
             Image(systemName: "doc.text.fill")
                 .font(.system(size: headerIconSize))
-                .foregroundStyle(.blue)
+                .foregroundStyle(Color.hrtPinkFallback)
                 .accessibilityHidden(true)
 
             Text("Share with Your Care Team")
-                .font(.title2)
-                .fontWeight(.semibold)
+                .font(.hrtTitle2)
+                .foregroundStyle(Color.hrtTextFallback)
                 .multilineTextAlignment(.center)
 
             Text("Create a summary to bring to your next appointment")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .font(.hrtCallout)
+                .foregroundStyle(Color.hrtTextSecondaryFallback)
                 .multilineTextAlignment(.center)
         }
-        .padding(.top, 20)
+        .padding(.top, HRTSpacing.lg)
         .accessibilityElement(children: .combine)
         .accessibilityLabel("Share with Your Care Team. Create a summary to bring to your next appointment.")
     }
@@ -80,19 +87,23 @@ struct ExportView: View {
     // MARK: - Date Range Section
 
     private var dateRangeSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Label("Date Range", systemImage: "calendar")
-                .font(.headline)
-                .foregroundStyle(.primary)
+        VStack(alignment: .leading, spacing: HRTSpacing.sm) {
+            HStack(spacing: HRTSpacing.sm) {
+                Image(systemName: "calendar")
+                    .foregroundStyle(Color.hrtPinkFallback)
+                Text("Date Range")
+                    .font(.hrtHeadline)
+                    .foregroundStyle(Color.hrtTextFallback)
+            }
 
             Text(viewModel.dateRangeText)
-                .font(.body)
-                .foregroundStyle(.secondary)
-                .padding(.horizontal, 16)
-                .padding(.vertical, 12)
+                .font(.hrtBody)
+                .foregroundStyle(Color.hrtTextSecondaryFallback)
+                .padding(.horizontal, HRTSpacing.md)
+                .padding(.vertical, HRTSpacing.sm)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .background(Color(.systemGray6))
-                .clipShape(RoundedRectangle(cornerRadius: 10))
+                .background(Color.hrtCardFallback)
+                .clipShape(RoundedRectangle(cornerRadius: HRTRadius.medium))
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel("Date range: \(viewModel.dateRangeText)")
@@ -101,21 +112,24 @@ struct ExportView: View {
     // MARK: - Patient Identifier Section
 
     private var patientIdentifierSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Label("Patient Identifier (Optional)", systemImage: "person.text.rectangle")
-                .font(.headline)
-                .foregroundStyle(.primary)
+        VStack(alignment: .leading, spacing: HRTSpacing.sm) {
+            HStack(spacing: HRTSpacing.sm) {
+                Image(systemName: "person.text.rectangle")
+                    .foregroundStyle(Color.hrtPinkFallback)
+                Text("Patient Identifier (Optional)")
+                    .font(.hrtHeadline)
+                    .foregroundStyle(Color.hrtTextFallback)
+            }
 
-            TextField("Name or ID", text: $viewModel.patientIdentifier)
-                .textFieldStyle(.roundedBorder)
+            HRTTextField("Patient Identifier", placeholder: "Name or ID", text: $viewModel.patientIdentifier)
                 .textContentType(.name)
                 .autocorrectionDisabled()
                 .accessibilityLabel("Patient identifier")
                 .accessibilityHint("Optional. Enter your name or ID to include in the PDF.")
 
             Text("This will appear at the top of your PDF summary")
-                .font(.caption)
-                .foregroundStyle(.tertiary)
+                .font(.hrtCaption)
+                .foregroundStyle(Color.hrtTextTertiaryFallback)
         }
     }
 
@@ -125,7 +139,7 @@ struct ExportView: View {
         Button {
             generatePDF()
         } label: {
-            HStack(spacing: 12) {
+            HStack(spacing: HRTSpacing.sm) {
                 if viewModel.isGenerating {
                     ProgressView()
                         .tint(.white)
@@ -133,15 +147,12 @@ struct ExportView: View {
                     Image(systemName: "square.and.arrow.up")
                 }
                 Text(viewModel.isGenerating ? "Creating PDF..." : "Generate PDF")
-                    .fontWeight(.semibold)
             }
             .frame(maxWidth: .infinity)
-            .padding(.vertical, 16)
-            .background(viewModel.isGenerating ? Color.gray : Color.blue)
-            .foregroundStyle(.white)
-            .clipShape(RoundedRectangle(cornerRadius: 12))
         }
+        .buttonStyle(HRTPrimaryButtonStyle())
         .disabled(viewModel.isGenerating)
+        .opacity(viewModel.isGenerating ? 0.7 : 1.0)
         .accessibilityLabel(viewModel.isGenerating ? "Creating PDF" : "Generate PDF")
         .accessibilityHint("Creates a PDF summary of your health data from the past 30 days")
         .accessibilityAddTraits(viewModel.isGenerating ? .isButton : [.isButton])
@@ -150,19 +161,19 @@ struct ExportView: View {
     // MARK: - Success Message
 
     private var successMessage: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: HRTSpacing.sm) {
             Image(systemName: "checkmark.circle.fill")
-                .foregroundStyle(.green)
+                .foregroundStyle(Color.hrtGoodFallback)
                 .font(.title2)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text("PDF Ready")
-                    .font(.headline)
-                    .foregroundStyle(.primary)
+                    .font(.hrtBodySemibold)
+                    .foregroundStyle(Color.hrtTextFallback)
 
                 Text("Choose how to share your summary")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .font(.hrtCallout)
+                    .foregroundStyle(Color.hrtTextSecondaryFallback)
             }
 
             Spacer()
@@ -171,18 +182,18 @@ struct ExportView: View {
                 viewModel.showShareSheet = true
             } label: {
                 Text("Share")
-                    .fontWeight(.medium)
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 8)
-                    .background(Color.blue)
+                    .font(.hrtBodyMedium)
+                    .padding(.horizontal, HRTSpacing.md)
+                    .padding(.vertical, HRTSpacing.sm)
+                    .background(Color.hrtPinkFallback)
                     .foregroundStyle(.white)
                     .clipShape(Capsule())
             }
             .accessibilityLabel("Share PDF")
         }
-        .padding()
-        .background(Color(.systemGray6))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .padding(HRTSpacing.md)
+        .background(Color.hrtGoodFallback.opacity(0.15))
+        .clipShape(RoundedRectangle(cornerRadius: HRTRadius.large))
         .accessibilityElement(children: .combine)
         .accessibilityLabel("PDF ready. Choose how to share your summary.")
         .accessibilityAddTraits(.updatesFrequently)
@@ -191,19 +202,19 @@ struct ExportView: View {
     // MARK: - Error Message
 
     private func errorMessageView(_ message: String) -> some View {
-        HStack(spacing: 12) {
+        HStack(spacing: HRTSpacing.sm) {
             Image(systemName: "exclamationmark.triangle.fill")
-                .foregroundStyle(.orange)
+                .foregroundStyle(Color.hrtCautionFallback)
                 .font(.title2)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text("Couldn't Create PDF")
-                    .font(.headline)
-                    .foregroundStyle(.primary)
+                    .font(.hrtBodySemibold)
+                    .foregroundStyle(Color.hrtTextFallback)
 
                 Text(message)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .font(.hrtCallout)
+                    .foregroundStyle(Color.hrtTextSecondaryFallback)
             }
 
             Spacer()
@@ -212,18 +223,18 @@ struct ExportView: View {
                 viewModel.reset()
             } label: {
                 Text("Try Again")
-                    .fontWeight(.medium)
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 8)
-                    .background(Color.orange)
+                    .font(.hrtBodyMedium)
+                    .padding(.horizontal, HRTSpacing.md)
+                    .padding(.vertical, HRTSpacing.sm)
+                    .background(Color.hrtCautionFallback)
                     .foregroundStyle(.white)
                     .clipShape(Capsule())
             }
             .accessibilityLabel("Try again")
         }
-        .padding()
-        .background(Color.orange.opacity(0.1))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .padding(HRTSpacing.md)
+        .background(Color.hrtCautionFallback.opacity(0.15))
+        .clipShape(RoundedRectangle(cornerRadius: HRTRadius.large))
         .accessibilityElement(children: .combine)
         .accessibilityLabel("Error: \(message). Tap try again to retry.")
     }
@@ -231,16 +242,16 @@ struct ExportView: View {
     // MARK: - Disclaimer Section
 
     private var disclaimerSection: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: HRTSpacing.sm) {
             Image(systemName: "info.circle")
-                .foregroundStyle(.tertiary)
+                .foregroundStyle(Color.hrtTextTertiaryFallback)
 
             Text("The PDF includes your weight trends, symptom history, diuretic doses, and any alerts from the past 30 days.")
-                .font(.caption)
-                .foregroundStyle(.tertiary)
+                .font(.hrtCaption)
+                .foregroundStyle(Color.hrtTextTertiaryFallback)
                 .multilineTextAlignment(.center)
         }
-        .padding(.horizontal)
+        .padding(.horizontal, HRTSpacing.md)
         .accessibilityElement(children: .combine)
         .accessibilityLabel("The PDF includes your weight trends, symptom history, diuretic doses, and any alerts from the past 30 days.")
     }

@@ -47,7 +47,7 @@ struct MedicationPhotoGalleryView: View {
     }
 
     private var columns: [GridItem] {
-        Array(repeating: GridItem(.flexible(), spacing: 8), count: columnCount)
+        Array(repeating: GridItem(.flexible(), spacing: HRTSpacing.sm), count: columnCount)
     }
 
     var body: some View {
@@ -61,28 +61,28 @@ struct MedicationPhotoGalleryView: View {
     // MARK: - Subviews
 
     private var emptyState: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: HRTSpacing.sm) {
             Image(systemName: "photo.on.rectangle.angled")
-                .font(.system(size: 36))
-                .foregroundStyle(.secondary)
+                .font(.system(size: 36, weight: .light))
+                .foregroundStyle(Color.hrtPinkLightFallback)
                 .accessibilityHidden(true)
 
             Text("No Photos Yet")
-                .font(.headline)
-                .foregroundStyle(.secondary)
+                .font(.hrtBodySemibold)
+                .foregroundStyle(Color.hrtTextSecondaryFallback)
 
             Text("Add photos of your medication bottles or lists for easy reference.")
-                .font(.subheadline)
-                .foregroundStyle(.tertiary)
+                .font(.hrtCallout)
+                .foregroundStyle(Color.hrtTextTertiaryFallback)
                 .multilineTextAlignment(.center)
         }
-        .padding()
+        .padding(HRTSpacing.lg)
         .accessibilityElement(children: .combine)
         .accessibilityLabel("No medication photos. Add photos for reference.")
     }
 
     private var photoGrid: some View {
-        LazyVGrid(columns: columns, spacing: 8) {
+        LazyVGrid(columns: columns, spacing: HRTSpacing.sm) {
             ForEach(photos) { photo in
                 PhotoThumbnailView(
                     photo: photo,
@@ -92,7 +92,7 @@ struct MedicationPhotoGalleryView: View {
                 )
             }
         }
-        .padding(.horizontal)
+        .padding(.horizontal, HRTSpacing.md)
     }
 }
 
@@ -119,15 +119,16 @@ struct PhotoThumbnailView: View {
                         .scaledToFill()
                 } else {
                     Rectangle()
-                        .fill(Color(.systemGray5))
+                        .fill(Color.hrtBackgroundSecondaryFallback)
                         .overlay {
                             ProgressView()
+                                .tint(Color.hrtPinkFallback)
                                 .accessibilityHidden(true)
                         }
                 }
             }
             .frame(height: thumbnailHeight)
-            .clipShape(RoundedRectangle(cornerRadius: 8))
+            .clipShape(RoundedRectangle(cornerRadius: HRTRadius.medium))
         }
         .buttonStyle(.plain)
         .contextMenu {

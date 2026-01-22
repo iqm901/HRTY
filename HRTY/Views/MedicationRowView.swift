@@ -4,11 +4,12 @@ struct MedicationRowView: View {
     let medication: Medication
 
     var body: some View {
-        HStack(alignment: .center, spacing: 12) {
-            VStack(alignment: .leading, spacing: 4) {
-                HStack(spacing: 8) {
+        HStack(alignment: .center, spacing: HRTSpacing.sm) {
+            VStack(alignment: .leading, spacing: HRTSpacing.xs) {
+                HStack(spacing: HRTSpacing.sm) {
                     Text(medication.name)
-                        .font(.headline)
+                        .font(.hrtBodySemibold)
+                        .foregroundStyle(Color.hrtTextFallback)
 
                     if medication.isDiuretic {
                         diureticBadge
@@ -16,23 +17,23 @@ struct MedicationRowView: View {
                 }
 
                 Text(dosageText)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .font(.hrtCallout)
+                    .foregroundStyle(Color.hrtTextSecondaryFallback)
 
                 if !medication.schedule.isEmpty {
                     Text(medication.schedule)
-                        .font(.caption)
-                        .foregroundStyle(.tertiary)
+                        .font(.hrtCaption)
+                        .foregroundStyle(Color.hrtTextTertiaryFallback)
                 }
             }
 
             Spacer()
 
             Image(systemName: "chevron.right")
-                .font(.caption)
-                .foregroundStyle(.tertiary)
+                .font(.hrtCaption)
+                .foregroundStyle(Color.hrtTextTertiaryFallback)
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, HRTSpacing.xs)
         .contentShape(Rectangle())
         .accessibilityElement(children: .combine)
         .accessibilityLabel(accessibilityLabel)
@@ -43,12 +44,12 @@ struct MedicationRowView: View {
 
     private var diureticBadge: some View {
         Text("Diuretic")
-            .font(.caption2)
+            .font(.hrtSmall)
             .fontWeight(.medium)
-            .padding(.horizontal, 6)
+            .padding(.horizontal, HRTSpacing.sm)
             .padding(.vertical, 2)
-            .background(Color.blue.opacity(0.15))
-            .foregroundStyle(.blue)
+            .background(Color.hrtPinkLightFallback)
+            .foregroundStyle(Color.hrtPinkFallback)
             .clipShape(Capsule())
             .accessibilityLabel("This is a diuretic medication")
     }

@@ -7,14 +7,21 @@ struct MedicationsView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: 24) {
-                    photosSection
+            ZStack {
+                Color.hrtBackgroundFallback
+                    .ignoresSafeArea()
 
-                    medicationsSection
+                ScrollView {
+                    VStack(spacing: HRTSpacing.lg) {
+                        photosSection
+
+                        medicationsSection
+                    }
+                    .padding(.vertical, HRTSpacing.md)
                 }
-                .padding(.vertical)
+                .scrollContentBackground(.hidden)
             }
+            .toolbarBackground(Color.hrtBackgroundFallback, for: .navigationBar)
             .navigationTitle("Medications")
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
@@ -120,11 +127,15 @@ struct MedicationsView: View {
     // MARK: - Subviews
 
     private var photosSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: HRTSpacing.sm) {
             HStack {
-                Label("Reference Photos", systemImage: "photo.on.rectangle.angled")
-                    .font(.headline)
-                    .foregroundStyle(.primary)
+                HStack(spacing: HRTSpacing.sm) {
+                    Image(systemName: "photo.on.rectangle.angled")
+                        .foregroundStyle(Color.hrtPinkFallback)
+                    Text("Reference Photos")
+                        .font(.hrtHeadline)
+                        .foregroundStyle(Color.hrtTextFallback)
+                }
 
                 Spacer()
 
@@ -133,15 +144,16 @@ struct MedicationsView: View {
                 } label: {
                     Image(systemName: "plus.circle.fill")
                         .font(.title2)
+                        .foregroundStyle(Color.hrtPinkFallback)
                 }
                 .accessibilityLabel("Add reference photo")
             }
-            .padding(.horizontal)
+            .padding(.horizontal, HRTSpacing.md)
 
             Text("Photos of your medication bottles or lists for easy reference")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-                .padding(.horizontal)
+                .font(.hrtCallout)
+                .foregroundStyle(Color.hrtTextSecondaryFallback)
+                .padding(.horizontal, HRTSpacing.md)
 
             MedicationPhotoGalleryView(
                 photos: viewModel.photos,
@@ -156,11 +168,15 @@ struct MedicationsView: View {
     }
 
     private var medicationsSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: HRTSpacing.sm) {
             HStack {
-                Label("My Medications", systemImage: "pills")
-                    .font(.headline)
-                    .foregroundStyle(.primary)
+                HStack(spacing: HRTSpacing.sm) {
+                    Image(systemName: "pills")
+                        .foregroundStyle(Color.hrtPinkFallback)
+                    Text("My Medications")
+                        .font(.hrtHeadline)
+                        .foregroundStyle(Color.hrtTextFallback)
+                }
 
                 Spacer()
 
@@ -169,10 +185,11 @@ struct MedicationsView: View {
                 } label: {
                     Image(systemName: "plus.circle.fill")
                         .font(.title2)
+                        .foregroundStyle(Color.hrtPinkFallback)
                 }
                 .accessibilityLabel("Add medication")
             }
-            .padding(.horizontal)
+            .padding(.horizontal, HRTSpacing.md)
 
             if viewModel.hasNoMedications {
                 medicationsEmptyState
@@ -183,32 +200,15 @@ struct MedicationsView: View {
     }
 
     private var medicationsEmptyState: some View {
-        VStack(spacing: 12) {
-            Image(systemName: "pills")
-                .font(.system(size: 36))
-                .foregroundStyle(.secondary)
-                .accessibilityHidden(true)
-
-            Text("No Medications Yet")
-                .font(.headline)
-                .foregroundStyle(.secondary)
-
-            Text("Add your medications to keep track of what you're taking and log your daily diuretic doses.")
-                .font(.subheadline)
-                .foregroundStyle(.tertiary)
-                .multilineTextAlignment(.center)
-
-            Button {
-                viewModel.prepareForAdd()
-            } label: {
-                Text("Add Medication")
-            }
-            .buttonStyle(.borderedProminent)
-            .padding(.top, 8)
+        HRTEmptyState(
+            icon: "pills",
+            title: "No Medications Yet",
+            message: "Add your medications to keep track of what you're taking and log your daily diuretic doses.",
+            actionTitle: "Add Medication"
+        ) {
+            viewModel.prepareForAdd()
         }
-        .padding()
-        .frame(maxWidth: .infinity)
-        .accessibilityElement(children: .combine)
+        .padding(.horizontal, HRTSpacing.md)
         .accessibilityLabel("No medications added yet")
         .accessibilityHint("Tap add medication to get started")
     }
@@ -228,18 +228,18 @@ struct MedicationsView: View {
                             Label("Delete", systemImage: "trash")
                         }
                     }
-                    .padding(.horizontal)
-                    .padding(.vertical, 8)
+                    .padding(.horizontal, HRTSpacing.md)
+                    .padding(.vertical, HRTSpacing.sm)
 
                 if medication.id != viewModel.sortedMedications.last?.id {
-                    Divider()
-                        .padding(.horizontal)
+                    HRTDivider()
+                        .padding(.horizontal, HRTSpacing.md)
                 }
             }
         }
-        .background(Color(.systemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 10))
-        .padding(.horizontal)
+        .background(Color.hrtCardFallback)
+        .clipShape(RoundedRectangle(cornerRadius: HRTRadius.large))
+        .padding(.horizontal, HRTSpacing.md)
     }
 }
 
@@ -249,20 +249,20 @@ private struct PhotoSavedToast: View {
     let message: String
 
     var body: some View {
-        HStack(spacing: 8) {
+        HStack(spacing: HRTSpacing.sm) {
             Image(systemName: "checkmark.circle.fill")
-                .foregroundStyle(.green)
+                .foregroundStyle(Color.hrtGoodFallback)
 
             Text(message)
-                .font(.subheadline)
-                .fontWeight(.medium)
+                .font(.hrtCallout)
+                .foregroundStyle(Color.hrtTextFallback)
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 12)
+        .padding(.horizontal, HRTSpacing.md)
+        .padding(.vertical, HRTSpacing.sm + 2)
         .background(.regularMaterial)
         .clipShape(Capsule())
-        .shadow(color: .black.opacity(0.1), radius: 8, y: 4)
-        .padding(.bottom, 24)
+        .hrtFloatingShadow()
+        .padding(.bottom, HRTSpacing.lg)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(message)
         .accessibilityAddTraits(.isStaticText)

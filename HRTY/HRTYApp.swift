@@ -9,6 +9,17 @@ struct HRTYApp: App {
 
     @AppStorage(AppStorageKeys.hasCompletedOnboarding) private var hasCompletedOnboarding = false
 
+    init() {
+        // Configure global UI appearance with pink accent
+        let pinkColor = UIColor(red: 0.95, green: 0.40, blue: 0.50, alpha: 1.0)
+
+        // Tab bar appearance
+        UITabBar.appearance().tintColor = pinkColor
+
+        // Navigation bar appearance
+        UINavigationBar.appearance().tintColor = pinkColor
+    }
+
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             DailyEntry.self,
@@ -31,13 +42,16 @@ struct HRTYApp: App {
 
     var body: some Scene {
         WindowGroup {
-            if hasCompletedOnboarding {
-                ContentView()
-            } else {
-                OnboardingContainerView {
-                    hasCompletedOnboarding = true
+            Group {
+                if hasCompletedOnboarding {
+                    ContentView()
+                } else {
+                    OnboardingContainerView {
+                        hasCompletedOnboarding = true
+                    }
                 }
             }
+            .tint(Color.hrtPinkFallback)
         }
         .modelContainer(sharedModelContainer)
     }

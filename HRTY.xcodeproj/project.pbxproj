@@ -7,6 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		019000010000000100000001 /* HRTColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 019000020000000100000001 /* HRTColors.swift */; };
+		019000010000000100000002 /* HRTTypography.swift in Sources */ = {isa = PBXBuildFile; fileRef = 019000020000000100000002 /* HRTTypography.swift */; };
+		019000010000000100000003 /* HRTSpacing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 019000020000000100000003 /* HRTSpacing.swift */; };
+		019000010000000100000004 /* HRTButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 019000020000000100000004 /* HRTButton.swift */; };
+		019000010000000100000005 /* HRTSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 019000020000000100000005 /* HRTSection.swift */; };
+		019000010000000100000006 /* HRTRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 019000020000000100000006 /* HRTRow.swift */; };
+		019000010000000100000007 /* HRTInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 019000020000000100000007 /* HRTInput.swift */; };
+		019000010000000100000008 /* HRTSeveritySelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 019000020000000100000008 /* HRTSeveritySelector.swift */; };
+		019000010000000100000009 /* HRTFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 019000020000000100000009 /* HRTFeedback.swift */; };
 		018000010000000100000001 /* HeartFailureMedication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 018000020000000100000001 /* HeartFailureMedication.swift */; };
 		016000010000000100000001 /* OnboardingContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 016000020000000100000001 /* OnboardingContainerView.swift */; };
 		016000010000000100000002 /* WelcomePageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 016000020000000100000002 /* WelcomePageView.swift */; };
@@ -93,6 +102,15 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		019000020000000100000001 /* HRTColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HRTColors.swift; sourceTree = "<group>"; };
+		019000020000000100000002 /* HRTTypography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HRTTypography.swift; sourceTree = "<group>"; };
+		019000020000000100000003 /* HRTSpacing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HRTSpacing.swift; sourceTree = "<group>"; };
+		019000020000000100000004 /* HRTButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HRTButton.swift; sourceTree = "<group>"; };
+		019000020000000100000005 /* HRTSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HRTSection.swift; sourceTree = "<group>"; };
+		019000020000000100000006 /* HRTRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HRTRow.swift; sourceTree = "<group>"; };
+		019000020000000100000007 /* HRTInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HRTInput.swift; sourceTree = "<group>"; };
+		019000020000000100000008 /* HRTSeveritySelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HRTSeveritySelector.swift; sourceTree = "<group>"; };
+		019000020000000100000009 /* HRTFeedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HRTFeedback.swift; sourceTree = "<group>"; };
 		018000020000000100000001 /* HeartFailureMedication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartFailureMedication.swift; sourceTree = "<group>"; };
 		015C484EB0C714313F98B0BF /* HealthKitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HealthKitService.swift; path = HRTY/Services/HealthKitService.swift; sourceTree = SOURCE_ROOT; };
 		016000020000000100000001 /* OnboardingContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = OnboardingContainerView.swift; path = HRTY/Views/Onboarding/OnboardingContainerView.swift; sourceTree = SOURCE_ROOT; };
@@ -211,9 +229,34 @@
 				A1000005200000010000000100000004 /* Views */,
 				A1000005200000010000000100000006 /* ViewModels */,
 				A1000005200000010000000100000007 /* Services */,
+				019000040000000100000001 /* DesignSystem */,
 				A1000002200000010000000100000003 /* Assets.xcassets */,
 			);
 			path = HRTY;
+			sourceTree = "<group>";
+		};
+		019000040000000100000001 /* DesignSystem */ = {
+			isa = PBXGroup;
+			children = (
+				019000020000000100000001 /* HRTColors.swift */,
+				019000020000000100000002 /* HRTTypography.swift */,
+				019000020000000100000003 /* HRTSpacing.swift */,
+				019000050000000100000001 /* Components */,
+			);
+			path = DesignSystem;
+			sourceTree = "<group>";
+		};
+		019000050000000100000001 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				019000020000000100000004 /* HRTButton.swift */,
+				019000020000000100000005 /* HRTSection.swift */,
+				019000020000000100000006 /* HRTRow.swift */,
+				019000020000000100000007 /* HRTInput.swift */,
+				019000020000000100000008 /* HRTSeveritySelector.swift */,
+				019000020000000100000009 /* HRTFeedback.swift */,
+			);
+			path = Components;
 			sourceTree = "<group>";
 		};
 		A1000005200000010000000100000003 /* Products */ = {
@@ -468,6 +511,15 @@
 				017000010000000100000004 /* MedicationPhotoGalleryView.swift in Sources */,
 				017000010000000100000005 /* MedicationPhotoViewerView.swift in Sources */,
 				018000010000000100000001 /* HeartFailureMedication.swift in Sources */,
+				019000010000000100000001 /* HRTColors.swift in Sources */,
+				019000010000000100000002 /* HRTTypography.swift in Sources */,
+				019000010000000100000003 /* HRTSpacing.swift in Sources */,
+				019000010000000100000004 /* HRTButton.swift in Sources */,
+				019000010000000100000005 /* HRTSection.swift in Sources */,
+				019000010000000100000006 /* HRTRow.swift in Sources */,
+				019000010000000100000007 /* HRTInput.swift in Sources */,
+				019000010000000100000008 /* HRTSeveritySelector.swift in Sources */,
+				019000010000000100000009 /* HRTFeedback.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

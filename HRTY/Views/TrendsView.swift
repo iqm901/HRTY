@@ -7,28 +7,34 @@ struct TrendsView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
-                    if viewModel.isLoading {
-                        ProgressView("Loading trends...")
-                            .frame(maxWidth: .infinity, alignment: .center)
-                            .padding(.top, 40)
-                    } else {
-                        if viewModel.hasWeightData {
-                            weightSection
+            ZStack {
+                Color.hrtBackgroundFallback
+                    .ignoresSafeArea()
+
+                ScrollView {
+                    VStack(alignment: .leading, spacing: HRTSpacing.lg) {
+                        if viewModel.isLoading {
+                            HRTLoadingView("Loading trends...")
+                                .frame(height: 200)
                         } else {
-                            emptyWeightStateView
+                            if viewModel.hasWeightData {
+                                weightSection
+                            } else {
+                                emptyWeightStateView
+                            }
+
+                            // Heart rate trends section
+                            heartRateSection
+
+                            // Symptom trends section
+                            symptomSection
                         }
-
-                        // Heart rate trends section
-                        heartRateSection
-
-                        // Symptom trends section
-                        symptomSection
                     }
+                    .padding(HRTSpacing.md)
                 }
-                .padding()
+                .scrollContentBackground(.hidden)
             }
+            .toolbarBackground(Color.hrtBackgroundFallback, for: .navigationBar)
             .navigationTitle("Trends")
             .task {
                 await viewModel.loadAllTrendDataWithHeartRate(context: modelContext)
@@ -39,12 +45,16 @@ struct TrendsView: View {
     // MARK: - Weight Section
 
     private var weightSection: some View {
-        VStack(alignment: .leading, spacing: 16) {
+        VStack(alignment: .leading, spacing: HRTSpacing.md) {
             // Section header
-            Text("Weight")
-                .font(.title2)
-                .fontWeight(.semibold)
-                .accessibilityAddTraits(.isHeader)
+            HStack(spacing: HRTSpacing.sm) {
+                Image(systemName: "scalemass.fill")
+                    .foregroundStyle(Color.hrtPinkFallback)
+                Text("Weight")
+                    .font(.hrtTitle2)
+                    .foregroundStyle(Color.hrtTextFallback)
+            }
+            .accessibilityAddTraits(.isHeader)
 
             // Summary card
             weightSummaryCard
@@ -55,61 +65,61 @@ struct TrendsView: View {
 
             // Date range
             Text(viewModel.dateRangeText)
-                .font(.caption)
-                .foregroundStyle(.secondary)
+                .font(.hrtCaption)
+                .foregroundStyle(Color.hrtTextSecondaryFallback)
                 .frame(maxWidth: .infinity, alignment: .center)
         }
     }
 
     private var weightSummaryCard: some View {
-        HStack(spacing: 20) {
+        HStack(spacing: HRTSpacing.lg) {
             // Current weight
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: HRTSpacing.xs) {
                 Text("Current")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .font(.hrtCaption)
+                    .foregroundStyle(Color.hrtTextSecondaryFallback)
 
                 if let weight = viewModel.formattedCurrentWeight {
                     Text(weight)
-                        .font(.title)
-                        .fontWeight(.bold)
+                        .font(.hrtTitle)
+                        .foregroundStyle(Color.hrtTextFallback)
                 } else {
                     Text("--")
-                        .font(.title)
-                        .foregroundStyle(.secondary)
+                        .font(.hrtTitle)
+                        .foregroundStyle(Color.hrtTextTertiaryFallback)
                 }
             }
             .accessibilityElement(children: .combine)
 
-            Divider()
+            HRTDivider(direction: .vertical)
                 .frame(height: 44)
 
             // 30-day change
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: HRTSpacing.xs) {
                 Text("30-Day Change")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .font(.hrtCaption)
+                    .foregroundStyle(Color.hrtTextSecondaryFallback)
 
                 if let changeText = viewModel.weightChangeText {
-                    HStack(spacing: 4) {
+                    HStack(spacing: HRTSpacing.xs) {
                         changeIndicator
                         Text(changeText)
-                            .font(.title3)
-                            .fontWeight(.semibold)
+                            .font(.hrtTitle3)
+                            .foregroundStyle(Color.hrtTextFallback)
                     }
                 } else {
                     Text("--")
-                        .font(.title3)
-                        .foregroundStyle(.secondary)
+                        .font(.hrtTitle3)
+                        .foregroundStyle(Color.hrtTextTertiaryFallback)
                 }
             }
             .accessibilityElement(children: .combine)
 
             Spacer()
         }
-        .padding()
-        .background(Color(.secondarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .padding(HRTSpacing.md)
+        .background(Color.hrtCardFallback)
+        .clipShape(RoundedRectangle(cornerRadius: HRTRadius.large))
     }
 
     @ViewBuilder
@@ -117,15 +127,15 @@ struct TrendsView: View {
         if let change = viewModel.weightChange {
             if change > 0.1 {
                 Image(systemName: "arrow.up")
-                    .foregroundStyle(.blue)
+                    .foregroundStyle(Color.hrtCautionFallback)
                     .accessibilityLabel("increased")
             } else if change < -0.1 {
                 Image(systemName: "arrow.down")
-                    .foregroundStyle(.blue)
+                    .foregroundStyle(Color.hrtTextSecondaryFallback)
                     .accessibilityLabel("decreased")
             } else {
                 Image(systemName: "checkmark.circle.fill")
-                    .foregroundStyle(.blue)
+                    .foregroundStyle(Color.hrtGoodFallback)
                     .accessibilityLabel("stable")
             }
         }
@@ -137,27 +147,28 @@ struct TrendsView: View {
     private var heartRateSection: some View {
         // Only show if HealthKit is available
         if viewModel.healthKitAvailable {
-            VStack(alignment: .leading, spacing: 16) {
+            VStack(alignment: .leading, spacing: HRTSpacing.md) {
                 // Section header
-                HStack {
+                HStack(spacing: HRTSpacing.sm) {
                     Image(systemName: "heart.fill")
-                        .foregroundStyle(.red)
+                        .foregroundStyle(Color.hrtPinkFallback)
                     Text("Resting Heart Rate")
-                        .font(.title2)
-                        .fontWeight(.semibold)
+                        .font(.hrtTitle2)
+                        .foregroundStyle(Color.hrtTextFallback)
                 }
                 .accessibilityAddTraits(.isHeader)
 
                 if viewModel.isLoadingHeartRate {
-                    HStack {
+                    HStack(spacing: HRTSpacing.sm) {
                         ProgressView()
+                            .tint(Color.hrtPinkFallback)
                             .scaleEffect(0.8)
                         Text("Loading heart rate data...")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
+                            .font(.hrtCallout)
+                            .foregroundStyle(Color.hrtTextSecondaryFallback)
                     }
                     .frame(maxWidth: .infinity, alignment: .center)
-                    .padding(.vertical, 12)
+                    .padding(.vertical, HRTSpacing.sm)
                 } else if viewModel.hasHeartRateData {
                     // Summary card
                     heartRateSummaryCard
@@ -176,8 +187,8 @@ struct TrendsView: View {
 
                     // Date range
                     Text(viewModel.dateRangeText)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .font(.hrtCaption)
+                        .foregroundStyle(Color.hrtTextSecondaryFallback)
                         .frame(maxWidth: .infinity, alignment: .center)
                 } else {
                     emptyHeartRateStateView
@@ -187,118 +198,111 @@ struct TrendsView: View {
     }
 
     private var heartRateSummaryCard: some View {
-        HStack(spacing: 20) {
+        HStack(spacing: HRTSpacing.md) {
             // Current heart rate
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: HRTSpacing.xs) {
                 Text("Latest")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .font(.hrtCaption)
+                    .foregroundStyle(Color.hrtTextSecondaryFallback)
 
                 if let hr = viewModel.formattedCurrentHeartRate {
                     Text(hr)
-                        .font(.title)
-                        .fontWeight(.bold)
+                        .font(.hrtTitle)
+                        .foregroundStyle(Color.hrtTextFallback)
                 } else {
                     Text("--")
-                        .font(.title)
-                        .foregroundStyle(.secondary)
+                        .font(.hrtTitle)
+                        .foregroundStyle(Color.hrtTextTertiaryFallback)
                 }
             }
             .accessibilityElement(children: .combine)
 
-            Divider()
+            HRTDivider(direction: .vertical)
                 .frame(height: 44)
 
             // Average
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: HRTSpacing.xs) {
                 Text("30-Day Avg")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .font(.hrtCaption)
+                    .foregroundStyle(Color.hrtTextSecondaryFallback)
 
                 if let avg = viewModel.formattedAverageHeartRate {
                     Text(avg)
-                        .font(.title3)
-                        .fontWeight(.semibold)
+                        .font(.hrtTitle3)
+                        .foregroundStyle(Color.hrtTextFallback)
                 } else {
                     Text("--")
-                        .font(.title3)
-                        .foregroundStyle(.secondary)
+                        .font(.hrtTitle3)
+                        .foregroundStyle(Color.hrtTextTertiaryFallback)
                 }
             }
             .accessibilityElement(children: .combine)
 
-            Divider()
+            HRTDivider(direction: .vertical)
                 .frame(height: 44)
 
             // Range
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: HRTSpacing.xs) {
                 Text("Range")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .font(.hrtCaption)
+                    .foregroundStyle(Color.hrtTextSecondaryFallback)
 
                 if let range = viewModel.formattedHeartRateRange {
                     Text(range)
-                        .font(.title3)
-                        .fontWeight(.semibold)
+                        .font(.hrtTitle3)
+                        .foregroundStyle(Color.hrtTextFallback)
                 } else {
                     Text("--")
-                        .font(.title3)
-                        .foregroundStyle(.secondary)
+                        .font(.hrtTitle3)
+                        .foregroundStyle(Color.hrtTextTertiaryFallback)
                 }
             }
             .accessibilityElement(children: .combine)
 
             Spacer()
         }
-        .padding()
-        .background(Color(.secondarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .padding(HRTSpacing.md)
+        .background(Color.hrtCardFallback)
+        .clipShape(RoundedRectangle(cornerRadius: HRTRadius.large))
     }
 
     private var heartRateAlertLegend: some View {
-        HStack(spacing: 4) {
+        HStack(spacing: HRTSpacing.xs) {
             RoundedRectangle(cornerRadius: 2)
-                .fill(Color.red.opacity(0.2))
+                .fill(Color.hrtAlertFallback.opacity(0.2))
                 .frame(width: 16, height: 12)
             Text("Days with heart rate values that may need attention")
-                .font(.caption)
-                .foregroundStyle(.secondary)
+                .font(.hrtCaption)
+                .foregroundStyle(Color.hrtTextSecondaryFallback)
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel("Highlighted days show heart rate values that may need attention")
     }
 
     private var emptyHeartRateStateView: some View {
-        VStack(spacing: 12) {
-            Image(systemName: "heart.slash")
-                .font(.system(size: 32))
-                .foregroundStyle(.secondary)
-
-            Text("No Heart Rate Data Yet")
-                .font(.headline)
-
-            Text("Heart rate data from Apple Health will appear here when available.")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, 24)
-        .background(Color(.secondarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
-        .accessibilityElement(children: .combine)
+        HRTEmptyState(
+            icon: "heart.slash",
+            title: "No Heart Rate Data Yet",
+            message: "Heart rate data from Apple Health will appear here when available."
+        )
+        .background(Color.hrtCardFallback)
+        .clipShape(RoundedRectangle(cornerRadius: HRTRadius.large))
         .accessibilityLabel("No heart rate data yet. Heart rate data from Apple Health will appear here when available.")
     }
 
     // MARK: - Symptom Section
 
     private var symptomSection: some View {
-        VStack(alignment: .leading, spacing: 16) {
+        VStack(alignment: .leading, spacing: HRTSpacing.md) {
             // Section header
-            Text("Symptoms")
-                .font(.title2)
-                .fontWeight(.semibold)
-                .accessibilityAddTraits(.isHeader)
+            HStack(spacing: HRTSpacing.sm) {
+                Image(systemName: "heart.text.square.fill")
+                    .foregroundStyle(Color.hrtPinkFallback)
+                Text("Symptoms")
+                    .font(.hrtTitle2)
+                    .foregroundStyle(Color.hrtTextFallback)
+            }
+            .accessibilityAddTraits(.isHeader)
 
             if viewModel.hasSymptomData {
                 // Toggle controls
@@ -328,8 +332,8 @@ struct TrendsView: View {
 
                 // Date range
                 Text(viewModel.dateRangeText)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .font(.hrtCaption)
+                    .foregroundStyle(Color.hrtTextSecondaryFallback)
                     .frame(maxWidth: .infinity, alignment: .center)
             } else {
                 emptySymptomStateView
@@ -338,13 +342,13 @@ struct TrendsView: View {
     }
 
     private var alertLegend: some View {
-        HStack(spacing: 4) {
+        HStack(spacing: HRTSpacing.xs) {
             RoundedRectangle(cornerRadius: 2)
-                .fill(Color.red.opacity(0.2))
+                .fill(Color.hrtAlertFallback.opacity(0.2))
                 .frame(width: 16, height: 12)
             Text("Days with symptoms that may need attention")
-                .font(.caption)
-                .foregroundStyle(.secondary)
+                .font(.hrtCaption)
+                .foregroundStyle(Color.hrtTextSecondaryFallback)
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel("Highlighted days show symptoms that may need attention")
@@ -353,46 +357,24 @@ struct TrendsView: View {
     // MARK: - Empty States
 
     private var emptyWeightStateView: some View {
-        VStack(spacing: 12) {
-            Image(systemName: "scalemass")
-                .font(.system(size: 32))
-                .foregroundStyle(.secondary)
-
-            Text("No Weight Data Yet")
-                .font(.headline)
-
-            Text("Start logging your daily weight on the Today tab to see your trends here.")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, 24)
-        .background(Color(.secondarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
-        .accessibilityElement(children: .combine)
+        HRTEmptyState(
+            icon: "scalemass",
+            title: "No Weight Data Yet",
+            message: "Start logging your daily weight on the Today tab to see your trends here."
+        )
+        .background(Color.hrtCardFallback)
+        .clipShape(RoundedRectangle(cornerRadius: HRTRadius.large))
         .accessibilityLabel("No weight data yet. Start logging your daily weight on the Today tab to see your trends here.")
     }
 
     private var emptySymptomStateView: some View {
-        VStack(spacing: 12) {
-            Image(systemName: "waveform.path.ecg")
-                .font(.system(size: 32))
-                .foregroundStyle(.secondary)
-
-            Text("No Symptom Data Yet")
-                .font(.headline)
-
-            Text("Log how you're feeling on the Today tab to track your symptoms over time.")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, 24)
-        .background(Color(.secondarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
-        .accessibilityElement(children: .combine)
+        HRTEmptyState(
+            icon: "waveform.path.ecg",
+            title: "No Symptom Data Yet",
+            message: "Log how you're feeling on the Today tab to track your symptoms over time."
+        )
+        .background(Color.hrtCardFallback)
+        .clipShape(RoundedRectangle(cornerRadius: HRTRadius.large))
         .accessibilityLabel("No symptom data yet. Log how you're feeling on the Today tab to track your symptoms over time.")
     }
 }

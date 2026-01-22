@@ -10,28 +10,31 @@ struct TodayView: View {
     var body: some View {
         NavigationStack {
             ZStack {
+                Color.hrtBackgroundFallback
+                    .ignoresSafeArea()
+
                 ScrollView {
-                    VStack(spacing: 24) {
+                    VStack(spacing: HRTSpacing.lg) {
                         alertsSection
                         headerSection
                         heartRateSection
                         weightEntrySection
                         symptomsSection
                         diureticSection
-                        Spacer(minLength: 40)
+                        Spacer(minLength: HRTSpacing.xxl)
                     }
-                    .padding()
+                    .padding(.horizontal, HRTSpacing.md)
+                    .padding(.vertical, HRTSpacing.md)
                 }
+                .scrollContentBackground(.hidden)
                 .opacity(viewModel.isLoading ? 0.3 : 1.0)
                 .disabled(viewModel.isLoading)
 
                 if viewModel.isLoading {
-                    ProgressView("Loading...")
-                        .padding()
-                        .background(Color(.systemBackground).opacity(0.9))
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                    HRTLoadingView("Loading your data...")
                 }
             }
+            .toolbarBackground(Color.hrtBackgroundFallback, for: .navigationBar)
             .navigationTitle("Today")
             .task {
                 await viewModel.loadAllData(context: modelContext)
@@ -162,42 +165,32 @@ struct TodayView: View {
     }
 
     private var alertDismissedEncouragement: some View {
-        HStack(spacing: 8) {
-            Image(systemName: "heart.fill")
-                .foregroundStyle(.pink)
-            Text("Thanks for staying on top of your health!")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-        }
-        .padding()
-        .frame(maxWidth: .infinity)
-        .background(Color(.systemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel("Thanks for staying on top of your health")
+        HRTEncouragementMessage(message: "Thanks for staying on top of your health!")
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel("Thanks for staying on top of your health")
     }
 
     // MARK: - Header Section
     private var headerSection: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: HRTSpacing.sm) {
             Text("How are you feeling today?")
-                .font(.title2)
-                .foregroundStyle(.secondary)
+                .font(.hrtTitle2)
+                .foregroundStyle(Color.hrtTextFallback)
             Text("Your daily check-in takes just a couple of minutes.")
-                .font(.subheadline)
-                .foregroundStyle(.tertiary)
+                .font(.hrtCallout)
+                .foregroundStyle(Color.hrtTextSecondaryFallback)
                 .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity)
-        .padding(.top, 8)
+        .padding(.top, HRTSpacing.sm)
     }
 
     // MARK: - Symptoms Section
     private var symptomsSection: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: HRTSpacing.md) {
             symptomsSectionHeader
 
-            VStack(spacing: 4) {
+            VStack(spacing: HRTSpacing.xs) {
                 ForEach(SymptomType.allCases, id: \.self) { symptomType in
                     SymptomRowView(
                         symptomType: symptomType,
@@ -208,7 +201,7 @@ struct TodayView: View {
                     )
 
                     if symptomType != SymptomType.allCases.last {
-                        Divider()
+                        HRTDivider()
                     }
                 }
             }
@@ -219,21 +212,20 @@ struct TodayView: View {
                 symptomsEncouragement
             }
         }
-        .padding()
-        .background(Color(.systemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
-        .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 2)
+        .padding(HRTSpacing.md)
+        .background(Color.hrtCardFallback)
+        .clipShape(RoundedRectangle(cornerRadius: HRTRadius.large))
     }
 
     private var symptomsEncouragement: some View {
-        HStack(spacing: 8) {
+        HStack(spacing: HRTSpacing.sm) {
             Image(systemName: "checkmark.circle.fill")
-                .foregroundStyle(.green)
+                .foregroundStyle(Color.hrtGoodFallback)
             Text("Thanks for checking in today!")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .font(.hrtCallout)
+                .foregroundStyle(Color.hrtTextSecondaryFallback)
         }
-        .padding(.top, 8)
+        .padding(.top, HRTSpacing.sm)
         .transition(.opacity.combined(with: .scale))
         .accessibilityElement(children: .combine)
         .accessibilityLabel("Thanks for checking in today")
@@ -242,9 +234,10 @@ struct TodayView: View {
     private var symptomsSectionHeader: some View {
         HStack {
             Image(systemName: "heart.text.square.fill")
-                .foregroundStyle(.pink)
+                .foregroundStyle(Color.hrtPinkFallback)
             Text("How are you feeling?")
-                .font(.headline)
+                .font(.hrtHeadline)
+                .foregroundStyle(Color.hrtTextFallback)
             Spacer()
         }
         .accessibilityElement(children: .combine)
@@ -253,13 +246,11 @@ struct TodayView: View {
     }
 
     private var severityLegend: some View {
-        HStack(spacing: 16) {
-            Text("1 = None")
-            Text("3 = Moderate")
-            Text("5 = Severe")
+        HStack(spacing: HRTSpacing.md) {
+            HRTSeverityBadge(level: 1, showLabel: true)
+            HRTSeverityBadge(level: 3, showLabel: true)
+            HRTSeverityBadge(level: 5, showLabel: true)
         }
-        .font(.caption)
-        .foregroundStyle(.secondary)
         .frame(maxWidth: .infinity)
         .accessibilityElement(children: .combine)
         .accessibilityLabel("Severity scale: 1 means none, 3 means moderate, 5 means severe")
@@ -272,7 +263,7 @@ struct TodayView: View {
 
     // MARK: - Weight Entry Section
     private var weightEntrySection: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: HRTSpacing.md) {
             sectionHeader
 
             weightInputField
@@ -302,33 +293,33 @@ struct TodayView: View {
 
             previousWeightView
         }
-        .padding()
-        .background(Color(.systemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
-        .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 2)
-        .animation(.easeInOut(duration: 0.25), value: viewModel.showHealthKitTimestamp)
+        .padding(HRTSpacing.md)
+        .background(Color.hrtCardFallback)
+        .clipShape(RoundedRectangle(cornerRadius: HRTRadius.large))
+        .animation(HRTAnimation.standard, value: viewModel.showHealthKitTimestamp)
     }
 
     private var sectionHeader: some View {
         HStack {
             Image(systemName: "scalemass.fill")
-                .foregroundStyle(.blue)
+                .foregroundStyle(Color.hrtPinkFallback)
             Text("Weight")
-                .font(.headline)
+                .font(.hrtHeadline)
+                .foregroundStyle(Color.hrtTextFallback)
             Spacer()
         }
     }
 
     private var weightInputField: some View {
-        HStack(spacing: 8) {
+        HStack(spacing: HRTSpacing.sm) {
             TextField("Enter weight", text: $viewModel.weightInput)
                 .keyboardType(.decimalPad)
-                .font(.system(size: 28, weight: .medium))
+                .font(.hrtMetricMedium)
                 .multilineTextAlignment(.center)
-                .padding()
-                .frame(height: 60)
-                .background(Color(.secondarySystemBackground))
-                .clipShape(RoundedRectangle(cornerRadius: 10))
+                .padding(HRTSpacing.md)
+                .frame(height: 70)
+                .background(Color.hrtBackgroundSecondaryFallback)
+                .clipShape(RoundedRectangle(cornerRadius: HRTRadius.medium))
                 .focused($isWeightFieldFocused)
                 .accessibilityLabel("Weight input")
                 .accessibilityHint("Enter your weight in pounds")
@@ -340,8 +331,8 @@ struct TodayView: View {
                 }
 
             Text("lbs")
-                .font(.title2)
-                .foregroundStyle(.secondary)
+                .font(.hrtHeadline)
+                .foregroundStyle(Color.hrtTextSecondaryFallback)
         }
     }
 
@@ -351,23 +342,25 @@ struct TodayView: View {
                 await viewModel.importWeightFromHealthKit()
             }
         } label: {
-            HStack(spacing: 8) {
+            HStack(spacing: HRTSpacing.sm) {
                 if viewModel.isLoadingHealthKit {
                     ProgressView()
                         .progressViewStyle(CircularProgressViewStyle())
+                        .tint(Color.hrtPinkFallback)
                         .scaleEffect(healthKitIconScale)
                 } else {
                     Image(systemName: "heart.fill")
-                        .foregroundStyle(.pink)
+                        .foregroundStyle(Color.hrtPinkFallback)
                         .imageScale(healthKitImageScale)
                 }
                 Text(viewModel.isLoadingHealthKit ? "Importing..." : "Import from Health")
-                    .font(.subheadline)
+                    .font(.hrtCallout)
+                    .foregroundStyle(Color.hrtTextFallback)
             }
             .frame(maxWidth: .infinity)
             .padding(.vertical, healthKitButtonVerticalPadding)
-            .background(Color(.secondarySystemBackground))
-            .clipShape(RoundedRectangle(cornerRadius: 10))
+            .background(Color.hrtBackgroundSecondaryFallback)
+            .clipShape(RoundedRectangle(cornerRadius: HRTRadius.medium))
         }
         .disabled(viewModel.isLoadingHealthKit)
         .accessibilityLabel(viewModel.isLoadingHealthKit ? "Importing weight from Health" : "Import weight from Health app")
@@ -375,30 +368,30 @@ struct TodayView: View {
     }
 
     private func healthKitTimestampView(_ text: String) -> some View {
-        HStack(spacing: 6) {
+        HStack(spacing: HRTSpacing.xs) {
             Image(systemName: "heart.fill")
-                .foregroundStyle(.pink)
+                .foregroundStyle(Color.hrtPinkFallback)
                 .imageScale(healthKitTimestampImageScale)
             Text(text)
-                .font(.caption)
-                .foregroundStyle(.secondary)
+                .font(.hrtCaption)
+                .foregroundStyle(Color.hrtTextSecondaryFallback)
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel(text)
     }
 
     private func healthKitErrorView(_ error: String) -> some View {
-        HStack(alignment: .top, spacing: 8) {
+        HStack(alignment: .top, spacing: HRTSpacing.sm) {
             Image(systemName: "exclamationmark.circle.fill")
-                .foregroundStyle(.orange)
-            VStack(alignment: .leading, spacing: 4) {
+                .foregroundStyle(Color.hrtCautionFallback)
+            VStack(alignment: .leading, spacing: HRTSpacing.xs) {
                 Text(error)
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
+                    .font(.hrtFootnote)
+                    .foregroundStyle(Color.hrtTextSecondaryFallback)
                 if let recoverySuggestion = viewModel.healthKitRecoverySuggestion {
                     Text(recoverySuggestion)
-                        .font(.caption)
-                        .foregroundStyle(.tertiary)
+                        .font(.hrtCaption)
+                        .foregroundStyle(Color.hrtTextTertiaryFallback)
                 }
             }
         }
@@ -408,12 +401,12 @@ struct TodayView: View {
     }
 
     private func validationErrorView(_ error: String) -> some View {
-        HStack {
+        HStack(spacing: HRTSpacing.sm) {
             Image(systemName: "exclamationmark.circle.fill")
-                .foregroundStyle(.red)
+                .foregroundStyle(Color.hrtAlertFallback)
             Text(error)
-                .font(.footnote)
-                .foregroundStyle(.red)
+                .font(.hrtFootnote)
+                .foregroundStyle(Color.hrtAlertFallback)
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel("Error: \(error)")
@@ -425,46 +418,42 @@ struct TodayView: View {
             isWeightFieldFocused = false
         } label: {
             Text("Save Weight")
-                .font(.headline)
                 .frame(maxWidth: .infinity)
-                .padding()
-                .background(viewModel.weightInput.isEmpty ? Color.gray : Color.blue)
-                .foregroundStyle(.white)
-                .clipShape(RoundedRectangle(cornerRadius: 10))
         }
+        .buttonStyle(HRTPrimaryButtonStyle())
         .disabled(viewModel.weightInput.isEmpty)
         .accessibilityLabel("Save weight button")
         .accessibilityHint("Tap to save your weight entry")
     }
 
     private var successFeedback: some View {
-        HStack {
+        HStack(spacing: HRTSpacing.sm) {
             Image(systemName: "checkmark.circle.fill")
-                .foregroundStyle(.green)
+                .foregroundStyle(Color.hrtGoodFallback)
             Text("Weight saved!")
-                .font(.subheadline)
-                .foregroundStyle(.green)
+                .font(.hrtCallout)
+                .foregroundStyle(Color.hrtGoodFallback)
         }
         .transition(.opacity.combined(with: .scale))
         .accessibilityLabel("Weight saved successfully")
     }
 
     private var previousWeightView: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: HRTSpacing.sm) {
             if viewModel.hasNoPreviousData {
                 Text("This is your first weight entry!")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .font(.hrtCallout)
+                    .foregroundStyle(Color.hrtTextSecondaryFallback)
                     .accessibilityLabel("This is your first weight entry")
             } else if let previousWeight = viewModel.previousWeight {
                 HStack {
-                    VStack(alignment: .leading, spacing: 4) {
+                    VStack(alignment: .leading, spacing: HRTSpacing.xs) {
                         Text("Yesterday (\(viewModel.yesterdayDateText))")
-                            .font(.caption)
-                            .foregroundStyle(.tertiary)
+                            .font(.hrtCaption)
+                            .foregroundStyle(Color.hrtTextTertiaryFallback)
                         Text("\(previousWeight, specifier: "%.1f") lbs")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
+                            .font(.hrtCallout)
+                            .foregroundStyle(Color.hrtTextSecondaryFallback)
                     }
                     Spacer()
                 }
@@ -476,21 +465,21 @@ struct TodayView: View {
                 }
             }
         }
-        .padding(.top, 8)
+        .padding(.top, HRTSpacing.sm)
     }
 
     private func weightChangeView(text: String) -> some View {
-        HStack {
+        HStack(spacing: HRTSpacing.sm) {
             Image(systemName: weightChangeIcon)
                 .foregroundStyle(weightChangeSwiftUIColor)
             Text(text)
-                .font(.subheadline)
+                .font(.hrtCallout)
                 .foregroundStyle(weightChangeSwiftUIColor)
         }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 8)
+        .padding(.horizontal, HRTSpacing.md)
+        .padding(.vertical, HRTSpacing.sm)
         .background(weightChangeBackgroundColor)
-        .clipShape(RoundedRectangle(cornerRadius: 8))
+        .clipShape(RoundedRectangle(cornerRadius: HRTRadius.small))
         .accessibilityElement(children: .combine)
         .accessibilityLabel(text)
         .accessibilityHint("Weight change from yesterday")
@@ -520,17 +509,17 @@ struct TodayView: View {
 
     private var weightChangeSwiftUIColor: Color {
         switch weightChangeCategory {
-        case .gained: return .orange
-        case .lost: return .secondary
-        case .stable: return .green
+        case .gained: return Color.hrtCautionFallback
+        case .lost: return Color.hrtTextSecondaryFallback
+        case .stable: return Color.hrtGoodFallback
         }
     }
 
     private var weightChangeBackgroundColor: Color {
         switch weightChangeCategory {
-        case .gained: return .orange.opacity(0.1)
-        case .lost: return Color(.secondarySystemBackground)
-        case .stable: return .green.opacity(0.1)
+        case .gained: return Color.hrtCautionFallback.opacity(0.15)
+        case .lost: return Color.hrtBackgroundSecondaryFallback
+        case .stable: return Color.hrtGoodFallback.opacity(0.15)
         }
     }
 
