@@ -3,6 +3,11 @@ import Foundation
 /// Centralized location for all @AppStorage keys.
 /// Prevents typos and ensures consistency across ViewModels.
 enum AppStorageKeys {
+    // MARK: - Onboarding
+
+    /// Whether the user has completed onboarding
+    static let hasCompletedOnboarding = "hasCompletedOnboarding"
+
     // MARK: - Settings
 
     /// Daily reminder toggle state

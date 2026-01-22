@@ -7,6 +7,8 @@ struct HRTYApp: App {
     // before handling notification responses from app launch
     private let notificationService = NotificationService.shared
 
+    @AppStorage(AppStorageKeys.hasCompletedOnboarding) private var hasCompletedOnboarding = false
+
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             DailyEntry.self,
@@ -29,7 +31,13 @@ struct HRTYApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            if hasCompletedOnboarding {
+                ContentView()
+            } else {
+                OnboardingContainerView {
+                    hasCompletedOnboarding = true
+                }
+            }
         }
         .modelContainer(sharedModelContainer)
     }
