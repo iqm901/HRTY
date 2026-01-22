@@ -246,6 +246,11 @@ final class PhotoService: PhotoServiceProtocol {
     // MARK: - Thumbnail Generation
 
     private func generateThumbnail(from image: UIImage) -> UIImage? {
+        // Guard against invalid image dimensions to prevent division by zero
+        guard image.size.width > 0, image.size.height > 0 else {
+            return nil
+        }
+
         let aspectRatio = image.size.width / image.size.height
         var newSize: CGSize
 
