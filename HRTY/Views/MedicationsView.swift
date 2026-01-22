@@ -100,6 +100,20 @@ struct MedicationsView: View {
                 viewModel.loadMedications(context: modelContext)
                 viewModel.loadPhotos()
             }
+            .overlay(alignment: .bottom) {
+                if let message = viewModel.photoSavedMessage {
+                    PhotoSavedToast(message: message)
+                        .transition(.move(edge: .bottom).combined(with: .opacity))
+                        .onAppear {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                                withAnimation {
+                                    viewModel.clearPhotoSavedMessage()
+                                }
+                            }
+                        }
+                }
+            }
+            .animation(.easeInOut(duration: 0.3), value: viewModel.photoSavedMessage)
         }
     }
 
@@ -226,6 +240,32 @@ struct MedicationsView: View {
         .background(Color(.systemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 10))
         .padding(.horizontal)
+    }
+}
+
+/// Toast notification for photo saved confirmation.
+/// Provides warm, reassuring feedback to patients.
+private struct PhotoSavedToast: View {
+    let message: String
+
+    var body: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "checkmark.circle.fill")
+                .foregroundStyle(.green)
+
+            Text(message)
+                .font(.subheadline)
+                .fontWeight(.medium)
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
+        .background(.regularMaterial)
+        .clipShape(Capsule())
+        .shadow(color: .black.opacity(0.1), radius: 8, y: 4)
+        .padding(.bottom, 24)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(message)
+        .accessibilityAddTraits(.isStaticText)
     }
 }
 

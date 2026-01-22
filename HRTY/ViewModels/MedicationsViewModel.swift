@@ -19,6 +19,7 @@ final class MedicationsViewModel {
     var showingPhotoViewer = false
     var capturedImage: UIImage?
     var photoError: String?
+    var photoSavedMessage: String?
 
     // MARK: - Form Fields
     var nameInput: String = ""
@@ -222,6 +223,7 @@ final class MedicationsViewModel {
                 photos.insert(photo, at: 0)
                 capturedImage = nil
                 showingPhotoCaptureView = false
+                photoSavedMessage = "Photo saved"
             }
         } catch {
             await MainActor.run {
@@ -250,6 +252,10 @@ final class MedicationsViewModel {
 
     func clearPhotoError() {
         photoError = nil
+    }
+
+    func clearPhotoSavedMessage() {
+        photoSavedMessage = nil
     }
 
     var hasNoPhotos: Bool {
