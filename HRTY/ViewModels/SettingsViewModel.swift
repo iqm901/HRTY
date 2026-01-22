@@ -88,11 +88,10 @@ final class SettingsViewModel {
     func requestNotificationPermission() async {
         let granted = await notificationService.requestPermission()
         if granted {
-            await updateNotificationSchedule()
-        } else {
-            // If permission denied, disable the toggle
-            reminderEnabled = false
+            // Enable the toggle after permission is granted so user doesn't have to tap twice
+            reminderEnabled = true
         }
+        // If permission denied, toggle stays off (no change needed)
     }
 
     /// Updates the notification schedule based on current settings.
