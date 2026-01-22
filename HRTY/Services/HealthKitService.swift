@@ -3,6 +3,12 @@ import HealthKit
 
 /// Protocol for HealthKit service operations
 /// Enables dependency injection and testability
+/// Simple struct for weight readings from HealthKit
+struct WeightReading {
+    let weight: Double
+    let date: Date
+}
+
 protocol HealthKitServiceProtocol {
     var isAvailable: Bool { get }
     func requestAuthorization() async -> Bool
@@ -10,6 +16,7 @@ protocol HealthKitServiceProtocol {
     func fetchHeartRateHistory(days: Int) async -> [HeartRateReading]
     func checkForPersistentAbnormalHeartRate() async -> (isAbnormal: Bool, isLow: Bool, readings: [HeartRateReading])
     func hasRecentBloodPressureReading(withinHours hours: Int) async -> Bool
+    func fetchLatestWeight() async -> WeightReading?
 }
 
 /// Service responsible for HealthKit integration
@@ -37,7 +44,7 @@ final class HealthKitService: HealthKitServiceProtocol {
 
     // MARK: - Authorization
 
-    /// Request authorization to read resting heart rate and blood pressure from HealthKit
+    /// Request authorization to read health data from HealthKit
     /// - Returns: True if authorization was granted or already exists
     func requestAuthorization() async -> Bool {
         guard let healthStore = healthStore else { return false }
@@ -47,6 +54,11 @@ final class HealthKitService: HealthKitServiceProtocol {
         }
 
         var typesToRead: Set<HKObjectType> = [restingHeartRateType]
+
+        // Add weight type
+        if let weightType = HKQuantityType.quantityType(forIdentifier: .bodyMass) {
+            typesToRead.insert(weightType)
+        }
 
         // Add blood pressure types (systolic and diastolic)
         if let systolicType = HKQuantityType.quantityType(forIdentifier: .bloodPressureSystolic),
@@ -214,6 +226,41 @@ final class HealthKitService: HealthKitServiceProtocol {
                 }
 
                 continuation.resume(returning: !samples.isEmpty)
+            }
+
+            healthStore.execute(query)
+        }
+    }
+
+    // MARK: - Fetch Latest Weight
+
+    /// Fetch the most recent weight reading
+    /// - Returns: The latest weight reading in pounds, or nil if not available
+    func fetchLatestWeight() async -> WeightReading? {
+        guard let healthStore = healthStore else { return nil }
+
+        guard let weightType = HKQuantityType.quantityType(forIdentifier: .bodyMass) else {
+            return nil
+        }
+
+        let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: false)
+
+        return await withCheckedContinuation { continuation in
+            let query = HKSampleQuery(
+                sampleType: weightType,
+                predicate: nil,
+                limit: 1,
+                sortDescriptors: [sortDescriptor]
+            ) { _, samples, error in
+                guard error == nil,
+                      let sample = samples?.first as? HKQuantitySample else {
+                    continuation.resume(returning: nil)
+                    return
+                }
+
+                let weightInPounds = sample.quantity.doubleValue(for: HKUnit.pound())
+                let reading = WeightReading(weight: weightInPounds, date: sample.startDate)
+                continuation.resume(returning: reading)
             }
 
             healthStore.execute(query)

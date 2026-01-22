@@ -320,8 +320,9 @@ struct TrendsView: View {
                 // Chart
                 SymptomTrendChart(
                     symptomEntries: viewModel.symptomEntries,
-                    visibleSymptomTypes: viewModel.visibleSymptomTypes,
-                    alertDates: viewModel.alertDates
+                    visibleSymptoms: Set(viewModel.visibleSymptomTypes),
+                    alertDates: viewModel.alertDates,
+                    colorForSymptom: TrendsViewModel.color
                 )
                 .accessibilityLabel(viewModel.symptomAccessibilitySummary)
 

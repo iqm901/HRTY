@@ -25,6 +25,13 @@ final class TodayViewModel {
     var isLoadingHeartRate: Bool = false
     var healthKitAvailable: Bool = false
 
+    // MARK: - HealthKit Weight Import State
+    var isLoadingHealthKit: Bool = false
+    var showHealthKitTimestamp: Bool = false
+    var healthKitTimestampText: String?
+    var healthKitError: String?
+    var healthKitRecoverySuggestion: String?
+
     // MARK: - Dizziness BP Alert State
     var activeDizzinessBPAlerts: [AlertEvent] = []
     var hasBPReading: Bool = false
@@ -96,6 +103,10 @@ final class TodayViewModel {
 
     var hasNoPreviousData: Bool {
         previousWeight == nil
+    }
+
+    var isHealthKitAvailable: Bool {
+        healthKitAvailable
     }
 
     var yesterdayDateText: String {
@@ -175,6 +186,52 @@ final class TodayViewModel {
         } catch {
             validationError = "Could not save weight. Please try again."
         }
+    }
+
+    // MARK: - HealthKit Weight Import
+
+    /// Import weight from HealthKit
+    @MainActor
+    func importWeightFromHealthKit() async {
+        guard healthKitAvailable else {
+            healthKitError = "HealthKit is not available on this device"
+            healthKitRecoverySuggestion = "Please ensure Health is enabled in Settings"
+            return
+        }
+
+        isLoadingHealthKit = true
+        healthKitError = nil
+        healthKitRecoverySuggestion = nil
+
+        // Request authorization
+        let authorized = await healthKitService.requestAuthorization()
+        guard authorized else {
+            isLoadingHealthKit = false
+            healthKitError = "Unable to access Health data"
+            healthKitRecoverySuggestion = "Please allow HRTY to read weight data in Settings > Health > Data Access"
+            return
+        }
+
+        // Fetch latest weight
+        if let weight = await healthKitService.fetchLatestWeight() {
+            weightInput = String(format: "%.1f", weight.weight)
+            showHealthKitTimestamp = true
+
+            let formatter = RelativeDateTimeFormatter()
+            formatter.unitsStyle = .full
+            healthKitTimestampText = "from Health \(formatter.localizedString(for: weight.date, relativeTo: Date()))"
+        } else {
+            healthKitError = "No recent weight data found"
+            healthKitRecoverySuggestion = "Try weighing yourself on a connected scale or enter your weight manually"
+        }
+
+        isLoadingHealthKit = false
+    }
+
+    /// Clear the HealthKit imported weight indicator
+    func clearHealthKitWeight() {
+        showHealthKitTimestamp = false
+        healthKitTimestampText = nil
     }
 
     // MARK: - Diuretic State
