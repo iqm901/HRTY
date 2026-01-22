@@ -3,6 +3,7 @@ import SwiftData
 
 struct TodayView: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @State private var viewModel = TodayViewModel()
     @FocusState private var isWeightFieldFocused: Bool
 
@@ -274,6 +275,19 @@ struct TodayView: View {
 
             weightInputField
 
+            if viewModel.showHealthKitTimestamp, let timestampText = viewModel.healthKitTimestampText {
+                healthKitTimestampView(timestampText)
+                    .transition(.opacity.combined(with: .scale(scale: 0.95)))
+            }
+
+            if viewModel.isHealthKitAvailable {
+                importFromHealthButton
+            }
+
+            if let healthKitError = viewModel.healthKitError {
+                healthKitErrorView(healthKitError)
+            }
+
             if let error = viewModel.validationError {
                 validationErrorView(error)
             }
@@ -290,6 +304,7 @@ struct TodayView: View {
         .background(Color(.systemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 2)
+        .animation(.easeInOut(duration: 0.25), value: viewModel.showHealthKitTimestamp)
     }
 
     private var sectionHeader: some View {
@@ -315,11 +330,79 @@ struct TodayView: View {
                 .focused($isWeightFieldFocused)
                 .accessibilityLabel("Weight input")
                 .accessibilityHint("Enter your weight in pounds")
+                .onChange(of: viewModel.weightInput) { _, _ in
+                    // Clear HealthKit timestamp when user manually edits
+                    if viewModel.showHealthKitTimestamp {
+                        viewModel.clearHealthKitWeight()
+                    }
+                }
 
             Text("lbs")
                 .font(.title2)
                 .foregroundStyle(.secondary)
         }
+    }
+
+    private var importFromHealthButton: some View {
+        Button {
+            Task {
+                await viewModel.importWeightFromHealthKit()
+            }
+        } label: {
+            HStack(spacing: 8) {
+                if viewModel.isLoadingHealthKit {
+                    ProgressView()
+                        .progressViewStyle(CircularProgressViewStyle())
+                        .scaleEffect(healthKitIconScale)
+                } else {
+                    Image(systemName: "heart.fill")
+                        .foregroundStyle(.pink)
+                        .imageScale(healthKitImageScale)
+                }
+                Text(viewModel.isLoadingHealthKit ? "Importing..." : "Import from Health")
+                    .font(.subheadline)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, healthKitButtonVerticalPadding)
+            .background(Color(.secondarySystemBackground))
+            .clipShape(RoundedRectangle(cornerRadius: 10))
+        }
+        .disabled(viewModel.isLoadingHealthKit)
+        .accessibilityLabel(viewModel.isLoadingHealthKit ? "Importing weight from Health" : "Import weight from Health app")
+        .accessibilityHint(viewModel.isLoadingHealthKit ? "Please wait while importing" : "Tap to import your most recent weight from Apple Health")
+    }
+
+    private func healthKitTimestampView(_ text: String) -> some View {
+        HStack(spacing: 6) {
+            Image(systemName: "heart.fill")
+                .foregroundStyle(.pink)
+                .imageScale(healthKitTimestampImageScale)
+            Text(text)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(text)
+    }
+
+    private func healthKitErrorView(_ error: String) -> some View {
+        HStack(alignment: .top, spacing: 8) {
+            Image(systemName: "exclamationmark.circle.fill")
+                .foregroundStyle(.orange)
+            VStack(alignment: .leading, spacing: 4) {
+                Text(error)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                if let recoverySuggestion = viewModel.healthKitRecoverySuggestion {
+                    Text(recoverySuggestion)
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Health import issue: \(error)")
     }
 
     private func validationErrorView(_ error: String) -> some View {
@@ -447,6 +530,54 @@ struct TodayView: View {
         case .lost: return Color(.secondarySystemBackground)
         case .stable: return .green.opacity(0.1)
         }
+    }
+
+    // MARK: - Dynamic Type Support for HealthKit UI
+
+    /// Scale factor for ProgressView spinner based on Dynamic Type size
+    private var healthKitIconScale: CGFloat {
+        switch dynamicTypeSize {
+        case .xSmall, .small, .medium:
+            return 0.8
+        case .large, .xLarge:
+            return 0.9
+        case .xxLarge, .xxxLarge:
+            return 1.0
+        case .accessibility1, .accessibility2:
+            return 1.1
+        case .accessibility3, .accessibility4, .accessibility5:
+            return 1.2
+        @unknown default:
+            return 0.9
+        }
+    }
+
+    /// Image scale for HealthKit heart icon in import button
+    private var healthKitImageScale: Image.Scale {
+        dynamicTypeSize.isAccessibilitySize ? .large : .medium
+    }
+
+    /// Vertical padding for HealthKit import button
+    private var healthKitButtonVerticalPadding: CGFloat {
+        switch dynamicTypeSize {
+        case .xSmall, .small, .medium:
+            return 12
+        case .large, .xLarge:
+            return 14
+        case .xxLarge, .xxxLarge:
+            return 16
+        case .accessibility1, .accessibility2:
+            return 18
+        case .accessibility3, .accessibility4, .accessibility5:
+            return 20
+        @unknown default:
+            return 14
+        }
+    }
+
+    /// Image scale for HealthKit timestamp heart icon
+    private var healthKitTimestampImageScale: Image.Scale {
+        dynamicTypeSize.isAccessibilitySize ? .medium : .small
     }
 }
 
