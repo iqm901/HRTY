@@ -28,6 +28,38 @@ final class MedicationsViewModel {
     var scheduleInput: String = ""
     var isDiuretic: Bool = false
 
+    // MARK: - Preset Medication Selection
+    var usePresetMedication: Bool = true
+    var selectedPresetMedication: HeartFailureMedication?
+    var selectedDosageOption: String = ""
+    var selectedFrequency: String = ""
+
+    /// Available dosages for the currently selected preset medication
+    var availableDosages: [String] {
+        selectedPresetMedication?.availableDosages ?? []
+    }
+
+    /// Select a preset medication and auto-populate form fields
+    func selectPresetMedication(_ medication: HeartFailureMedication?) {
+        selectedPresetMedication = medication
+        if let med = medication {
+            nameInput = med.displayName
+            selectedUnit = med.unit
+            isDiuretic = med.isDiuretic
+            selectedFrequency = med.defaultFrequency
+            scheduleInput = med.defaultFrequency
+            // Reset dosage selection
+            selectedDosageOption = ""
+            dosageInput = ""
+        }
+    }
+
+    /// Select a dosage from the preset options
+    func selectDosage(_ dosage: String) {
+        selectedDosageOption = dosage
+        dosageInput = dosage
+    }
+
     // MARK: - Validation & Errors
     var validationError: String?
     var deleteError: String?
@@ -85,6 +117,11 @@ final class MedicationsViewModel {
         isDiuretic = false
         validationError = nil
         selectedMedication = nil
+        // Reset preset medication fields
+        selectedPresetMedication = nil
+        selectedDosageOption = ""
+        selectedFrequency = ""
+        usePresetMedication = true
         // Don't clear medicationSavedMessage here - let it show briefly
     }
 

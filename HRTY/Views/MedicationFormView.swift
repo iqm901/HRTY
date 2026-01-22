@@ -25,9 +25,15 @@ struct MedicationFormView: View {
                     }
                 }
 
-                medicationDetailsSection
-                scheduleSection
-                diureticSection
+                if !isEditing {
+                    medicationTypeSection
+                }
+
+                if viewModel.usePresetMedication && !isEditing {
+                    presetMedicationSection
+                } else {
+                    customMedicationSection
+                }
 
                 if let error = viewModel.validationError {
                     Section {
@@ -36,9 +42,6 @@ struct MedicationFormView: View {
                             .font(.callout)
                     }
                 }
-            }
-            .onChange(of: viewModel.nameInput) { _, _ in
-                viewModel.clearSavedMessage()
             }
             .navigationTitle(isEditing ? "Edit Medication" : "Add Medication")
             .navigationBarTitleDisplayMode(.inline)
@@ -69,83 +72,166 @@ struct MedicationFormView: View {
                     .disabled(!viewModel.isFormValid)
                 }
             }
+            .onChange(of: viewModel.nameInput) { _, _ in
+                viewModel.clearSavedMessage()
+            }
         }
     }
 
-    // MARK: - Sections
+    // MARK: - Medication Type Toggle
 
-    private var medicationDetailsSection: some View {
+    private var medicationTypeSection: some View {
         Section {
-            TextField("Medication name", text: $viewModel.nameInput)
-                .textContentType(.none)
-                .autocorrectionDisabled()
-                .accessibilityLabel("Medication name")
-                .accessibilityHint("Enter the name of the medication")
+            Picker("Entry Type", selection: $viewModel.usePresetMedication) {
+                Text("Heart Failure Meds").tag(true)
+                Text("Custom Entry").tag(false)
+            }
+            .pickerStyle(.segmented)
+        } footer: {
+            Text(viewModel.usePresetMedication
+                 ? "Select from common heart failure medications"
+                 : "Enter any medication manually")
+        }
+    }
 
-            HStack {
-                TextField("Dosage", text: $viewModel.dosageInput)
-                    .keyboardType(.decimalPad)
-                    .focused($isDosageFieldFocused)
-                    .accessibilityLabel("Dosage amount")
-                    .accessibilityHint("Enter the dosage number")
-                    .toolbar {
-                        ToolbarItemGroup(placement: .keyboard) {
-                            Spacer()
-                            Button("Done") {
-                                isDosageFieldFocused = false
+    // MARK: - Preset Medication Selection
+
+    private var presetMedicationSection: some View {
+        Group {
+            // Medication Picker
+            Section {
+                Picker("Medication", selection: Binding(
+                    get: { viewModel.selectedPresetMedication },
+                    set: { viewModel.selectPresetMedication($0) }
+                )) {
+                    Text("Select a medication").tag(nil as HeartFailureMedication?)
+
+                    ForEach(HeartFailureMedication.medicationsByCategory, id: \.category) { category, medications in
+                        Section(header: Text(category.rawValue)) {
+                            ForEach(medications) { medication in
+                                Text(medication.displayName).tag(medication as HeartFailureMedication?)
                             }
                         }
                     }
+                }
+                .pickerStyle(.navigationLink)
+            } header: {
+                Text("Medication")
+            }
 
-                Picker("Unit", selection: $viewModel.selectedUnit) {
-                    ForEach(Medication.availableUnits, id: \.self) { unit in
-                        Text(unit).tag(unit)
+            // Dosage Picker (only shown when medication is selected)
+            if let selectedMed = viewModel.selectedPresetMedication {
+                Section {
+                    Picker("Dosage", selection: Binding(
+                        get: { viewModel.selectedDosageOption },
+                        set: { viewModel.selectDosage($0) }
+                    )) {
+                        Text("Select dosage").tag("")
+                        ForEach(selectedMed.availableDosages, id: \.self) { dosage in
+                            Text("\(dosage) \(selectedMed.unit)").tag(dosage)
+                        }
+                    }
+                    .pickerStyle(.navigationLink)
+                } header: {
+                    Text("Dosage")
+                }
+
+                // Frequency Picker
+                Section {
+                    Picker("Frequency", selection: $viewModel.selectedFrequency) {
+                        ForEach(HeartFailureMedication.frequencyOptions, id: \.self) { frequency in
+                            Text(frequency).tag(frequency)
+                        }
+                    }
+                    .pickerStyle(.navigationLink)
+                    .onChange(of: viewModel.selectedFrequency) { _, newValue in
+                        viewModel.scheduleInput = newValue
+                    }
+                } header: {
+                    Text("Frequency")
+                } footer: {
+                    if selectedMed.isDiuretic {
+                        Label("This is a diuretic - doses will be tracked on the Today screen", systemImage: "drop.fill")
+                            .font(.caption)
+                            .foregroundStyle(.blue)
                     }
                 }
-                .labelsHidden()
-                .accessibilityLabel("Dosage unit")
-                .accessibilityHint("Select the unit of measurement")
-            }
-        } header: {
-            Text("Medication Details")
-        } footer: {
-            if !viewModel.dosageInput.isEmpty && viewModel.parsedDosage == nil {
-                Text("Please enter a valid number for dosage")
-                    .foregroundStyle(.red)
-            } else {
-                Text("Enter the medication name and dosage as shown on your prescription.")
             }
         }
     }
 
-    private var scheduleSection: some View {
-        Section {
-            TextField("e.g., Morning, Twice daily", text: $viewModel.scheduleInput)
-                .textContentType(.none)
-                .accessibilityLabel("Schedule")
-                .accessibilityHint("Enter when you take this medication, this is optional")
-        } header: {
-            Text("Schedule (Optional)")
-        } footer: {
-            Text("When do you typically take this medication?")
-        }
-    }
+    // MARK: - Custom Medication Entry
 
-    private var diureticSection: some View {
-        Section {
-            Toggle(isOn: $viewModel.isDiuretic) {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("This is a diuretic")
-                        .font(.body)
-                    Text("Water pills that help remove extra fluid")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+    private var customMedicationSection: some View {
+        Group {
+            Section {
+                TextField("Medication name", text: $viewModel.nameInput)
+                    .textContentType(.none)
+                    .autocorrectionDisabled()
+                    .accessibilityLabel("Medication name")
+                    .accessibilityHint("Enter the name of the medication")
+
+                HStack {
+                    TextField("Dosage", text: $viewModel.dosageInput)
+                        .keyboardType(.decimalPad)
+                        .focused($isDosageFieldFocused)
+                        .accessibilityLabel("Dosage amount")
+                        .accessibilityHint("Enter the dosage number")
+                        .toolbar {
+                            ToolbarItemGroup(placement: .keyboard) {
+                                Spacer()
+                                Button("Done") {
+                                    isDosageFieldFocused = false
+                                }
+                            }
+                        }
+
+                    Picker("Unit", selection: $viewModel.selectedUnit) {
+                        ForEach(Medication.availableUnits, id: \.self) { unit in
+                            Text(unit).tag(unit)
+                        }
+                    }
+                    .labelsHidden()
+                    .accessibilityLabel("Dosage unit")
+                    .accessibilityHint("Select the unit of measurement")
+                }
+            } header: {
+                Text("Medication Details")
+            } footer: {
+                if !viewModel.dosageInput.isEmpty && viewModel.parsedDosage == nil {
+                    Text("Please enter a valid number for dosage")
+                        .foregroundStyle(.red)
+                } else {
+                    Text("Enter the medication name and dosage as shown on your prescription.")
                 }
             }
-            .accessibilityLabel("Diuretic medication toggle")
-            .accessibilityHint("Turn on if this is a diuretic, also known as a water pill")
-        } footer: {
-            Text("Diuretics are tracked separately to help monitor your daily fluid management.")
+
+            Section {
+                TextField("e.g., Once daily, Twice daily", text: $viewModel.scheduleInput)
+                    .textContentType(.none)
+                    .accessibilityLabel("Schedule")
+                    .accessibilityHint("Enter when you take this medication, this is optional")
+            } header: {
+                Text("Schedule (Optional)")
+            } footer: {
+                Text("When do you typically take this medication?")
+            }
+
+            Section {
+                Toggle(isOn: $viewModel.isDiuretic) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("This is a diuretic")
+                            .font(.body)
+                        Text("Water pills that help remove extra fluid")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .accessibilityLabel("Diuretic medication toggle")
+                .accessibilityHint("Turn on if this is a diuretic, also known as a water pill")
+            } footer: {
+                Text("Diuretics are tracked separately to help monitor your daily fluid management.")
+            }
         }
     }
 }

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		018000010000000100000001 /* HeartFailureMedication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 018000020000000100000001 /* HeartFailureMedication.swift */; };
 		016000010000000100000001 /* OnboardingContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 016000020000000100000001 /* OnboardingContainerView.swift */; };
 		016000010000000100000002 /* WelcomePageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 016000020000000100000002 /* WelcomePageView.swift */; };
 		016000010000000100000003 /* HealthKitPermissionPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 016000020000000100000003 /* HealthKitPermissionPageView.swift */; };
@@ -92,6 +93,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		018000020000000100000001 /* HeartFailureMedication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartFailureMedication.swift; sourceTree = "<group>"; };
 		015C484EB0C714313F98B0BF /* HealthKitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HealthKitService.swift; path = HRTY/Services/HealthKitService.swift; sourceTree = SOURCE_ROOT; };
 		016000020000000100000001 /* OnboardingContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = OnboardingContainerView.swift; path = HRTY/Views/Onboarding/OnboardingContainerView.swift; sourceTree = SOURCE_ROOT; };
 		016000020000000100000002 /* WelcomePageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WelcomePageView.swift; path = HRTY/Views/Onboarding/WelcomePageView.swift; sourceTree = SOURCE_ROOT; };
@@ -252,6 +254,7 @@
 		A1000005200000010000000100000005 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				018000020000000100000001 /* HeartFailureMedication.swift */,
 				A1000002200000010000000100000009 /* SymptomType.swift */,
 				A100000220000001000000010000000A /* AlertType.swift */,
 				A100000220000001000000010000000B /* DailyEntry.swift */,
@@ -464,6 +467,7 @@
 				017000010000000100000003 /* MedicationPhotoCaptureView.swift in Sources */,
 				017000010000000100000004 /* MedicationPhotoGalleryView.swift in Sources */,
 				017000010000000100000005 /* MedicationPhotoViewerView.swift in Sources */,
+				018000010000000100000001 /* HeartFailureMedication.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
