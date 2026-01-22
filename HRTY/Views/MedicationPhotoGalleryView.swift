@@ -2,17 +2,53 @@ import SwiftUI
 
 /// Displays a grid gallery of medication reference photos.
 /// Supports viewing individual photos and deletion.
+/// Adapts to Dynamic Type settings for accessibility.
 struct MedicationPhotoGalleryView: View {
     let photos: [MedicationPhoto]
     let onPhotoTapped: (MedicationPhoto) -> Void
     let onDeletePhoto: (MedicationPhoto) -> Void
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     private let photoService = PhotoService.shared
-    private let columns = [
-        GridItem(.flexible(), spacing: 8),
-        GridItem(.flexible(), spacing: 8),
-        GridItem(.flexible(), spacing: 8)
-    ]
+
+    /// Returns the number of columns based on Dynamic Type size.
+    /// Larger text sizes get fewer columns for better usability.
+    private var columnCount: Int {
+        switch dynamicTypeSize {
+        case .xSmall, .small, .medium, .large:
+            return 3
+        case .xLarge, .xxLarge:
+            return 2
+        case .xxxLarge, .accessibility1, .accessibility2, .accessibility3, .accessibility4, .accessibility5:
+            return 2
+        @unknown default:
+            return 3
+        }
+    }
+
+    /// Returns the thumbnail height based on Dynamic Type size.
+    /// Scales up for accessibility sizes to improve visibility.
+    private var thumbnailHeight: CGFloat {
+        switch dynamicTypeSize {
+        case .xSmall, .small, .medium, .large:
+            return 110
+        case .xLarge, .xxLarge:
+            return 130
+        case .xxxLarge, .accessibility1:
+            return 150
+        case .accessibility2, .accessibility3:
+            return 170
+        case .accessibility4, .accessibility5:
+            return 190
+        @unknown default:
+            return 110
+        }
+    }
+
+    private var columns: [GridItem] {
+        Array(repeating: GridItem(.flexible(), spacing: 8), count: columnCount)
+    }
 
     var body: some View {
         if photos.isEmpty {
@@ -50,6 +86,7 @@ struct MedicationPhotoGalleryView: View {
             ForEach(photos) { photo in
                 PhotoThumbnailView(
                     photo: photo,
+                    thumbnailHeight: thumbnailHeight,
                     onTap: { onPhotoTapped(photo) },
                     onDelete: { onDeletePhoto(photo) }
                 )
@@ -60,8 +97,10 @@ struct MedicationPhotoGalleryView: View {
 }
 
 /// Individual photo thumbnail with tap and delete actions.
+/// Supports Dynamic Type by accepting a configurable height.
 struct PhotoThumbnailView: View {
     let photo: MedicationPhoto
+    let thumbnailHeight: CGFloat
     let onTap: () -> Void
     let onDelete: () -> Void
 
@@ -85,7 +124,7 @@ struct PhotoThumbnailView: View {
                         }
                 }
             }
-            .frame(height: 110)
+            .frame(height: thumbnailHeight)
             .clipShape(RoundedRectangle(cornerRadius: 8))
         }
         .buttonStyle(.plain)
