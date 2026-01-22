@@ -237,6 +237,7 @@ final class MedicationsViewModel {
         showingPhotoViewer = true
     }
 
+    @MainActor
     func deletePhoto(_ photo: MedicationPhoto) {
         do {
             try photoService.deletePhoto(photo)
