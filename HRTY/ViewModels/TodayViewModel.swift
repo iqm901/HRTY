@@ -502,6 +502,7 @@ final class TodayViewModel {
     }
 
     /// Check if dizziness warrants a BP check prompt
+    @MainActor
     func checkDizzinessBPAlert(context: ModelContext) async {
         let dizzinessSeverity = symptomSeverities[.dizziness] ?? 1
 
