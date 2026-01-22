@@ -37,8 +37,8 @@
 - [x] Reschedule when time changes
 
 ## Quality Checks
-- [ ] Notification fires at correct time
-- [ ] Tapping opens Today view
-- [ ] Enable/disable works correctly
-- [ ] Time changes update schedule
+- [x] Notification fires at correct time
+- [x] Tapping opens Today view
+- [x] Enable/disable works correctly
+- [x] Time changes update schedule
 - [x] App builds without errors
