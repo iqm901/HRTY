@@ -11,6 +11,7 @@
 		353643CAB1C4A76C2E27DBE6 /* HeartRateTrendChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = F895498FAFEA9C574FD944BE /* HeartRateTrendChart.swift */; };
 		39F445D88F5E159013E6EC8A /* HeartRateReading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EF04028AE7D71BCAA7EA96C /* HeartRateReading.swift */; };
 		39F5445DABE3B8A3163C6E29 /* HeartRateAlertService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 326045A69E90D70EEBA45812 /* HeartRateAlertService.swift */; };
+		C1000001200000010000000200000009 /* AlertConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002200000010000000100000020 /* AlertConstants.swift */; };
 		4D8A49FF80365F7A21DD1B2E /* HeartRateAlertService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 326045A69E90D70EEBA45812 /* HeartRateAlertService.swift */; };
 		A100000120000001000000010000002D /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000220000001000000010000002D /* NotificationService.swift */; };
 		71C64B1393006B13494C3B1B /* HeartRateReading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EF04028AE7D71BCAA7EA96C /* HeartRateReading.swift */; };
@@ -60,6 +61,7 @@
 		B1000001200000010000000200000006 /* TrendsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000002200000010000000200000006 /* TrendsViewModelTests.swift */; };
 		B1000001200000010000000200000007 /* ExportViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000002200000010000000200000007 /* ExportViewModelTests.swift */; };
 		B1000001200000010000000200000008 /* SettingsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000002200000010000000200000008 /* SettingsViewModelTests.swift */; };
+		B1000001200000010000000200000009 /* NotificationServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000002200000010000000200000009 /* NotificationServiceTests.swift */; };
 		BBEB42D594C1A7C00B1643E2 /* HeartRateTrendChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = F895498FAFEA9C574FD944BE /* HeartRateTrendChart.swift */; };
 		E0F14611B875566FC6484AF2 /* HealthKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 015C484EB0C714313F98B0BF /* HealthKitService.swift */; };
 		E5C14116953F65885209755D /* HeartRateSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4E646B7A5AB199BF8D29DB9 /* HeartRateSectionView.swift */; };
@@ -128,6 +130,7 @@
 		B1000002200000010000000200000006 /* TrendsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendsViewModelTests.swift; sourceTree = "<group>"; };
 		B1000002200000010000000200000007 /* ExportViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportViewModelTests.swift; sourceTree = "<group>"; };
 		B1000002200000010000000200000008 /* SettingsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModelTests.swift; sourceTree = "<group>"; };
+		B1000002200000010000000200000009 /* NotificationServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationServiceTests.swift; sourceTree = "<group>"; };
 		B1000004200000010000000200000001 /* HRTYTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HRTYTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4E646B7A5AB199BF8D29DB9 /* HeartRateSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HeartRateSectionView.swift; path = HRTY/Views/HeartRateSectionView.swift; sourceTree = SOURCE_ROOT; };
 		F895498FAFEA9C574FD944BE /* HeartRateTrendChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HeartRateTrendChart.swift; path = HRTY/Views/HeartRateTrendChart.swift; sourceTree = SOURCE_ROOT; };
@@ -263,6 +266,7 @@
 				B1000002200000010000000200000006 /* TrendsViewModelTests.swift */,
 				B1000002200000010000000200000007 /* ExportViewModelTests.swift */,
 				B1000002200000010000000200000008 /* SettingsViewModelTests.swift */,
+				B1000002200000010000000200000009 /* NotificationServiceTests.swift */,
 			);
 			path = HRTYTests;
 			sourceTree = "<group>";
@@ -424,11 +428,7 @@
 				B1000001200000010000000200000006 /* TrendsViewModelTests.swift in Sources */,
 				B1000001200000010000000200000007 /* ExportViewModelTests.swift in Sources */,
 				B1000001200000010000000200000008 /* SettingsViewModelTests.swift in Sources */,
-				F6C94C39A9691CBC584053C0 /* HealthKitService.swift in Sources */,
-				39F5445DABE3B8A3163C6E29 /* HeartRateAlertService.swift in Sources */,
-				E5C14116953F65885209755D /* HeartRateSectionView.swift in Sources */,
-				353643CAB1C4A76C2E27DBE6 /* HeartRateTrendChart.swift in Sources */,
-				39F445D88F5E159013E6EC8A /* HeartRateReading.swift in Sources */,
+				B1000001200000010000000200000009 /* NotificationServiceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
