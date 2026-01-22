@@ -1,44 +1,44 @@
 # Tasks: Daily Reminder Notification
 
 ## Notification Service
-- [ ] Create NotificationService class
-- [ ] Add method to request permission
-- [ ] Add method to schedule daily notification
-- [ ] Add method to cancel scheduled notifications
-- [ ] Handle permission status
+- [x] Create NotificationService class
+- [x] Add method to request permission
+- [x] Add method to schedule daily notification
+- [x] Add method to cancel scheduled notifications
+- [x] Handle permission status
 
 ## Permission Request
-- [ ] Request notification permission
-- [ ] Handle authorized status
-- [ ] Handle denied status gracefully
-- [ ] Store permission status
+- [x] Request notification permission
+- [x] Handle authorized status
+- [x] Handle denied status gracefully
+- [x] Store permission status
 
 ## Notification Scheduling
-- [ ] Schedule repeating daily notification
-- [ ] Use time from Settings
-- [ ] Update when time changes
-- [ ] Cancel when disabled
+- [x] Schedule repeating daily notification
+- [x] Use time from Settings
+- [x] Update when time changes
+- [x] Cancel when disabled
 
 ## Notification Content
-- [ ] Create warm, encouraging notification text
-- [ ] Set title: "Daily Check-in"
-- [ ] Set body with friendly message
-- [ ] Add appropriate sound (optional)
+- [x] Create warm, encouraging notification text
+- [x] Set title: "Daily Check-in"
+- [x] Set body with friendly message
+- [x] Add appropriate sound (optional)
 
 ## Notification Handling
-- [ ] Handle notification tap
-- [ ] Open app to Today view
-- [ ] Set up UNUserNotificationCenterDelegate
+- [x] Handle notification tap
+- [x] Open app to Today view
+- [x] Set up UNUserNotificationCenterDelegate
 
 ## Settings Integration
-- [ ] Connect enable toggle to scheduling
-- [ ] Connect time picker to schedule update
-- [ ] Cancel notifications when disabled
-- [ ] Reschedule when time changes
+- [x] Connect enable toggle to scheduling
+- [x] Connect time picker to schedule update
+- [x] Cancel notifications when disabled
+- [x] Reschedule when time changes
 
 ## Quality Checks
 - [ ] Notification fires at correct time
 - [ ] Tapping opens Today view
 - [ ] Enable/disable works correctly
 - [ ] Time changes update schedule
-- [ ] App builds without errors
+- [x] App builds without errors

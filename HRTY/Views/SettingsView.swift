@@ -22,9 +22,26 @@ struct SettingsView: View {
 
     private var reminderSection: some View {
         Section {
-            Toggle("Daily Reminder", isOn: $viewModel.reminderEnabled.animation(.easeInOut(duration: 0.2)))
-                .accessibilityLabel("Daily reminder")
-                .accessibilityHint("Toggle to enable or disable daily check-in reminders")
+            Toggle("Daily Reminder", isOn: Binding(
+                get: { viewModel.reminderEnabled },
+                set: { newValue in
+                    if newValue && !viewModel.isNotificationPermissionDetermined {
+                        // Request permission first
+                        Task {
+                            await viewModel.requestNotificationPermission()
+                        }
+                    } else if newValue && !viewModel.isNotificationAuthorized {
+                        // Permission was denied, show alert
+                        showPermissionDeniedAlert = true
+                    } else {
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            viewModel.reminderEnabled = newValue
+                        }
+                    }
+                }
+            ))
+            .accessibilityLabel("Daily reminder")
+            .accessibilityHint("Toggle to enable or disable daily check-in reminders")
 
             if viewModel.reminderEnabled {
                 DatePicker(
@@ -44,7 +61,19 @@ struct SettingsView: View {
         } footer: {
             Text("Receive a gentle reminder to complete your daily check-in.")
         }
+        .alert("Notifications Disabled", isPresented: $showPermissionDeniedAlert) {
+            Button("Open Settings") {
+                if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
+                    UIApplication.shared.open(settingsURL)
+                }
+            }
+            Button("Not Now", role: .cancel) { }
+        } message: {
+            Text("To receive daily reminders, please enable notifications in Settings.")
+        }
     }
+
+    @State private var showPermissionDeniedAlert = false
 
     // MARK: - Patient Identifier Section
 

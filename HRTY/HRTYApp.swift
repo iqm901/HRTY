@@ -3,6 +3,10 @@ import SwiftData
 
 @main
 struct HRTYApp: App {
+    // Initialize NotificationService early to ensure delegate is set up
+    // before handling notification responses from app launch
+    private let notificationService = NotificationService.shared
+
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             DailyEntry.self,

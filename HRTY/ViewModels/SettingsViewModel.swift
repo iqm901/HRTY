@@ -5,13 +5,22 @@ import SwiftUI
 final class SettingsViewModel {
     // MARK: - Reminder Settings
     @ObservationIgnored
-    @AppStorage(AppStorageKeys.reminderEnabled) var reminderEnabled: Bool = false
+    @AppStorage(AppStorageKeys.reminderEnabled) var reminderEnabled: Bool = false {
+        didSet {
+            Task {
+                await updateNotificationSchedule()
+            }
+        }
+    }
 
     @ObservationIgnored
     @AppStorage(AppStorageKeys.reminderHour) private var reminderHour: Int = 8
 
     @ObservationIgnored
     @AppStorage(AppStorageKeys.reminderMinute) private var reminderMinute: Int = 0
+
+    // MARK: - Notification Service
+    private let notificationService = NotificationService.shared
 
     // MARK: - Patient Identifier
     @ObservationIgnored
@@ -31,6 +40,9 @@ final class SettingsViewModel {
             let components = Calendar.current.dateComponents([.hour, .minute], from: newValue)
             reminderHour = components.hour ?? 8
             reminderMinute = components.minute ?? 0
+            Task {
+                await updateNotificationSchedule()
+            }
         }
     }
 
@@ -67,5 +79,38 @@ final class SettingsViewModel {
     func resetReminderToDefault() {
         reminderHour = 8
         reminderMinute = 0
+    }
+
+    // MARK: - Notification Methods
+
+    /// Requests notification permission and enables reminders if granted.
+    @MainActor
+    func requestNotificationPermission() async {
+        let granted = await notificationService.requestPermission()
+        if granted {
+            await updateNotificationSchedule()
+        } else {
+            // If permission denied, disable the toggle
+            reminderEnabled = false
+        }
+    }
+
+    /// Updates the notification schedule based on current settings.
+    private func updateNotificationSchedule() async {
+        await notificationService.updateReminderSchedule(
+            enabled: reminderEnabled,
+            hour: reminderHour,
+            minute: reminderMinute
+        )
+    }
+
+    /// Whether notification permission has been determined.
+    var isNotificationPermissionDetermined: Bool {
+        notificationService.isPermissionDetermined
+    }
+
+    /// Whether notifications are currently authorized.
+    var isNotificationAuthorized: Bool {
+        notificationService.isAuthorized
     }
 }

@@ -48,6 +48,9 @@ struct ContentView: View {
                 .tag(Tab.settings)
                 .accessibilityIdentifier("settingsTab")
         }
+        .onReceive(NotificationCenter.default.publisher(for: .navigateToTodayTab)) { _ in
+            selectedTab = .today
+        }
     }
 }
 

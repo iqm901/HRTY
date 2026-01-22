@@ -12,6 +12,7 @@
 		39F445D88F5E159013E6EC8A /* HeartRateReading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EF04028AE7D71BCAA7EA96C /* HeartRateReading.swift */; };
 		39F5445DABE3B8A3163C6E29 /* HeartRateAlertService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 326045A69E90D70EEBA45812 /* HeartRateAlertService.swift */; };
 		4D8A49FF80365F7A21DD1B2E /* HeartRateAlertService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 326045A69E90D70EEBA45812 /* HeartRateAlertService.swift */; };
+		A100000120000001000000010000002D /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000220000001000000010000002D /* NotificationService.swift */; };
 		71C64B1393006B13494C3B1B /* HeartRateReading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EF04028AE7D71BCAA7EA96C /* HeartRateReading.swift */; };
 		A1000001200000010000000100000001 /* HRTYApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002200000010000000100000001 /* HRTYApp.swift */; };
 		A1000001200000010000000100000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002200000010000000100000002 /* ContentView.swift */; };
@@ -117,6 +118,7 @@
 		A100000220000001000000010000002A /* TrendDataPoints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendDataPoints.swift; sourceTree = "<group>"; };
 		A100000220000001000000010000002B /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 		A100000220000001000000010000002C /* AppStorageKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStorageKeys.swift; sourceTree = "<group>"; };
+		A100000220000001000000010000002D /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		A1000003200000010000000100000001 /* HRTY.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HRTY.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1000002200000010000000200000001 /* TabTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabTests.swift; sourceTree = "<group>"; };
 		B1000002200000010000000200000002 /* SymptomTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymptomTests.swift; sourceTree = "<group>"; };
@@ -245,6 +247,7 @@
 				A1000002200000010000000100000021 /* WeightAlertService.swift */,
 				A1000002200000010000000100000022 /* SymptomAlertService.swift */,
 				A1000002200000010000000100000029 /* PDFGenerator.swift */,
+				A100000220000001000000010000002D /* NotificationService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -400,6 +403,7 @@
 				A100000120000001000000010000002A /* TrendDataPoints.swift in Sources */,
 				A100000120000001000000010000002B /* SettingsViewModel.swift in Sources */,
 				A100000120000001000000010000002C /* AppStorageKeys.swift in Sources */,
+				A100000120000001000000010000002D /* NotificationService.swift in Sources */,
 				E0F14611B875566FC6484AF2 /* HealthKitService.swift in Sources */,
 				4D8A49FF80365F7A21DD1B2E /* HeartRateAlertService.swift in Sources */,
 				1AF9431892C3E7B5D8C4EE03 /* HeartRateSectionView.swift in Sources */,
