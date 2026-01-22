@@ -3,7 +3,8 @@ import Foundation
 /// Represents a medication reference photo stored on device.
 /// Photos are stored as files in the documents directory, not in SwiftData,
 /// since they are for reference only and don't require complex querying.
-struct MedicationPhoto: Identifiable, Equatable {
+/// Conforms to Codable to support metadata persistence and potential future export.
+struct MedicationPhoto: Identifiable, Equatable, Codable {
     /// Unique identifier for the photo
     let id: UUID
 
