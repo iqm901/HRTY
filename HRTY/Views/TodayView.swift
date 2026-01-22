@@ -28,6 +28,7 @@ struct TodayView: View {
                 viewModel.loadWeightAlerts(context: modelContext)
                 viewModel.loadSymptomAlerts(context: modelContext)
                 viewModel.loadHeartRateAlerts(context: modelContext)
+                viewModel.loadDizzinessBPAlerts(context: modelContext)
                 isWeightFieldFocused = true
             }
             .task {
@@ -49,6 +50,12 @@ struct TodayView: View {
                 // Announce new heart rate alerts to VoiceOver users
                 if newCount > oldCount {
                     announceHeartRateAlertForVoiceOver()
+                }
+            }
+            .onChange(of: viewModel.activeDizzinessBPAlerts.count) { oldCount, newCount in
+                // Announce new dizziness BP alerts to VoiceOver users
+                if newCount > oldCount {
+                    announceDizzinessBPAlertForVoiceOver()
                 }
             }
         }
@@ -80,6 +87,14 @@ struct TodayView: View {
         }
     }
 
+    private func announceDizzinessBPAlertForVoiceOver() {
+        guard let firstAlert = viewModel.activeDizzinessBPAlerts.first else { return }
+        let announcement = "Blood pressure check suggested: \(firstAlert.alertType.accessibilityDescription)"
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            UIAccessibility.post(notification: .announcement, argument: announcement)
+        }
+    }
+
     // MARK: - Heart Rate Section
     private var heartRateSection: some View {
         HeartRateSectionView(
@@ -95,12 +110,22 @@ struct TodayView: View {
     private var alertsSection: some View {
         let hasAlerts = !viewModel.activeWeightAlerts.isEmpty ||
                         !viewModel.activeSymptomAlerts.isEmpty ||
-                        !viewModel.activeHeartRateAlerts.isEmpty
+                        !viewModel.activeHeartRateAlerts.isEmpty ||
+                        !viewModel.activeDizzinessBPAlerts.isEmpty
 
         if hasAlerts {
             VStack(spacing: 12) {
                 // Heart rate alerts
                 ForEach(viewModel.activeHeartRateAlerts, id: \.persistentModelID) { alert in
+                    WeightAlertView(alert: alert) {
+                        withAnimation(.easeInOut(duration: 0.3)) {
+                            viewModel.acknowledgeAlert(alert, context: modelContext)
+                        }
+                    }
+                }
+
+                // Dizziness BP check alerts
+                ForEach(viewModel.activeDizzinessBPAlerts, id: \.persistentModelID) { alert in
                     WeightAlertView(alert: alert) {
                         withAnimation(.easeInOut(duration: 0.3)) {
                             viewModel.acknowledgeAlert(alert, context: modelContext)

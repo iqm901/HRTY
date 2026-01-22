@@ -23,10 +23,10 @@ As a patient logging dizziness, I want a prompt to check my blood pressure if it
 - Don't show if BP data is available
 
 ## Acceptance Criteria
-- [ ] If dizziness ≥3 and no BP data from HealthKit, show prompt
-- [ ] Prompt suggests checking BP manually
-- [ ] If unable to check, advises contacting clinician
-- [ ] Orthostatic precautions mentioned in alert
+- [x] If dizziness ≥3 and no BP data from HealthKit, show prompt
+- [x] Prompt suggests checking BP manually
+- [x] If unable to check, advises contacting clinician
+- [x] Orthostatic precautions mentioned in alert
 
 ## UI/UX Notes
 - Use informational card/banner style

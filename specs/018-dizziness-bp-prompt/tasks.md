@@ -1,38 +1,52 @@
 # Tasks: Dizziness + BP Check Prompt
 
 ## HealthKit BP Integration
-- [ ] Add blood pressure to HealthKit authorization
-- [ ] Add method to fetch recent BP readings
-- [ ] Check for BP data in last 24 hours
-- [ ] Handle no BP data case
+- [x] Add blood pressure to HealthKit authorization
+- [x] Add method to fetch recent BP readings
+- [x] Check for BP data in last 24 hours
+- [x] Handle no BP data case
 
 ## Prompt Logic
-- [ ] Check dizziness severity after symptom save
-- [ ] Trigger if dizziness ≥ 3
-- [ ] Check for recent BP data
-- [ ] Only show prompt if no BP available
+- [x] Check dizziness severity after symptom save
+- [x] Trigger if dizziness ≥ 3
+- [x] Check for recent BP data
+- [x] Only show prompt if no BP available
 
 ## Prompt Content
-- [ ] Create warm, helpful prompt message
-- [ ] Suggest manual BP check
-- [ ] Include orthostatic precaution tip
-- [ ] Mention contacting clinician option
+- [x] Create warm, helpful prompt message
+- [x] Suggest manual BP check
+- [x] Include orthostatic precaution tip
+- [x] Mention contacting clinician option
 
 ## UI Component
-- [ ] Create BP prompt banner/card
-- [ ] Use consistent styling with other alerts
-- [ ] Add dismiss button
-- [ ] Show after symptom save
+- [x] Create BP prompt banner/card
+- [x] Use consistent styling with other alerts
+- [x] Add dismiss button
+- [x] Show after symptom save
 
 ## TodayView Integration
-- [ ] Add BP prompt display area
-- [ ] Show when conditions met
-- [ ] Handle dismissal
-- [ ] Don't show if BP data exists
+- [x] Add BP prompt display area
+- [x] Show when conditions met
+- [x] Handle dismissal
+- [x] Don't show if BP data exists
 
 ## Quality Checks
-- [ ] Prompt shows at dizziness ≥ 3
-- [ ] Prompt doesn't show if BP available
-- [ ] Message is warm and helpful
-- [ ] Dismiss works correctly
-- [ ] App builds without errors
+- [x] Prompt shows at dizziness ≥ 3
+- [x] Prompt doesn't show if BP available
+- [x] Message is warm and helpful
+- [x] Dismiss works correctly
+- [x] App builds without errors
+
+## Implementation Summary
+All tasks completed in iteration 1 (System Architect review pending).
+
+### Files Created
+- `HRTY/Services/DizzinessBPAlertService.swift` - New service for handling dizziness BP check prompts
+
+### Files Modified
+- `HRTY/Services/HealthKitService.swift` - Added BP authorization and `hasRecentBloodPressureReading()` method
+- `HRTY/Models/AlertType.swift` - Added `dizzinessBPCheck` case
+- `HRTY/Models/AlertConstants.swift` - Added `dizzinessBPPromptThreshold` and `bloodPressureLookbackHours`
+- `HRTY/Views/WeightAlertView.swift` - Added blood pressure category label
+- `HRTY/ViewModels/TodayViewModel.swift` - Integrated dizziness BP alert service
+- `HRTY/Views/TodayView.swift` - Added dizziness BP alert display and VoiceOver support

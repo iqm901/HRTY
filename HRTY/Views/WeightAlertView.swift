@@ -89,6 +89,8 @@ struct WeightAlertView: View {
             return "weight"
         case .heartRateLow, .heartRateHigh:
             return "heart rate"
+        case .dizzinessBPCheck:
+            return "blood pressure"
         }
     }
 

@@ -6,6 +6,7 @@ enum AlertType: String, Codable, CaseIterable {
     case heartRateLow
     case heartRateHigh
     case severeSymptom
+    case dizzinessBPCheck
 
     var displayName: String {
         switch self {
@@ -19,6 +20,8 @@ enum AlertType: String, Codable, CaseIterable {
             return "High heart rate"
         case .severeSymptom:
             return "Symptom needs attention"
+        case .dizzinessBPCheck:
+            return "Blood pressure check suggested"
         }
     }
 
@@ -36,6 +39,8 @@ enum AlertType: String, Codable, CaseIterable {
             return "Your heart rate seems higher than usual. Your care team can help you figure out next steps."
         case .severeSymptom:
             return "You've noted a symptom that may need attention. Please consider contacting your care team."
+        case .dizzinessBPCheck:
+            return "You mentioned feeling dizzy. Checking your blood pressure may be helpful."
         }
     }
 }

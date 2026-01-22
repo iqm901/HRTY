@@ -9,6 +9,7 @@ protocol HealthKitServiceProtocol {
     func fetchLatestRestingHeartRate() async -> HeartRateReading?
     func fetchHeartRateHistory(days: Int) async -> [HeartRateReading]
     func checkForPersistentAbnormalHeartRate() async -> (isAbnormal: Bool, isLow: Bool, readings: [HeartRateReading])
+    func hasRecentBloodPressureReading(withinHours hours: Int) async -> Bool
 }
 
 /// Service responsible for HealthKit integration
@@ -36,7 +37,7 @@ final class HealthKitService: HealthKitServiceProtocol {
 
     // MARK: - Authorization
 
-    /// Request authorization to read resting heart rate from HealthKit
+    /// Request authorization to read resting heart rate and blood pressure from HealthKit
     /// - Returns: True if authorization was granted or already exists
     func requestAuthorization() async -> Bool {
         guard let healthStore = healthStore else { return false }
@@ -45,7 +46,14 @@ final class HealthKitService: HealthKitServiceProtocol {
             return false
         }
 
-        let typesToRead: Set<HKObjectType> = [restingHeartRateType]
+        var typesToRead: Set<HKObjectType> = [restingHeartRateType]
+
+        // Add blood pressure types (systolic and diastolic)
+        if let systolicType = HKQuantityType.quantityType(forIdentifier: .bloodPressureSystolic),
+           let diastolicType = HKQuantityType.quantityType(forIdentifier: .bloodPressureDiastolic) {
+            typesToRead.insert(systolicType)
+            typesToRead.insert(diastolicType)
+        }
 
         do {
             try await healthStore.requestAuthorization(toShare: [], read: typesToRead)
@@ -170,5 +178,45 @@ final class HealthKitService: HealthKitServiceProtocol {
         }
 
         return (isAbnormal: false, isLow: false, readings: [])
+    }
+
+    // MARK: - Blood Pressure Check
+
+    /// Check if there's a blood pressure reading within the specified timeframe
+    /// - Parameter hours: Number of hours to look back (default 24)
+    /// - Returns: True if a BP reading exists within the timeframe
+    func hasRecentBloodPressureReading(withinHours hours: Int = 24) async -> Bool {
+        guard let healthStore = healthStore else { return false }
+
+        guard let systolicType = HKQuantityType.quantityType(forIdentifier: .bloodPressureSystolic) else {
+            return false
+        }
+
+        let calendar = Calendar.current
+        let endDate = Date()
+        guard let startDate = calendar.date(byAdding: .hour, value: -hours, to: endDate) else {
+            return false
+        }
+
+        let predicate = HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: .strictStartDate)
+
+        return await withCheckedContinuation { continuation in
+            let query = HKSampleQuery(
+                sampleType: systolicType,
+                predicate: predicate,
+                limit: 1,
+                sortDescriptors: nil
+            ) { _, samples, error in
+                guard error == nil,
+                      let samples = samples else {
+                    continuation.resume(returning: false)
+                    return
+                }
+
+                continuation.resume(returning: !samples.isEmpty)
+            }
+
+            healthStore.execute(query)
+        }
     }
 }

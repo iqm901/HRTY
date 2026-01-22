@@ -25,6 +25,10 @@ final class TodayViewModel {
     var isLoadingHeartRate: Bool = false
     var healthKitAvailable: Bool = false
 
+    // MARK: - Dizziness BP Alert State
+    var activeDizzinessBPAlerts: [AlertEvent] = []
+    var hasBPReading: Bool = false
+
     // MARK: - Data State
     var todayEntry: DailyEntry?
     var yesterdayEntry: DailyEntry?
@@ -34,18 +38,21 @@ final class TodayViewModel {
     private let symptomAlertService: SymptomAlertServiceProtocol
     private let heartRateAlertService: HeartRateAlertServiceProtocol
     private let healthKitService: HealthKitServiceProtocol
+    private let dizzinessBPAlertService: DizzinessBPAlertServiceProtocol
 
     // MARK: - Initialization
     init(
         weightAlertService: WeightAlertServiceProtocol = WeightAlertService(),
         symptomAlertService: SymptomAlertServiceProtocol = SymptomAlertService(),
         heartRateAlertService: HeartRateAlertServiceProtocol = HeartRateAlertService(),
-        healthKitService: HealthKitServiceProtocol = HealthKitService()
+        healthKitService: HealthKitServiceProtocol = HealthKitService(),
+        dizzinessBPAlertService: DizzinessBPAlertServiceProtocol = DizzinessBPAlertService()
     ) {
         self.weightAlertService = weightAlertService
         self.symptomAlertService = symptomAlertService
         self.heartRateAlertService = heartRateAlertService
         self.healthKitService = healthKitService
+        self.dizzinessBPAlertService = dizzinessBPAlertService
         self.healthKitAvailable = healthKitService.isAvailable
     }
 
@@ -332,6 +339,13 @@ final class TodayViewModel {
 
             // Check for symptom alerts after successful save
             checkSymptomAlerts(context: context)
+
+            // Check for dizziness BP prompt if dizziness was updated
+            if symptomType == .dizziness {
+                Task {
+                    await checkDizzinessBPAlert(context: context)
+                }
+            }
         } catch {
             // Track error state for potential UI indication
             // Auto-save errors are non-blocking but trackable
@@ -383,7 +397,7 @@ final class TodayViewModel {
         loadWeightAlerts(context: context)
     }
 
-    /// Acknowledge (dismiss) an alert (works for weight, symptom, and heart rate alerts)
+    /// Acknowledge (dismiss) an alert (works for weight, symptom, heart rate, and dizziness BP alerts)
     func acknowledgeAlert(_ alert: AlertEvent, context: ModelContext) {
         // Use the appropriate service based on alert type
         let success: Bool
@@ -392,6 +406,8 @@ final class TodayViewModel {
             success = symptomAlertService.acknowledgeAlert(alert, context: context)
         case .heartRateLow, .heartRateHigh:
             success = heartRateAlertService.acknowledgeAlert(alert, context: context)
+        case .dizzinessBPCheck:
+            success = dizzinessBPAlertService.acknowledgeAlert(alert, context: context)
         default:
             success = weightAlertService.acknowledgeAlert(alert, context: context)
         }
@@ -403,6 +419,8 @@ final class TodayViewModel {
                 activeSymptomAlerts.removeAll { $0.persistentModelID == alert.persistentModelID }
             case .heartRateLow, .heartRateHigh:
                 activeHeartRateAlerts.removeAll { $0.persistentModelID == alert.persistentModelID }
+            case .dizzinessBPCheck:
+                activeDizzinessBPAlerts.removeAll { $0.persistentModelID == alert.persistentModelID }
             default:
                 activeWeightAlerts.removeAll { $0.persistentModelID == alert.persistentModelID }
             }
@@ -474,5 +492,32 @@ final class TodayViewModel {
 
         // Reload alerts to show any new ones
         loadHeartRateAlerts(context: context)
+    }
+
+    // MARK: - Dizziness BP Alert Methods
+
+    /// Load unacknowledged dizziness BP alerts for display
+    func loadDizzinessBPAlerts(context: ModelContext) {
+        activeDizzinessBPAlerts = dizzinessBPAlertService.loadUnacknowledgedDizzinessBPAlerts(context: context)
+    }
+
+    /// Check if dizziness warrants a BP check prompt
+    func checkDizzinessBPAlert(context: ModelContext) async {
+        let dizzinessSeverity = symptomSeverities[.dizziness] ?? 1
+
+        // Check for recent BP reading from HealthKit
+        hasBPReading = await healthKitService.hasRecentBloodPressureReading(
+            withinHours: AlertConstants.bloodPressureLookbackHours
+        )
+
+        dizzinessBPAlertService.checkDizzinessBPAlert(
+            dizzinessSeverity: dizzinessSeverity,
+            hasBPReading: hasBPReading,
+            todayEntry: todayEntry,
+            context: context
+        )
+
+        // Reload alerts to show any new ones
+        loadDizzinessBPAlerts(context: context)
     }
 }

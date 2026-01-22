@@ -35,6 +35,12 @@ enum AlertConstants {
     /// Symptom severity at or above this level triggers severe symptom alert
     static let severeSymptomThreshold: Int = 4
 
+    /// Dizziness severity at or above this level triggers BP check prompt
+    static let dizzinessBPPromptThreshold: Int = 3
+
+    /// Hours to look back for recent blood pressure readings
+    static let bloodPressureLookbackHours: Int = 24
+
     // MARK: - Weight Display Thresholds
 
     /// Minimum weight change (in lbs) to be considered "up" or "down" rather than "stable"

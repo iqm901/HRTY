@@ -54,6 +54,7 @@
 		A1000001200000010000000100000020 /* AlertConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002200000010000000100000020 /* AlertConstants.swift */; };
 		A1000001200000010000000100000021 /* WeightAlertService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002200000010000000100000021 /* WeightAlertService.swift */; };
 		A1000001200000010000000100000022 /* SymptomAlertService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002200000010000000100000022 /* SymptomAlertService.swift */; };
+		A1271F9A8EA6C742AB86AC5C /* DizzinessBPAlertService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15A63F8D4176C4FBAA8071E /* DizzinessBPAlertService.swift */; };
 		A1000001200000010000000100000023 /* TrendsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002200000010000000100000023 /* TrendsViewModel.swift */; };
 		A1000001200000010000000100000024 /* WeightChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002200000010000000100000024 /* WeightChartView.swift */; };
 		A1000001200000010000000100000025 /* SymptomToggleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002200000010000000100000025 /* SymptomToggleView.swift */; };
@@ -133,6 +134,7 @@
 		A1000002200000010000000100000020 /* AlertConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertConstants.swift; sourceTree = "<group>"; };
 		A1000002200000010000000100000021 /* WeightAlertService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightAlertService.swift; sourceTree = "<group>"; };
 		A1000002200000010000000100000022 /* SymptomAlertService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymptomAlertService.swift; sourceTree = "<group>"; };
+		A15A63F8D4176C4FBAA8071E /* DizzinessBPAlertService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DizzinessBPAlertService.swift; sourceTree = "<group>"; };
 		A1000002200000010000000100000023 /* TrendsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendsViewModel.swift; sourceTree = "<group>"; };
 		A1000002200000010000000100000024 /* WeightChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightChartView.swift; sourceTree = "<group>"; };
 		A1000002200000010000000100000025 /* SymptomToggleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymptomToggleView.swift; sourceTree = "<group>"; };
@@ -283,6 +285,7 @@
 			children = (
 				A1000002200000010000000100000021 /* WeightAlertService.swift */,
 				A1000002200000010000000100000022 /* SymptomAlertService.swift */,
+				A15A63F8D4176C4FBAA8071E /* DizzinessBPAlertService.swift */,
 				A1000002200000010000000100000029 /* PDFGenerator.swift */,
 				A100000220000001000000010000002D /* NotificationService.swift */,
 				017000020000000100000001 /* PhotoService.swift */,
@@ -433,6 +436,7 @@
 				A1000001200000010000000100000019 /* WeightAlertView.swift in Sources */,
 				A1000001200000010000000100000021 /* WeightAlertService.swift in Sources */,
 				A1000001200000010000000100000022 /* SymptomAlertService.swift in Sources */,
+				A1271F9A8EA6C742AB86AC5C /* DizzinessBPAlertService.swift in Sources */,
 				A1000001200000010000000100000023 /* TrendsViewModel.swift in Sources */,
 				A1000001200000010000000100000024 /* WeightChartView.swift in Sources */,
 				A1000001200000010000000100000025 /* SymptomToggleView.swift in Sources */,
