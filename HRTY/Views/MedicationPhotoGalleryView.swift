@@ -145,7 +145,7 @@ struct PhotoThumbnailView: View {
             }
             Button("Cancel", role: .cancel) { }
         } message: {
-            Text("Are you sure you want to delete this photo? This cannot be undone.")
+            Text("This will remove the photo from your saved reference photos.")
         }
         .accessibilityLabel("Medication photo from \(photo.capturedAt.formatted(date: .abbreviated, time: .shortened))")
         .accessibilityHint("Tap to view full size, long press for options")

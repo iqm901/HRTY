@@ -96,7 +96,7 @@ struct MedicationPhotoViewerView: View {
                 }
                 Button("Cancel", role: .cancel) { }
             } message: {
-                Text("Are you sure you want to delete this photo? This cannot be undone.")
+                Text("This will remove the photo from your saved reference photos.")
             }
             .task {
                 fullImage = photoService.loadFullImage(for: photo)
