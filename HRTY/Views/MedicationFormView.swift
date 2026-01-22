@@ -12,6 +12,19 @@ struct MedicationFormView: View {
     var body: some View {
         NavigationStack {
             Form {
+                // Success message when medication is saved
+                if let message = viewModel.medicationSavedMessage {
+                    Section {
+                        HStack {
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundStyle(.green)
+                            Text(message)
+                                .foregroundStyle(.green)
+                        }
+                        .font(.callout)
+                    }
+                }
+
                 medicationDetailsSection
                 scheduleSection
                 diureticSection
@@ -24,21 +37,32 @@ struct MedicationFormView: View {
                     }
                 }
             }
+            .onChange(of: viewModel.nameInput) { _, _ in
+                viewModel.clearSavedMessage()
+            }
             .navigationTitle(isEditing ? "Edit Medication" : "Add Medication")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
+                    Button("Done") {
                         dismiss()
                         viewModel.resetForm()
                     }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
+                    Button(isEditing ? "Save" : "Add") {
                         if isEditing {
                             viewModel.updateMedication(context: modelContext)
+                            // Dismiss after editing
+                            if viewModel.validationError == nil {
+                                dismiss()
+                            }
                         } else {
                             viewModel.saveMedication(context: modelContext)
+                            // Reset form for next medication (don't dismiss)
+                            if viewModel.validationError == nil {
+                                viewModel.resetForm()
+                            }
                         }
                     }
                     .fontWeight(.semibold)
@@ -85,7 +109,12 @@ struct MedicationFormView: View {
         } header: {
             Text("Medication Details")
         } footer: {
-            Text("Enter the medication name and dosage as shown on your prescription.")
+            if !viewModel.dosageInput.isEmpty && viewModel.parsedDosage == nil {
+                Text("Please enter a valid number for dosage")
+                    .foregroundStyle(.red)
+            } else {
+                Text("Enter the medication name and dosage as shown on your prescription.")
+            }
         }
     }
 

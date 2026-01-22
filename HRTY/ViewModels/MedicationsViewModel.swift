@@ -31,6 +31,7 @@ final class MedicationsViewModel {
     // MARK: - Validation & Errors
     var validationError: String?
     var deleteError: String?
+    var medicationSavedMessage: String?
 
     // MARK: - Services
     private let photoService = PhotoService.shared
@@ -84,6 +85,11 @@ final class MedicationsViewModel {
         isDiuretic = false
         validationError = nil
         selectedMedication = nil
+        // Don't clear medicationSavedMessage here - let it show briefly
+    }
+
+    func clearSavedMessage() {
+        medicationSavedMessage = nil
     }
 
     func prepareForAdd() {
@@ -149,8 +155,9 @@ final class MedicationsViewModel {
         do {
             try context.save()
             loadMedications(context: context)
-            showingAddMedication = false
-            resetForm()
+            medicationSavedMessage = "\(trimmedName) added"
+            // Don't dismiss or reset here - let the view handle it
+            // This allows the form to stay open for adding multiple medications
         } catch {
             validationError = "Could not save medication. Please try again."
         }
