@@ -98,16 +98,17 @@ struct MedicationPhotoGalleryView: View {
 
 /// Individual photo thumbnail with tap and delete actions.
 /// Supports Dynamic Type by accepting a configurable height.
+/// Accepts an optional thumbnail loader closure for dependency injection and testing.
 struct PhotoThumbnailView: View {
     let photo: MedicationPhoto
     let thumbnailHeight: CGFloat
     let onTap: () -> Void
     let onDelete: () -> Void
+    /// Optional closure to load thumbnail image. Defaults to PhotoService.shared if not provided.
+    var loadThumbnail: ((MedicationPhoto) -> UIImage?)?
 
     @State private var thumbnailImage: UIImage?
     @State private var showingDeleteConfirmation = false
-
-    private let photoService = PhotoService.shared
 
     var body: some View {
         Button(action: onTap) {
@@ -150,7 +151,12 @@ struct PhotoThumbnailView: View {
         .accessibilityLabel("Medication photo from \(photo.capturedAt.formatted(date: .abbreviated, time: .shortened))")
         .accessibilityHint("Tap to view full size, long press for options")
         .task {
-            thumbnailImage = photoService.loadThumbnail(for: photo)
+            // Use injected loader if provided, otherwise fall back to shared service
+            if let loader = loadThumbnail {
+                thumbnailImage = loader(photo)
+            } else {
+                thumbnailImage = PhotoService.shared.loadThumbnail(for: photo)
+            }
         }
     }
 }
