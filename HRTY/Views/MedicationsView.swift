@@ -7,23 +7,33 @@ struct MedicationsView: View {
 
     var body: some View {
         NavigationStack {
-            Group {
-                if viewModel.hasNoMedications {
-                    emptyState
-                } else {
-                    medicationsList
+            ScrollView {
+                VStack(spacing: 24) {
+                    photosSection
+
+                    medicationsSection
                 }
+                .padding(.vertical)
             }
             .navigationTitle("Medications")
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
-                    Button {
-                        viewModel.prepareForAdd()
+                    Menu {
+                        Button {
+                            viewModel.prepareForPhotoCapture()
+                        } label: {
+                            Label("Add Photo", systemImage: "camera")
+                        }
+                        Button {
+                            viewModel.prepareForAdd()
+                        } label: {
+                            Label("Add Medication", systemImage: "pills")
+                        }
                     } label: {
                         Image(systemName: "plus")
                     }
-                    .accessibilityLabel("Add medication")
-                    .accessibilityHint("Opens a form to add a new medication")
+                    .accessibilityLabel("Add")
+                    .accessibilityHint("Opens menu to add a photo or medication")
                 }
             }
             .sheet(isPresented: $viewModel.showingAddMedication) {
@@ -31,6 +41,24 @@ struct MedicationsView: View {
             }
             .sheet(isPresented: $viewModel.showingEditMedication) {
                 MedicationFormView(viewModel: viewModel, isEditing: true)
+            }
+            .sheet(isPresented: $viewModel.showingPhotoCaptureView) {
+                MedicationPhotoCaptureView(capturedImage: $viewModel.capturedImage)
+            }
+            .fullScreenCover(isPresented: $viewModel.showingPhotoViewer) {
+                if let photo = viewModel.selectedPhoto {
+                    MedicationPhotoViewerView(
+                        photo: photo,
+                        onDelete: { viewModel.deletePhoto(photo) }
+                    )
+                }
+            }
+            .onChange(of: viewModel.capturedImage) { _, newImage in
+                if newImage != nil {
+                    Task {
+                        await viewModel.savePhoto()
+                    }
+                }
             }
             .alert("Remove Medication", isPresented: $viewModel.showingDeleteConfirmation) {
                 Button("Cancel", role: .cancel) {
@@ -56,50 +84,148 @@ struct MedicationsView: View {
                     Text(error)
                 }
             }
+            .alert("Photo Error", isPresented: .init(
+                get: { viewModel.photoError != nil },
+                set: { if !$0 { viewModel.clearPhotoError() } }
+            )) {
+                Button("OK", role: .cancel) {
+                    viewModel.clearPhotoError()
+                }
+            } message: {
+                if let error = viewModel.photoError {
+                    Text(error)
+                }
+            }
             .onAppear {
                 viewModel.loadMedications(context: modelContext)
+                viewModel.loadPhotos()
             }
         }
     }
 
     // MARK: - Subviews
 
-    private var emptyState: some View {
-        ContentUnavailableView {
-            Label("No Medications", systemImage: "pills")
-        } description: {
+    private var photosSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Label("Reference Photos", systemImage: "photo.on.rectangle.angled")
+                    .font(.headline)
+                    .foregroundStyle(.primary)
+
+                Spacer()
+
+                Button {
+                    viewModel.prepareForPhotoCapture()
+                } label: {
+                    Image(systemName: "plus.circle.fill")
+                        .font(.title2)
+                }
+                .accessibilityLabel("Add reference photo")
+            }
+            .padding(.horizontal)
+
+            Text("Photos of your medication bottles or lists for easy reference")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .padding(.horizontal)
+
+            MedicationPhotoGalleryView(
+                photos: viewModel.photos,
+                onPhotoTapped: { photo in
+                    viewModel.viewPhoto(photo)
+                },
+                onDeletePhoto: { photo in
+                    viewModel.deletePhoto(photo)
+                }
+            )
+        }
+    }
+
+    private var medicationsSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Label("My Medications", systemImage: "pills")
+                    .font(.headline)
+                    .foregroundStyle(.primary)
+
+                Spacer()
+
+                Button {
+                    viewModel.prepareForAdd()
+                } label: {
+                    Image(systemName: "plus.circle.fill")
+                        .font(.title2)
+                }
+                .accessibilityLabel("Add medication")
+            }
+            .padding(.horizontal)
+
+            if viewModel.hasNoMedications {
+                medicationsEmptyState
+            } else {
+                medicationsList
+            }
+        }
+    }
+
+    private var medicationsEmptyState: some View {
+        VStack(spacing: 12) {
+            Image(systemName: "pills")
+                .font(.system(size: 36))
+                .foregroundStyle(.secondary)
+                .accessibilityHidden(true)
+
+            Text("No Medications Yet")
+                .font(.headline)
+                .foregroundStyle(.secondary)
+
             Text("Add your medications to keep track of what you're taking and log your daily diuretic doses.")
-        } actions: {
+                .font(.subheadline)
+                .foregroundStyle(.tertiary)
+                .multilineTextAlignment(.center)
+
             Button {
                 viewModel.prepareForAdd()
             } label: {
                 Text("Add Medication")
             }
             .buttonStyle(.borderedProminent)
+            .padding(.top, 8)
         }
+        .padding()
+        .frame(maxWidth: .infinity)
         .accessibilityElement(children: .combine)
         .accessibilityLabel("No medications added yet")
         .accessibilityHint("Tap add medication to get started")
     }
 
     private var medicationsList: some View {
-        List {
+        LazyVStack(spacing: 0) {
             ForEach(viewModel.sortedMedications, id: \.id) { medication in
                 MedicationRowView(medication: medication)
+                    .contentShape(Rectangle())
                     .onTapGesture {
                         viewModel.prepareForEdit(medication: medication)
                     }
-                    .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                    .contextMenu {
                         Button(role: .destructive) {
                             viewModel.prepareForDelete(medication: medication)
                         } label: {
                             Label("Delete", systemImage: "trash")
                         }
-                        .accessibilityLabel("Delete \(medication.name)")
                     }
+                    .padding(.horizontal)
+                    .padding(.vertical, 8)
+
+                if medication.id != viewModel.sortedMedications.last?.id {
+                    Divider()
+                        .padding(.horizontal)
+                }
             }
         }
-        .listStyle(.insetGrouped)
+        .background(Color(.systemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 10))
+        .padding(.horizontal)
     }
 }
 

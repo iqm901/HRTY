@@ -13,6 +13,11 @@
 		016000010000000100000004 /* NotificationPermissionPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 016000020000000100000004 /* NotificationPermissionPageView.swift */; };
 		016000010000000100000005 /* MedicationSetupPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 016000020000000100000005 /* MedicationSetupPageView.swift */; };
 		016000010000000100000006 /* OnboardingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 016000020000000100000006 /* OnboardingViewModel.swift */; };
+		017000010000000100000001 /* PhotoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 017000020000000100000001 /* PhotoService.swift */; };
+		017000010000000100000002 /* MedicationPhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 017000020000000100000002 /* MedicationPhoto.swift */; };
+		017000010000000100000003 /* MedicationPhotoCaptureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 017000020000000100000003 /* MedicationPhotoCaptureView.swift */; };
+		017000010000000100000004 /* MedicationPhotoGalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 017000020000000100000004 /* MedicationPhotoGalleryView.swift */; };
+		017000010000000100000005 /* MedicationPhotoViewerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 017000020000000100000005 /* MedicationPhotoViewerView.swift */; };
 		1AF9431892C3E7B5D8C4EE03 /* HeartRateSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4E646B7A5AB199BF8D29DB9 /* HeartRateSectionView.swift */; };
 		353643CAB1C4A76C2E27DBE6 /* HeartRateTrendChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = F895498FAFEA9C574FD944BE /* HeartRateTrendChart.swift */; };
 		39F445D88F5E159013E6EC8A /* HeartRateReading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EF04028AE7D71BCAA7EA96C /* HeartRateReading.swift */; };
@@ -92,6 +97,11 @@
 		016000020000000100000004 /* NotificationPermissionPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NotificationPermissionPageView.swift; path = HRTY/Views/Onboarding/NotificationPermissionPageView.swift; sourceTree = SOURCE_ROOT; };
 		016000020000000100000005 /* MedicationSetupPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MedicationSetupPageView.swift; path = HRTY/Views/Onboarding/MedicationSetupPageView.swift; sourceTree = SOURCE_ROOT; };
 		016000020000000100000006 /* OnboardingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = OnboardingViewModel.swift; path = HRTY/ViewModels/OnboardingViewModel.swift; sourceTree = SOURCE_ROOT; };
+		017000020000000100000001 /* PhotoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoService.swift; sourceTree = "<group>"; };
+		017000020000000100000002 /* MedicationPhoto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicationPhoto.swift; sourceTree = "<group>"; };
+		017000020000000100000003 /* MedicationPhotoCaptureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicationPhotoCaptureView.swift; sourceTree = "<group>"; };
+		017000020000000100000004 /* MedicationPhotoGalleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicationPhotoGalleryView.swift; sourceTree = "<group>"; };
+		017000020000000100000005 /* MedicationPhotoViewerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicationPhotoViewerView.swift; sourceTree = "<group>"; };
 		326045A69E90D70EEBA45812 /* HeartRateAlertService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HeartRateAlertService.swift; path = HRTY/Services/HeartRateAlertService.swift; sourceTree = SOURCE_ROOT; };
 		6EF04028AE7D71BCAA7EA96C /* HeartRateReading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HeartRateReading.swift; path = HRTY/Models/HeartRateReading.swift; sourceTree = SOURCE_ROOT; };
 		A1000002200000010000000100000001 /* HRTYApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HRTYApp.swift; sourceTree = "<group>"; };
@@ -228,6 +238,9 @@
 				A1000002200000010000000100000025 /* SymptomToggleView.swift */,
 				A1000002200000010000000100000026 /* SymptomTrendChart.swift */,
 				A1000002200000010000000100000027 /* SymptomToggleChips.swift */,
+				017000020000000100000003 /* MedicationPhotoCaptureView.swift */,
+				017000020000000100000004 /* MedicationPhotoGalleryView.swift */,
+				017000020000000100000005 /* MedicationPhotoViewerView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -246,6 +259,7 @@
 				A1000002200000010000000100000012 /* SeverityLevel.swift */,
 				A100000220000001000000010000002A /* TrendDataPoints.swift */,
 				A100000220000001000000010000002C /* AppStorageKeys.swift */,
+				017000020000000100000002 /* MedicationPhoto.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -269,6 +283,7 @@
 				A1000002200000010000000100000022 /* SymptomAlertService.swift */,
 				A1000002200000010000000100000029 /* PDFGenerator.swift */,
 				A100000220000001000000010000002D /* NotificationService.swift */,
+				017000020000000100000001 /* PhotoService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -437,6 +452,11 @@
 				016000010000000100000004 /* NotificationPermissionPageView.swift in Sources */,
 				016000010000000100000005 /* MedicationSetupPageView.swift in Sources */,
 				016000010000000100000006 /* OnboardingViewModel.swift in Sources */,
+				017000010000000100000001 /* PhotoService.swift in Sources */,
+				017000010000000100000002 /* MedicationPhoto.swift in Sources */,
+				017000010000000100000003 /* MedicationPhotoCaptureView.swift in Sources */,
+				017000010000000100000004 /* MedicationPhotoGalleryView.swift in Sources */,
+				017000010000000100000005 /* MedicationPhotoViewerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

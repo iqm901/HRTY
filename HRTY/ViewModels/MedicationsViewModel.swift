@@ -1,5 +1,6 @@
 import Foundation
 import SwiftData
+import UIKit
 
 @Observable
 final class MedicationsViewModel {
@@ -11,6 +12,14 @@ final class MedicationsViewModel {
     var showingDeleteConfirmation = false
     var medicationToDelete: Medication?
 
+    // MARK: - Photo State
+    var photos: [MedicationPhoto] = []
+    var showingPhotoCaptureView = false
+    var selectedPhoto: MedicationPhoto?
+    var showingPhotoViewer = false
+    var capturedImage: UIImage?
+    var photoError: String?
+
     // MARK: - Form Fields
     var nameInput: String = ""
     var dosageInput: String = ""
@@ -21,6 +30,9 @@ final class MedicationsViewModel {
     // MARK: - Validation & Errors
     var validationError: String?
     var deleteError: String?
+
+    // MARK: - Services
+    private let photoService = PhotoService.shared
 
     // MARK: - Computed Properties
     var sortedMedications: [Medication] {
@@ -187,5 +199,60 @@ final class MedicationsViewModel {
 
     func clearDeleteError() {
         deleteError = nil
+    }
+
+    // MARK: - Photo Methods
+
+    func loadPhotos() {
+        photos = photoService.loadPhotos()
+    }
+
+    func prepareForPhotoCapture() {
+        capturedImage = nil
+        photoError = nil
+        showingPhotoCaptureView = true
+    }
+
+    func savePhoto() async {
+        guard let image = capturedImage else { return }
+
+        do {
+            let photo = try await photoService.savePhoto(image)
+            await MainActor.run {
+                photos.insert(photo, at: 0)
+                capturedImage = nil
+                showingPhotoCaptureView = false
+            }
+        } catch {
+            await MainActor.run {
+                photoError = "Unable to save photo. Please try again."
+            }
+        }
+    }
+
+    func viewPhoto(_ photo: MedicationPhoto) {
+        selectedPhoto = photo
+        showingPhotoViewer = true
+    }
+
+    func deletePhoto(_ photo: MedicationPhoto) {
+        do {
+            try photoService.deletePhoto(photo)
+            photos.removeAll { $0.id == photo.id }
+            if selectedPhoto?.id == photo.id {
+                selectedPhoto = nil
+                showingPhotoViewer = false
+            }
+        } catch {
+            photoError = "Unable to delete photo. Please try again."
+        }
+    }
+
+    func clearPhotoError() {
+        photoError = nil
+    }
+
+    var hasNoPhotos: Bool {
+        photos.isEmpty
     }
 }
