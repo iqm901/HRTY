@@ -625,6 +625,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSCameraUsageDescription = "HRTY needs camera access to photograph your medication bottles or lists for easy reference when entering your medications.";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "HRTY reads your weight, heart rate, and blood pressure data from Apple Health to help you track your heart health and share trends with your care team.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -659,6 +660,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSCameraUsageDescription = "HRTY needs camera access to photograph your medication bottles or lists for easy reference when entering your medications.";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "HRTY reads your weight, heart rate, and blood pressure data from Apple Health to help you track your heart health and share trends with your care team.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
