@@ -20,10 +20,10 @@ As a patient, I want to photograph my medication list to help set up my medicati
 - Delete photos when no longer needed
 
 ## Acceptance Criteria
-- [ ] Camera access to photograph pill bottles or med list
-- [ ] Photos stored locally for reference
-- [ ] User manually enters medications after viewing photo
-- [ ] Optional feature - can skip and enter manually
+- [x] Camera access to photograph pill bottles or med list
+- [x] Photos stored locally for reference
+- [x] User manually enters medications after viewing photo
+- [x] Optional feature - can skip and enter manually
 
 ## UI/UX Notes
 - "Add Photo" button on Medications tab
