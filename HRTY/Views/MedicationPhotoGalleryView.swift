@@ -122,6 +122,7 @@ struct PhotoThumbnailView: View {
                         .fill(Color(.systemGray5))
                         .overlay {
                             ProgressView()
+                                .accessibilityHidden(true)
                         }
                 }
             }
@@ -148,8 +149,12 @@ struct PhotoThumbnailView: View {
         } message: {
             Text("This will remove the photo from your saved reference photos.")
         }
-        .accessibilityLabel("Medication photo from \(photo.capturedAt.formatted(date: .abbreviated, time: .shortened))")
-        .accessibilityHint("Tap to view full size, long press for options")
+        .accessibilityLabel(thumbnailImage == nil
+            ? "Loading medication photo from \(photo.capturedAt.formatted(date: .abbreviated, time: .shortened))"
+            : "Medication photo from \(photo.capturedAt.formatted(date: .abbreviated, time: .shortened))")
+        .accessibilityHint(thumbnailImage == nil
+            ? "Photo is loading"
+            : "Tap to view full size, long press for options")
         .task {
             // Use injected loader if provided, otherwise fall back to shared service
             if let loader = loadThumbnail {
