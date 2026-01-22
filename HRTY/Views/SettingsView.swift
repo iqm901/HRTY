@@ -41,6 +41,7 @@ struct SettingsView: View {
                 }
             ))
             .accessibilityLabel("Daily reminder")
+            .accessibilityValue(viewModel.reminderEnabled ? "On, scheduled for \(viewModel.formattedReminderTime)" : "Off")
             .accessibilityHint("Toggle to enable or disable daily check-in reminders")
 
             if viewModel.reminderEnabled {
