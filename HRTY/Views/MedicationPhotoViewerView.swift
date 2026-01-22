@@ -7,6 +7,7 @@ struct MedicationPhotoViewerView: View {
     let onDelete: () -> Void
 
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var fullImage: UIImage?
     @State private var scale: CGFloat = 1.0
     @State private var lastScale: CGFloat = 1.0
@@ -32,12 +33,21 @@ struct MedicationPhotoViewerView: View {
                             .gesture(magnificationGesture)
                             .gesture(dragGesture)
                             .onTapGesture(count: 2) {
-                                withAnimation {
+                                if reduceMotion {
                                     if scale > 1 {
                                         scale = 1
                                         offset = .zero
                                     } else {
                                         scale = 2
+                                    }
+                                } else {
+                                    withAnimation {
+                                        if scale > 1 {
+                                            scale = 1
+                                            offset = .zero
+                                        } else {
+                                            scale = 2
+                                        }
                                     }
                                 }
                             }
@@ -107,9 +117,14 @@ struct MedicationPhotoViewerView: View {
             .onEnded { _ in
                 lastScale = 1.0
                 if scale < 1 {
-                    withAnimation {
+                    if reduceMotion {
                         scale = 1
                         offset = .zero
+                    } else {
+                        withAnimation {
+                            scale = 1
+                            offset = .zero
+                        }
                     }
                 }
             }
@@ -128,9 +143,14 @@ struct MedicationPhotoViewerView: View {
             .onEnded { _ in
                 lastOffset = offset
                 if scale <= 1 {
-                    withAnimation {
+                    if reduceMotion {
                         offset = .zero
                         lastOffset = .zero
+                    } else {
+                        withAnimation {
+                            offset = .zero
+                            lastOffset = .zero
+                        }
                     }
                 }
             }
