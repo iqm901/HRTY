@@ -248,7 +248,9 @@ struct ExportView: View {
     // MARK: - Actions
 
     private func generatePDF() {
-        viewModel.generatePDF(context: modelContext)
+        Task {
+            await viewModel.generatePDF(context: modelContext)
+        }
     }
 }
 

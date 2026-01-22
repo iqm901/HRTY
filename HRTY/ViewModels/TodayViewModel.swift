@@ -36,6 +36,9 @@ final class TodayViewModel {
     var activeDizzinessBPAlerts: [AlertEvent] = []
     var hasBPReading: Bool = false
 
+    // MARK: - Loading State
+    var isLoading: Bool = false
+
     // MARK: - Data State
     var todayEntry: DailyEntry?
     var yesterdayEntry: DailyEntry?
@@ -123,6 +126,27 @@ final class TodayViewModel {
     }
 
     // MARK: - Methods
+
+    /// Load all data asynchronously to prevent UI freezing
+    @MainActor
+    func loadAllData(context: ModelContext) async {
+        isLoading = true
+
+        // Run fetches - these are sync but wrapped in async context to not block UI
+        loadData(context: context)
+        loadSymptoms(context: context)
+        loadDiuretics(context: context)
+        loadWeightAlerts(context: context)
+        loadSymptomAlerts(context: context)
+        loadHeartRateAlerts(context: context)
+        loadDizzinessBPAlerts(context: context)
+
+        // Load heart rate data asynchronously
+        await loadHeartRateData(context: context)
+
+        isLoading = false
+    }
+
     func loadData(context: ModelContext) {
         let today = Date()
         todayEntry = DailyEntry.getOrCreate(for: today, in: context)
@@ -228,10 +252,12 @@ final class TodayViewModel {
         isLoadingHealthKit = false
     }
 
-    /// Clear the HealthKit imported weight indicator
+    /// Clear the HealthKit imported weight indicator and any errors
     func clearHealthKitWeight() {
         showHealthKitTimestamp = false
         healthKitTimestampText = nil
+        healthKitError = nil
+        healthKitRecoverySuggestion = nil
     }
 
     // MARK: - Diuretic State
@@ -319,7 +345,10 @@ final class TodayViewModel {
 
         do {
             try context.save()
-            todayDiureticDoses = entry.diureticDoses ?? []
+            // Directly append to local state to ensure UI updates immediately
+            if !todayDiureticDoses.contains(where: { $0.persistentModelID == dose.persistentModelID }) {
+                todayDiureticDoses.append(dose)
+            }
         } catch {
             #if DEBUG
             print("Diuretic dose save error: \(error.localizedDescription)")
@@ -465,7 +494,7 @@ final class TodayViewModel {
             success = heartRateAlertService.acknowledgeAlert(alert, context: context)
         case .dizzinessBPCheck:
             success = dizzinessBPAlertService.acknowledgeAlert(alert, context: context)
-        default:
+        case .weightGain24h, .weightGain7d:
             success = weightAlertService.acknowledgeAlert(alert, context: context)
         }
 
@@ -478,7 +507,7 @@ final class TodayViewModel {
                 activeHeartRateAlerts.removeAll { $0.persistentModelID == alert.persistentModelID }
             case .dizzinessBPCheck:
                 activeDizzinessBPAlerts.removeAll { $0.persistentModelID == alert.persistentModelID }
-            default:
+            case .weightGain24h, .weightGain7d:
                 activeWeightAlerts.removeAll { $0.persistentModelID == alert.persistentModelID }
             }
 

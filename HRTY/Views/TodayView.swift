@@ -9,31 +9,33 @@ struct TodayView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: 24) {
-                    alertsSection
-                    headerSection
-                    heartRateSection
-                    weightEntrySection
-                    symptomsSection
-                    diureticSection
-                    Spacer(minLength: 40)
+            ZStack {
+                ScrollView {
+                    VStack(spacing: 24) {
+                        alertsSection
+                        headerSection
+                        heartRateSection
+                        weightEntrySection
+                        symptomsSection
+                        diureticSection
+                        Spacer(minLength: 40)
+                    }
+                    .padding()
                 }
-                .padding()
+                .opacity(viewModel.isLoading ? 0.3 : 1.0)
+                .disabled(viewModel.isLoading)
+
+                if viewModel.isLoading {
+                    ProgressView("Loading...")
+                        .padding()
+                        .background(Color(.systemBackground).opacity(0.9))
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                }
             }
             .navigationTitle("Today")
-            .onAppear {
-                viewModel.loadData(context: modelContext)
-                viewModel.loadSymptoms(context: modelContext)
-                viewModel.loadDiuretics(context: modelContext)
-                viewModel.loadWeightAlerts(context: modelContext)
-                viewModel.loadSymptomAlerts(context: modelContext)
-                viewModel.loadHeartRateAlerts(context: modelContext)
-                viewModel.loadDizzinessBPAlerts(context: modelContext)
-                isWeightFieldFocused = true
-            }
             .task {
-                await viewModel.loadHeartRateData(context: modelContext)
+                await viewModel.loadAllData(context: modelContext)
+                isWeightFieldFocused = true
             }
             .onChange(of: viewModel.activeWeightAlerts.count) { oldCount, newCount in
                 // Announce new alerts to VoiceOver users
@@ -331,8 +333,8 @@ struct TodayView: View {
                 .accessibilityLabel("Weight input")
                 .accessibilityHint("Enter your weight in pounds")
                 .onChange(of: viewModel.weightInput) { _, _ in
-                    // Clear HealthKit timestamp when user manually edits
-                    if viewModel.showHealthKitTimestamp {
+                    // Clear HealthKit timestamp and errors when user manually edits
+                    if viewModel.showHealthKitTimestamp || viewModel.healthKitError != nil {
                         viewModel.clearHealthKitWeight()
                     }
                 }

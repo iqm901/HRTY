@@ -108,14 +108,18 @@ final class ExportViewModel {
 
     // MARK: - Methods
 
-    /// Generate PDF with data from the context
-    func generatePDF(context: ModelContext) {
+    /// Generate PDF with data from the context asynchronously
+    @MainActor
+    func generatePDF(context: ModelContext) async {
         generationState = .loading
 
-        // Gather all data for export
+        // Gather all data for export (must be on main actor for SwiftData)
         let exportData = gatherExportData(context: context)
 
-        // Generate PDF
+        // Generate PDF - yield to allow UI updates
+        await Task.yield()
+
+        // Generate the PDF
         let generator = PDFGenerator()
         do {
             let pdfData = try generator.generatePDF(from: exportData)
