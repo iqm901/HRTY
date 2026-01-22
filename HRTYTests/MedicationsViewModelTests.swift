@@ -453,3 +453,195 @@ final class MedicationModelTests: XCTestCase {
         XCTAssertTrue(medication.isActive)
     }
 }
+
+// MARK: - MedicationsViewModel Photo Tests
+
+final class MedicationsViewModelPhotoTests: XCTestCase {
+
+    var viewModel: MedicationsViewModel!
+
+    override func setUp() {
+        super.setUp()
+        viewModel = MedicationsViewModel()
+    }
+
+    override func tearDown() {
+        viewModel = nil
+        super.tearDown()
+    }
+
+    // MARK: - Photo State Initial Values
+
+    func testPhotoStateInitialValues() {
+        // Then: photo state should have correct initial values
+        XCTAssertTrue(viewModel.photos.isEmpty)
+        XCTAssertFalse(viewModel.showingPhotoCaptureView)
+        XCTAssertNil(viewModel.selectedPhoto)
+        XCTAssertFalse(viewModel.showingPhotoViewer)
+        XCTAssertNil(viewModel.capturedImage)
+        XCTAssertNil(viewModel.photoError)
+        XCTAssertNil(viewModel.photoSavedMessage)
+    }
+
+    func testHasNoPhotosWhenEmpty() {
+        // Given: no photos
+        viewModel.photos = []
+
+        // Then: hasNoPhotos should be true
+        XCTAssertTrue(viewModel.hasNoPhotos)
+    }
+
+    func testHasNoPhotosWhenPhotosExist() {
+        // Given: at least one photo
+        let photo = MedicationPhoto(filename: "test.jpg", thumbnailFilename: "test_thumb.jpg")
+        viewModel.photos = [photo]
+
+        // Then: hasNoPhotos should be false
+        XCTAssertFalse(viewModel.hasNoPhotos)
+    }
+
+    // MARK: - Prepare for Photo Capture Tests
+
+    func testPrepareForPhotoCaptureResetsState() {
+        // Given: existing state
+        viewModel.capturedImage = UIImage()
+        viewModel.photoError = "Previous error"
+        viewModel.showingPhotoCaptureView = false
+
+        // When: prepare for photo capture
+        viewModel.prepareForPhotoCapture()
+
+        // Then: state should be reset and view shown
+        XCTAssertNil(viewModel.capturedImage)
+        XCTAssertNil(viewModel.photoError)
+        XCTAssertTrue(viewModel.showingPhotoCaptureView)
+    }
+
+    // MARK: - View Photo Tests
+
+    func testViewPhotoSetsSelectedPhotoAndShowsViewer() {
+        // Given: a photo to view
+        let photo = MedicationPhoto(filename: "view.jpg", thumbnailFilename: "view_thumb.jpg")
+
+        // When: view photo
+        viewModel.viewPhoto(photo)
+
+        // Then: selected photo and viewer state should be set
+        XCTAssertEqual(viewModel.selectedPhoto?.id, photo.id)
+        XCTAssertTrue(viewModel.showingPhotoViewer)
+    }
+
+    func testViewPhotoDifferentPhotoUpdatesSelection() {
+        // Given: already viewing a photo
+        let photo1 = MedicationPhoto(filename: "first.jpg", thumbnailFilename: "first_thumb.jpg")
+        let photo2 = MedicationPhoto(filename: "second.jpg", thumbnailFilename: "second_thumb.jpg")
+        viewModel.viewPhoto(photo1)
+
+        // When: view a different photo
+        viewModel.viewPhoto(photo2)
+
+        // Then: selected photo should be updated
+        XCTAssertEqual(viewModel.selectedPhoto?.id, photo2.id)
+        XCTAssertTrue(viewModel.showingPhotoViewer)
+    }
+
+    // MARK: - Clear Photo Error Tests
+
+    func testClearPhotoErrorResetsError() {
+        // Given: an existing photo error
+        viewModel.photoError = "Some error"
+
+        // When: clear photo error
+        viewModel.clearPhotoError()
+
+        // Then: error should be nil
+        XCTAssertNil(viewModel.photoError)
+    }
+
+    func testClearPhotoErrorWhenAlreadyNil() {
+        // Given: no existing error
+        viewModel.photoError = nil
+
+        // When: clear photo error
+        viewModel.clearPhotoError()
+
+        // Then: error should remain nil (no crash)
+        XCTAssertNil(viewModel.photoError)
+    }
+
+    // MARK: - Clear Photo Saved Message Tests
+
+    func testClearPhotoSavedMessageResetsMessage() {
+        // Given: an existing saved message
+        viewModel.photoSavedMessage = "Photo saved"
+
+        // When: clear photo saved message
+        viewModel.clearPhotoSavedMessage()
+
+        // Then: message should be nil
+        XCTAssertNil(viewModel.photoSavedMessage)
+    }
+
+    func testClearPhotoSavedMessageWhenAlreadyNil() {
+        // Given: no existing message
+        viewModel.photoSavedMessage = nil
+
+        // When: clear photo saved message
+        viewModel.clearPhotoSavedMessage()
+
+        // Then: message should remain nil (no crash)
+        XCTAssertNil(viewModel.photoSavedMessage)
+    }
+
+    // MARK: - Photo Error Message Quality Tests
+
+    func testPhotoErrorMessagesArePatientFriendly() {
+        // Given: possible error messages that could be set
+        let errorMessages = [
+            "Unable to save photo. Please try again.",
+            "Unable to delete photo. Please try again."
+        ]
+
+        // Then: error messages should not contain technical jargon
+        let technicalTerms = ["exception", "null", "nil", "crash", "fatal", "error code", "failed", "failure"]
+
+        for message in errorMessages {
+            for term in technicalTerms {
+                XCTAssertFalse(
+                    message.lowercased().contains(term),
+                    "Error message '\(message)' should not contain technical term '\(term)'"
+                )
+            }
+        }
+    }
+
+    func testPhotoErrorMessagesAreNotAlarmist() {
+        // Given: possible error messages
+        let errorMessages = [
+            "Unable to save photo. Please try again.",
+            "Unable to delete photo. Please try again."
+        ]
+
+        // Then: error messages should not use alarming language
+        let alarmingTerms = ["critical", "urgent", "immediately", "danger", "warning", "severe", "emergency"]
+
+        for message in errorMessages {
+            for term in alarmingTerms {
+                XCTAssertFalse(
+                    message.lowercased().contains(term),
+                    "Error message '\(message)' should not contain alarming term '\(term)'"
+                )
+            }
+        }
+    }
+
+    // MARK: - Photo Saved Message Quality Tests
+
+    func testPhotoSavedMessageIsBrief() {
+        // Given: the expected saved message
+        let savedMessage = "Photo saved"
+
+        // Then: message should be brief and simple
+        XCTAssertLessThanOrEqual(savedMessage.count, 20, "Saved message should be brief")
+    }
+}
