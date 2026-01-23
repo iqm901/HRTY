@@ -6,7 +6,9 @@
       "Bash(git commit:*)",
       "Bash(git checkout:*)",
       "Bash(./scripts/ralph-persona.sh:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(caffeinate:*)",
+      "Bash(git merge:*)"
     ]
   }
 }

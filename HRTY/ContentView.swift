@@ -48,6 +48,10 @@ struct ContentView: View {
                 .tag(Tab.settings)
                 .accessibilityIdentifier("settingsTab")
         }
+        .tint(Color.hrtPinkFallback)
+        .onReceive(NotificationCenter.default.publisher(for: .navigateToTodayTab)) { _ in
+            selectedTab = .today
+        }
     }
 }
 

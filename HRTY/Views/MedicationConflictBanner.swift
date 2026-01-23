@@ -1,0 +1,96 @@
+import SwiftUI
+
+/// A dismissible yellow banner that appears when medication conflicts are detected.
+/// Uses warm, non-alarmist messaging to encourage verification with care team.
+struct MedicationConflictBanner: View {
+    let conflicts: [MedicationConflict]
+    let onDismiss: () -> Void
+
+    var body: some View {
+        HStack(alignment: .top, spacing: HRTSpacing.sm) {
+            Image(systemName: "exclamationmark.triangle.fill")
+                .font(.title3)
+                .foregroundStyle(Color.hrtCautionDark)
+
+            VStack(alignment: .leading, spacing: HRTSpacing.xs) {
+                Text("Medication Note")
+                    .font(.hrtBodySemibold)
+                    .foregroundStyle(Color.hrtCautionDark)
+
+                Text(bannerMessage)
+                    .font(.hrtCallout)
+                    .foregroundStyle(Color.hrtTextFallback)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Text("Your care team can help if you have questions.")
+                    .font(.hrtCaption)
+                    .foregroundStyle(Color.hrtTextSecondaryFallback)
+            }
+
+            Spacer()
+
+            Button {
+                onDismiss()
+            } label: {
+                Image(systemName: "xmark")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(Color.hrtCautionDark)
+                    .frame(minWidth: 44, minHeight: 44)
+                    .contentShape(Rectangle())
+            }
+            .accessibilityLabel("Dismiss medication note")
+        }
+        .padding(HRTSpacing.md)
+        .background(Color.hrtCautionLight)
+        .clipShape(RoundedRectangle(cornerRadius: HRTRadius.large))
+        .padding(.horizontal, HRTSpacing.md)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Medication note: \(bannerMessage). Your care team can help if you have questions.")
+        .accessibilityAddTraits(.isStaticText)
+    }
+
+    private var bannerMessage: String {
+        guard let firstConflict = conflicts.first else {
+            return "Some medications may need review."
+        }
+
+        if conflicts.count == 1 {
+            return firstConflict.message
+        } else {
+            return "You have \(conflicts.count) medication combinations that may need review."
+        }
+    }
+}
+
+#Preview {
+    VStack(spacing: HRTSpacing.lg) {
+        MedicationConflictBanner(
+            conflicts: [
+                MedicationConflict(
+                    type: .sameClass(.betaBlocker),
+                    medications: [],
+                    message: "You have multiple beta blockers listed: Metoprolol Succinate, Carvedilol. Most people take only one at a time."
+                )
+            ],
+            onDismiss: {}
+        )
+
+        MedicationConflictBanner(
+            conflicts: [
+                MedicationConflict(
+                    type: .sameClass(.betaBlocker),
+                    medications: [],
+                    message: "You have multiple beta blockers."
+                ),
+                MedicationConflict(
+                    type: .crossClass(.aceInhibitor, .arb),
+                    medications: [],
+                    message: "ACEi and ARB together."
+                )
+            ],
+            onDismiss: {}
+        )
+    }
+    .padding(.vertical)
+    .background(Color.hrtBackgroundFallback)
+}

@@ -1,0 +1,89 @@
+# Tasks: Symptom Severity Alert Logic
+
+## Alert Logic
+- [x] Add symptom severity check after symptoms are saved
+- [x] Trigger alert when any symptom is 4 or 5
+- [x] Identify which symptoms triggered the alert
+- [x] Prevent duplicate alerts for same symptoms same day
+
+## Alert Messages
+- [x] Create warm, supportive symptom alert message
+- [x] Include specific symptom names in message
+- [x] Ensure message is non-prescriptive
+
+## AlertEvent Persistence
+- [x] Create AlertEvent for symptom alerts
+- [x] Set AlertType to symptomSeverity
+- [x] Store which symptoms triggered alert
+- [x] Link to relevant DailyEntry
+
+## UI Integration
+- [x] Display symptom alert on Today view
+- [x] Reuse or adapt WeightAlertView component
+- [x] Show after symptom save completes
+- [x] Handle dismiss/acknowledge
+
+## Quality Checks
+- [x] Alert triggers at severity 4 or 5
+- [x] Alert message is warm and supportive
+- [x] Multiple severe symptoms shown in one alert
+- [x] Alert persists to data store
+- [x] App builds without errors
+
+---
+
+## Iteration History
+
+### Iteration 1 - System Architect
+- Reviewed file structure and dependencies
+- Identified code duplication in alert acknowledgment
+- Extracted `AlertAcknowledgeable` protocol with default implementation
+- Both `WeightAlertServiceProtocol` and `SymptomAlertServiceProtocol` now inherit from it
+- Build passes, tests pass
+
+### Iteration 2 - Frontend Designer
+- Reviewed UI/UX for symptom alert feature
+- Checked SwiftUI best practices and accessibility support
+- Found accessibility bug: `WeightAlertView` always announced "Weight alert" for VoiceOver
+- Fixed accessibility labels to be context-aware for all alert types (symptom, weight, heart rate)
+- Added Symptom Alert preview to WeightAlertView for testing
+- Build passes
+
+### Iteration 3 - QA Engineer
+- Ran all tests - 100% pass rate
+- Identified missing test coverage for SymptomAlertService
+- Created comprehensive unit tests in SymptomAlertServiceTests.swift (27 new tests):
+  - SymptomAlertServiceTests: Threshold boundary tests (severity 1-5)
+  - SymptomAlertMessageTests: Message formatting validation
+  - SevereSymptomAlertTypeTests: AlertType.severeSymptom tests
+  - SevereSymptomAlertEventTests: AlertEvent tests with warm/non-alarmist message validation
+  - SymptomSeverityFilteringTests: Filtering logic for severe symptoms (>= 4)
+- All 27 new tests pass
+- Build passes
+- Tests pass
+
+### Iteration 4 - Project Manager
+- Verified all 5 acceptance criteria from spec.md are met:
+  - Alert triggers at severity 4 or 5 ✓
+  - Alert message advises discussing with clinician ✓
+  - Alert is non-prescriptive and reassuring ✓
+  - Alert displayed after saving symptoms ✓
+  - AlertEvent saved to data store ✓
+- Confirmed all 20 tasks in tasks.md are completed
+- Build passes
+- All tests pass (including 27 SymptomAlertService tests)
+- No gaps or remaining work identified
+- Feature is complete and ready for next persona review
+
+### Iteration 5 - Business Analyst
+- Reviewed feature from patient perspective
+- Evaluated symptom names for patient-friendliness ✓
+- Assessed alert title and dismiss button language ✓
+- **Identified UX issue:** Grammar error in multi-symptom alert messages
+  - Bug: "chest discomfort and dizziness **is** bothering you" (incorrect)
+  - Fix: "chest discomfort and dizziness **are** bothering you" (correct)
+- Implemented subject-verb agreement: "is" for singular, "are" for plural symptoms
+- Added 2 unit tests for verb conjugation (singular/plural)
+- Build passes
+- All tests pass (29 SymptomAlertService tests total)
+- Patient-facing messaging is now grammatically correct and professional
