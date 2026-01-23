@@ -7,6 +7,9 @@ enum AlertType: String, Codable, CaseIterable {
     case heartRateHigh
     case severeSymptom
     case dizzinessBPCheck
+    case lowOxygenSaturation
+    case lowBloodPressure
+    case lowMAP
 
     var displayName: String {
         switch self {
@@ -22,6 +25,12 @@ enum AlertType: String, Codable, CaseIterable {
             return "Symptom needs attention"
         case .dizzinessBPCheck:
             return "Blood pressure check suggested"
+        case .lowOxygenSaturation:
+            return "Low oxygen level"
+        case .lowBloodPressure:
+            return "Low blood pressure"
+        case .lowMAP:
+            return "Low blood pressure"
         }
     }
 
@@ -41,6 +50,12 @@ enum AlertType: String, Codable, CaseIterable {
             return "You've noted a symptom that may need attention. Please consider contacting your care team."
         case .dizzinessBPCheck:
             return "You mentioned feeling dizzy. Checking your blood pressure may be helpful."
+        case .lowOxygenSaturation:
+            return "Your oxygen level seems lower than usual. It's a good idea to check in with your care team to discuss this reading."
+        case .lowBloodPressure:
+            return "Your blood pressure seems lower than usual. Consider reaching out to your care team, especially if you're feeling unwell."
+        case .lowMAP:
+            return "Your blood pressure reading may be on the low side. Your care team can help you understand what this means for you."
         }
     }
 }
