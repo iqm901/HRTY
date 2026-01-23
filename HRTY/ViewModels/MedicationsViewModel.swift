@@ -67,6 +67,12 @@ final class MedicationsViewModel {
 
     // MARK: - Services
     private let photoService = PhotoService.shared
+    private let diureticDoseService: DiureticDoseServiceProtocol
+
+    // MARK: - Initialization
+    init(diureticDoseService: DiureticDoseServiceProtocol = DiureticDoseService()) {
+        self.diureticDoseService = diureticDoseService
+    }
 
     // MARK: - Computed Properties
     var sortedMedications: [Medication] {
@@ -305,5 +311,94 @@ final class MedicationsViewModel {
 
     var hasNoPhotos: Bool {
         photos.isEmpty
+    }
+
+    // MARK: - Diuretic Dose Logging
+
+    var diureticMedications: [Medication] = []
+    var todayDiureticDoses: [DiureticDose] = []
+    var showDoseDeleteError: Bool = false
+    var todayEntry: DailyEntry?
+
+    /// Returns doses for a specific medication logged today
+    func doses(for medication: Medication) -> [DiureticDose] {
+        todayDiureticDoses.filter { $0.medication?.persistentModelID == medication.persistentModelID }
+            .sorted { $0.timestamp < $1.timestamp }
+    }
+
+    func loadDiuretics(context: ModelContext) {
+        // Get today's entry
+        todayEntry = DailyEntry.getOrCreate(for: Date(), in: context)
+
+        // Load diuretics using the shared service
+        diureticMedications = diureticDoseService.loadDiuretics(context: context)
+
+        // Load today's doses from the daily entry
+        todayDiureticDoses = diureticDoseService.loadTodayDoses(from: todayEntry)
+    }
+
+    /// Log a standard dose (quick entry with medication's default dosage)
+    func logStandardDose(for medication: Medication, context: ModelContext) {
+        logDose(
+            for: medication,
+            amount: medication.dosage,
+            isExtra: false,
+            timestamp: Date(),
+            context: context
+        )
+    }
+
+    /// Log a custom dose with specific amount, extra flag, and timestamp
+    func logCustomDose(
+        for medication: Medication,
+        amount: Double,
+        isExtra: Bool,
+        timestamp: Date,
+        context: ModelContext
+    ) {
+        logDose(for: medication, amount: amount, isExtra: isExtra, timestamp: timestamp, context: context)
+    }
+
+    private func logDose(
+        for medication: Medication,
+        amount: Double,
+        isExtra: Bool,
+        timestamp: Date,
+        context: ModelContext
+    ) {
+        // Ensure we have a daily entry
+        if todayEntry == nil {
+            todayEntry = DailyEntry.getOrCreate(for: Date(), in: context)
+        }
+
+        guard let entry = todayEntry else { return }
+
+        if let dose = diureticDoseService.logDose(
+            for: medication,
+            amount: amount,
+            isExtra: isExtra,
+            timestamp: timestamp,
+            dailyEntry: entry,
+            context: context
+        ) {
+            // Update local state for immediate UI feedback
+            if !todayDiureticDoses.contains(where: { $0.persistentModelID == dose.persistentModelID }) {
+                todayDiureticDoses.append(dose)
+            }
+        }
+    }
+
+    /// Delete a logged dose
+    func deleteDose(_ dose: DiureticDose, context: ModelContext) {
+        if diureticDoseService.deleteDose(dose, context: context) {
+            todayDiureticDoses.removeAll { $0.persistentModelID == dose.persistentModelID }
+            showDoseDeleteError = false
+        } else {
+            showDoseDeleteError = true
+        }
+    }
+
+    var hasDiuretics: Bool {
+        !diureticMedications.isEmpty
     }
 }

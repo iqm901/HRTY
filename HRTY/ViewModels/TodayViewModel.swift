@@ -36,6 +36,24 @@ final class TodayViewModel {
     var activeDizzinessBPAlerts: [AlertEvent] = []
     var hasBPReading: Bool = false
 
+    // MARK: - Vital Signs Alert State
+    var activeVitalSignsAlerts: [AlertEvent] = []
+
+    // MARK: - Blood Pressure Input State
+    var systolicBPInput: String = ""
+    var diastolicBPInput: String = ""
+    var bloodPressureValidationError: String?
+    var isLoadingBPHealthKit: Bool = false
+    var bloodPressureHealthKitTimestamp: String?
+    var showBPSaveSuccess: Bool = false
+
+    // MARK: - Oxygen Saturation Input State
+    var oxygenSaturationInput: String = ""
+    var oxygenSaturationValidationError: String?
+    var isLoadingSpO2HealthKit: Bool = false
+    var oxygenSaturationHealthKitTimestamp: String?
+    var showSpO2SaveSuccess: Bool = false
+
     // MARK: - Loading State
     var isLoading: Bool = false
 
@@ -49,6 +67,8 @@ final class TodayViewModel {
     private let heartRateAlertService: HeartRateAlertServiceProtocol
     private let healthKitService: HealthKitServiceProtocol
     private let dizzinessBPAlertService: DizzinessBPAlertServiceProtocol
+    private let vitalSignsAlertService: VitalSignsAlertServiceProtocol
+    private let diureticDoseService: DiureticDoseServiceProtocol
 
     // MARK: - Initialization
     init(
@@ -56,13 +76,17 @@ final class TodayViewModel {
         symptomAlertService: SymptomAlertServiceProtocol = SymptomAlertService(),
         heartRateAlertService: HeartRateAlertServiceProtocol = HeartRateAlertService(),
         healthKitService: HealthKitServiceProtocol = HealthKitService(),
-        dizzinessBPAlertService: DizzinessBPAlertServiceProtocol = DizzinessBPAlertService()
+        dizzinessBPAlertService: DizzinessBPAlertServiceProtocol = DizzinessBPAlertService(),
+        vitalSignsAlertService: VitalSignsAlertServiceProtocol = VitalSignsAlertService(),
+        diureticDoseService: DiureticDoseServiceProtocol = DiureticDoseService()
     ) {
         self.weightAlertService = weightAlertService
         self.symptomAlertService = symptomAlertService
         self.heartRateAlertService = heartRateAlertService
         self.healthKitService = healthKitService
         self.dizzinessBPAlertService = dizzinessBPAlertService
+        self.vitalSignsAlertService = vitalSignsAlertService
+        self.diureticDoseService = diureticDoseService
         self.healthKitAvailable = healthKitService.isAvailable
     }
 
@@ -136,10 +160,12 @@ final class TodayViewModel {
         loadData(context: context)
         loadSymptoms(context: context)
         loadDiuretics(context: context)
+        loadVitalSigns(context: context)
         loadWeightAlerts(context: context)
         loadSymptomAlerts(context: context)
         loadHeartRateAlerts(context: context)
         loadDizzinessBPAlerts(context: context)
+        loadVitalSignsAlerts(context: context)
 
         // Load heart rate data asynchronously
         await loadHeartRateData(context: context)
@@ -276,19 +302,11 @@ final class TodayViewModel {
     // MARK: - Diuretic Methods
 
     func loadDiuretics(context: ModelContext) {
-        // Fetch all active diuretic medications
-        let predicate = #Predicate<Medication> { medication in
-            medication.isDiuretic && medication.isActive
-        }
-        let descriptor = FetchDescriptor<Medication>(
-            predicate: predicate,
-            sortBy: [SortDescriptor(\.name)]
-        )
-
-        diureticMedications = (try? context.fetch(descriptor)) ?? []
+        // Load diuretics using the shared service
+        diureticMedications = diureticDoseService.loadDiuretics(context: context)
 
         // Load today's doses from the daily entry
-        todayDiureticDoses = todayEntry?.diureticDoses ?? []
+        todayDiureticDoses = diureticDoseService.loadTodayDoses(from: todayEntry)
     }
 
     /// Log a standard dose (quick entry with medication's default dosage)
@@ -327,48 +345,28 @@ final class TodayViewModel {
 
         guard let entry = todayEntry else { return }
 
-        let dose = DiureticDose(
-            dosageAmount: amount,
+        if let dose = diureticDoseService.logDose(
+            for: medication,
+            amount: amount,
+            isExtra: isExtra,
             timestamp: timestamp,
-            isExtraDose: isExtra,
-            medication: medication,
-            dailyEntry: entry
-        )
-
-        context.insert(dose)
-
-        // Update local state
-        var doses = entry.diureticDoses ?? []
-        doses.append(dose)
-        entry.diureticDoses = doses
-        entry.updatedAt = Date()
-
-        do {
-            try context.save()
-            // Directly append to local state to ensure UI updates immediately
+            dailyEntry: entry,
+            context: context
+        ) {
+            // Update local state for immediate UI feedback
             if !todayDiureticDoses.contains(where: { $0.persistentModelID == dose.persistentModelID }) {
                 todayDiureticDoses.append(dose)
             }
-        } catch {
-            #if DEBUG
-            print("Diuretic dose save error: \(error.localizedDescription)")
-            #endif
         }
     }
 
     /// Delete a logged dose
     func deleteDose(_ dose: DiureticDose, context: ModelContext) {
-        context.delete(dose)
-
-        do {
-            try context.save()
+        if diureticDoseService.deleteDose(dose, context: context) {
             todayDiureticDoses.removeAll { $0.persistentModelID == dose.persistentModelID }
             showDeleteError = false
-        } catch {
+        } else {
             showDeleteError = true
-            #if DEBUG
-            print("Diuretic dose delete error: \(error.localizedDescription)")
-            #endif
         }
     }
 
@@ -483,7 +481,7 @@ final class TodayViewModel {
         loadWeightAlerts(context: context)
     }
 
-    /// Acknowledge (dismiss) an alert (works for weight, symptom, heart rate, and dizziness BP alerts)
+    /// Acknowledge (dismiss) an alert (works for weight, symptom, heart rate, dizziness BP, and vital signs alerts)
     func acknowledgeAlert(_ alert: AlertEvent, context: ModelContext) {
         // Use the appropriate service based on alert type
         let success: Bool
@@ -496,6 +494,8 @@ final class TodayViewModel {
             success = dizzinessBPAlertService.acknowledgeAlert(alert, context: context)
         case .weightGain24h, .weightGain7d:
             success = weightAlertService.acknowledgeAlert(alert, context: context)
+        case .lowOxygenSaturation, .lowBloodPressure, .lowMAP:
+            success = vitalSignsAlertService.acknowledgeAlert(alert, context: context)
         }
 
         if success {
@@ -509,6 +509,8 @@ final class TodayViewModel {
                 activeDizzinessBPAlerts.removeAll { $0.persistentModelID == alert.persistentModelID }
             case .weightGain24h, .weightGain7d:
                 activeWeightAlerts.removeAll { $0.persistentModelID == alert.persistentModelID }
+            case .lowOxygenSaturation, .lowBloodPressure, .lowMAP:
+                activeVitalSignsAlerts.removeAll { $0.persistentModelID == alert.persistentModelID }
             }
 
             // Show brief encouragement message after dismissing alert
@@ -606,5 +608,292 @@ final class TodayViewModel {
 
         // Reload alerts to show any new ones
         loadDizzinessBPAlerts(context: context)
+    }
+
+    // MARK: - Vital Signs Methods
+
+    /// Load vital signs data from today's entry
+    func loadVitalSigns(context: ModelContext) {
+        guard let entry = todayEntry,
+              let vitalSigns = entry.vitalSigns else {
+            return
+        }
+
+        if let systolic = vitalSigns.systolicBP {
+            systolicBPInput = String(systolic)
+        }
+        if let diastolic = vitalSigns.diastolicBP {
+            diastolicBPInput = String(diastolic)
+        }
+        if let spo2 = vitalSigns.oxygenSaturation {
+            oxygenSaturationInput = String(spo2)
+        }
+    }
+
+    /// Load unacknowledged vital signs alerts for display
+    func loadVitalSignsAlerts(context: ModelContext) {
+        activeVitalSignsAlerts = vitalSignsAlertService.loadUnacknowledgedVitalSignsAlerts(context: context)
+    }
+
+    // MARK: - Blood Pressure Methods
+
+    /// Parsed systolic blood pressure
+    var parsedSystolicBP: Int? {
+        Int(systolicBPInput)
+    }
+
+    /// Parsed diastolic blood pressure
+    var parsedDiastolicBP: Int? {
+        Int(diastolicBPInput)
+    }
+
+    /// Validate blood pressure input
+    func validateBloodPressure() -> Bool {
+        bloodPressureValidationError = nil
+
+        guard !systolicBPInput.isEmpty, !diastolicBPInput.isEmpty else {
+            bloodPressureValidationError = "Please enter both systolic and diastolic values"
+            return false
+        }
+
+        guard let systolic = parsedSystolicBP else {
+            bloodPressureValidationError = "Please enter a valid systolic number"
+            return false
+        }
+
+        guard let diastolic = parsedDiastolicBP else {
+            bloodPressureValidationError = "Please enter a valid diastolic number"
+            return false
+        }
+
+        guard systolic >= AlertConstants.minimumSystolicBP else {
+            bloodPressureValidationError = "Systolic must be at least \(AlertConstants.minimumSystolicBP) mmHg"
+            return false
+        }
+
+        guard systolic <= AlertConstants.maximumSystolicBP else {
+            bloodPressureValidationError = "Systolic must be less than \(AlertConstants.maximumSystolicBP) mmHg"
+            return false
+        }
+
+        guard diastolic >= AlertConstants.minimumDiastolicBP else {
+            bloodPressureValidationError = "Diastolic must be at least \(AlertConstants.minimumDiastolicBP) mmHg"
+            return false
+        }
+
+        guard diastolic <= AlertConstants.maximumDiastolicBP else {
+            bloodPressureValidationError = "Diastolic must be less than \(AlertConstants.maximumDiastolicBP) mmHg"
+            return false
+        }
+
+        guard systolic > diastolic else {
+            bloodPressureValidationError = "Systolic must be greater than diastolic"
+            return false
+        }
+
+        return true
+    }
+
+    /// Save blood pressure to the vital signs entry
+    func saveBloodPressure(context: ModelContext) {
+        guard validateBloodPressure() else { return }
+        guard let systolic = parsedSystolicBP,
+              let diastolic = parsedDiastolicBP else { return }
+
+        if todayEntry == nil {
+            todayEntry = DailyEntry.getOrCreate(for: Date(), in: context)
+        }
+
+        guard let entry = todayEntry else { return }
+
+        // Get or create vital signs entry
+        let vitalSigns: VitalSignsEntry
+        if let existing = entry.vitalSigns {
+            vitalSigns = existing
+        } else {
+            vitalSigns = VitalSignsEntry(dailyEntry: entry)
+            context.insert(vitalSigns)
+            entry.vitalSigns = vitalSigns
+        }
+
+        vitalSigns.systolicBP = systolic
+        vitalSigns.diastolicBP = diastolic
+        vitalSigns.bloodPressureTimestamp = Date()
+        vitalSigns.updatedAt = Date()
+        entry.updatedAt = Date()
+
+        do {
+            try context.save()
+            showBPSaveSuccess = true
+
+            // Check for vital signs alerts after successful save
+            checkVitalSignsAlerts(context: context)
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
+                self?.showBPSaveSuccess = false
+            }
+        } catch {
+            bloodPressureValidationError = "Could not save blood pressure. Please try again."
+        }
+    }
+
+    /// Import blood pressure from HealthKit
+    @MainActor
+    func importBloodPressureFromHealthKit() async {
+        guard healthKitAvailable else {
+            bloodPressureValidationError = "HealthKit is not available on this device"
+            return
+        }
+
+        isLoadingBPHealthKit = true
+        bloodPressureValidationError = nil
+        bloodPressureHealthKitTimestamp = nil
+
+        let authorized = await healthKitService.requestAuthorization()
+        guard authorized else {
+            isLoadingBPHealthKit = false
+            bloodPressureValidationError = "Unable to access Health data"
+            return
+        }
+
+        if let reading = await healthKitService.fetchLatestBloodPressure() {
+            systolicBPInput = String(reading.systolic)
+            diastolicBPInput = String(reading.diastolic)
+
+            let formatter = RelativeDateTimeFormatter()
+            formatter.unitsStyle = .full
+            bloodPressureHealthKitTimestamp = "from Health \(formatter.localizedString(for: reading.date, relativeTo: Date()))"
+        } else {
+            bloodPressureValidationError = "No recent blood pressure data found"
+        }
+
+        isLoadingBPHealthKit = false
+    }
+
+    // MARK: - Oxygen Saturation Methods
+
+    /// Parsed oxygen saturation
+    var parsedOxygenSaturation: Int? {
+        Int(oxygenSaturationInput)
+    }
+
+    /// Validate oxygen saturation input
+    func validateOxygenSaturation() -> Bool {
+        oxygenSaturationValidationError = nil
+
+        guard !oxygenSaturationInput.isEmpty else {
+            oxygenSaturationValidationError = "Please enter your oxygen saturation"
+            return false
+        }
+
+        guard let spo2 = parsedOxygenSaturation else {
+            oxygenSaturationValidationError = "Please enter a valid number"
+            return false
+        }
+
+        guard spo2 >= AlertConstants.minimumOxygenSaturation else {
+            oxygenSaturationValidationError = "Oxygen level must be at least \(AlertConstants.minimumOxygenSaturation)%"
+            return false
+        }
+
+        guard spo2 <= AlertConstants.maximumOxygenSaturation else {
+            oxygenSaturationValidationError = "Oxygen level must be at most \(AlertConstants.maximumOxygenSaturation)%"
+            return false
+        }
+
+        return true
+    }
+
+    /// Save oxygen saturation to the vital signs entry
+    func saveOxygenSaturation(context: ModelContext) {
+        guard validateOxygenSaturation() else { return }
+        guard let spo2 = parsedOxygenSaturation else { return }
+
+        if todayEntry == nil {
+            todayEntry = DailyEntry.getOrCreate(for: Date(), in: context)
+        }
+
+        guard let entry = todayEntry else { return }
+
+        // Get or create vital signs entry
+        let vitalSigns: VitalSignsEntry
+        if let existing = entry.vitalSigns {
+            vitalSigns = existing
+        } else {
+            vitalSigns = VitalSignsEntry(dailyEntry: entry)
+            context.insert(vitalSigns)
+            entry.vitalSigns = vitalSigns
+        }
+
+        vitalSigns.oxygenSaturation = spo2
+        vitalSigns.oxygenSaturationTimestamp = Date()
+        vitalSigns.updatedAt = Date()
+        entry.updatedAt = Date()
+
+        do {
+            try context.save()
+            showSpO2SaveSuccess = true
+
+            // Check for vital signs alerts after successful save
+            checkVitalSignsAlerts(context: context)
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
+                self?.showSpO2SaveSuccess = false
+            }
+        } catch {
+            oxygenSaturationValidationError = "Could not save oxygen level. Please try again."
+        }
+    }
+
+    /// Import oxygen saturation from HealthKit
+    @MainActor
+    func importOxygenSaturationFromHealthKit() async {
+        guard healthKitAvailable else {
+            oxygenSaturationValidationError = "HealthKit is not available on this device"
+            return
+        }
+
+        isLoadingSpO2HealthKit = true
+        oxygenSaturationValidationError = nil
+        oxygenSaturationHealthKitTimestamp = nil
+
+        let authorized = await healthKitService.requestAuthorization()
+        guard authorized else {
+            isLoadingSpO2HealthKit = false
+            oxygenSaturationValidationError = "Unable to access Health data"
+            return
+        }
+
+        if let reading = await healthKitService.fetchLatestOxygenSaturation() {
+            oxygenSaturationInput = String(reading.percentage)
+
+            let formatter = RelativeDateTimeFormatter()
+            formatter.unitsStyle = .full
+            oxygenSaturationHealthKitTimestamp = "from Health \(formatter.localizedString(for: reading.date, relativeTo: Date()))"
+        } else {
+            oxygenSaturationValidationError = "No recent oxygen saturation data found"
+        }
+
+        isLoadingSpO2HealthKit = false
+    }
+
+    // MARK: - Vital Signs Alert Methods
+
+    /// Check vital signs thresholds and create alerts if needed
+    func checkVitalSignsAlerts(context: ModelContext) {
+        let systolic = todayEntry?.vitalSigns?.systolicBP
+        let diastolic = todayEntry?.vitalSigns?.diastolicBP
+        let spo2 = todayEntry?.vitalSigns?.oxygenSaturation
+
+        vitalSignsAlertService.checkVitalSignsAlerts(
+            systolicBP: systolic,
+            diastolicBP: diastolic,
+            oxygenSaturation: spo2,
+            todayEntry: todayEntry,
+            context: context
+        )
+
+        // Reload alerts to show any new ones
+        loadVitalSignsAlerts(context: context)
     }
 }
