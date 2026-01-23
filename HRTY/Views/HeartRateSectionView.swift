@@ -10,7 +10,7 @@ struct HeartRateSectionView: View {
     var body: some View {
         // Only show section if HealthKit is available
         if isAvailable {
-            VStack(spacing: 16) {
+            VStack(spacing: HRTSpacing.md) {
                 sectionHeader
 
                 if isLoading {
@@ -21,10 +21,9 @@ struct HeartRateSectionView: View {
                     noDataView
                 }
             }
-            .padding()
-            .background(Color(.systemBackground))
-            .clipShape(RoundedRectangle(cornerRadius: 12))
-            .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 2)
+            .padding(HRTSpacing.md)
+            .background(Color.hrtCardFallback)
+            .clipShape(RoundedRectangle(cornerRadius: HRTRadius.large))
         }
     }
 
@@ -33,10 +32,10 @@ struct HeartRateSectionView: View {
     private var sectionHeader: some View {
         HStack {
             Image(systemName: "heart.fill")
-                .foregroundStyle(.red)
-                .font(.system(size: 18))
+                .foregroundStyle(Color.hrtPinkFallback)
             Text("Resting Heart Rate")
-                .font(.headline)
+                .font(.hrtHeadline)
+                .foregroundStyle(Color.hrtTextFallback)
             Spacer()
         }
         .accessibilityElement(children: .combine)
@@ -46,60 +45,60 @@ struct HeartRateSectionView: View {
     // MARK: - Loading View
 
     private var loadingView: some View {
-        HStack {
+        HStack(spacing: HRTSpacing.sm) {
             ProgressView()
                 .scaleEffect(0.8)
             Text("Loading from Apple Health...")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .font(.hrtCallout)
+                .foregroundStyle(Color.hrtTextSecondaryFallback)
         }
         .frame(maxWidth: .infinity, alignment: .center)
-        .padding(.vertical, 8)
+        .padding(.vertical, HRTSpacing.sm)
         .accessibilityLabel("Loading heart rate data")
     }
 
     // MARK: - Heart Rate Display
 
     private func heartRateDisplay(heartRate: String) -> some View {
-        VStack(spacing: 8) {
-            HStack(alignment: .lastTextBaseline, spacing: 4) {
+        VStack(spacing: HRTSpacing.sm) {
+            HStack(alignment: .lastTextBaseline, spacing: HRTSpacing.xs) {
                 Text(heartRate)
-                    .font(.system(size: 36, weight: .bold, design: .rounded))
-                    .foregroundStyle(.primary)
+                    .font(.hrtMetricLarge)
+                    .foregroundStyle(Color.hrtTextFallback)
             }
             .accessibilityElement(children: .combine)
             .accessibilityLabel("Resting heart rate: \(heartRate)")
 
             if let timestamp = timestamp {
                 Text(timestamp)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .font(.hrtCaption)
+                    .foregroundStyle(Color.hrtTextSecondaryFallback)
                     .accessibilityLabel("Recorded \(timestamp)")
             }
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 8)
+        .padding(.vertical, HRTSpacing.sm)
     }
 
     // MARK: - No Data View
 
     private var noDataView: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: HRTSpacing.sm) {
             Image(systemName: "heart.slash")
-                .font(.system(size: 24))
-                .foregroundStyle(.secondary)
+                .font(.hrtTitle2)
+                .foregroundStyle(Color.hrtTextSecondaryFallback)
 
             Text("No heart rate data available")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .font(.hrtCallout)
+                .foregroundStyle(Color.hrtTextSecondaryFallback)
 
             Text("Your resting heart rate will appear here when recorded by Apple Health.")
-                .font(.caption)
-                .foregroundStyle(.tertiary)
+                .font(.hrtCaption)
+                .foregroundStyle(Color.hrtTextTertiaryFallback)
                 .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 8)
+        .padding(.vertical, HRTSpacing.sm)
         .accessibilityElement(children: .combine)
         .accessibilityLabel("No heart rate data available. Your resting heart rate will appear here when recorded by Apple Health.")
     }
@@ -113,7 +112,7 @@ struct HeartRateSectionView: View {
         isAvailable: true
     )
     .padding()
-    .background(Color(.systemGroupedBackground))
+    .background(Color.hrtBackgroundFallback)
 }
 
 #Preview("Loading") {
@@ -124,7 +123,7 @@ struct HeartRateSectionView: View {
         isAvailable: true
     )
     .padding()
-    .background(Color(.systemGroupedBackground))
+    .background(Color.hrtBackgroundFallback)
 }
 
 #Preview("No Data") {
@@ -135,5 +134,5 @@ struct HeartRateSectionView: View {
         isAvailable: true
     )
     .padding()
-    .background(Color(.systemGroupedBackground))
+    .background(Color.hrtBackgroundFallback)
 }
