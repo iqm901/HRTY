@@ -557,3 +557,182 @@ final class TodayViewModelHealthKitTests: XCTestCase {
         XCTAssertFalse(viewModel.isLoadingHealthKit)
     }
 }
+
+// MARK: - BloodPressureReading Tests
+
+final class BloodPressureReadingTests: XCTestCase {
+
+    func testBloodPressureReadingInitialization() {
+        // Given: BP values and timestamp
+        let timestamp = Date()
+        let systolic = 120
+        let diastolic = 80
+
+        // When: creating BloodPressureReading
+        let reading = BloodPressureReading(systolic: systolic, diastolic: diastolic, date: timestamp)
+
+        // Then: values should be stored correctly
+        XCTAssertEqual(reading.systolic, 120)
+        XCTAssertEqual(reading.diastolic, 80)
+        XCTAssertEqual(reading.date, timestamp)
+    }
+
+    func testMeanArterialPressureCalculation() {
+        // Given: normal BP 120/80
+        let reading = BloodPressureReading(systolic: 120, diastolic: 80, date: Date())
+
+        // When: calculating MAP
+        // MAP = DBP + (SBP - DBP) / 3 = 80 + (120 - 80) / 3 = 80 + 13 = 93
+        let expectedMAP = 93
+
+        // Then: MAP should be calculated correctly
+        XCTAssertEqual(reading.meanArterialPressure, expectedMAP)
+    }
+
+    func testMeanArterialPressureWithLowBP() {
+        // Given: low BP 80/50
+        let reading = BloodPressureReading(systolic: 80, diastolic: 50, date: Date())
+
+        // MAP = 50 + (80 - 50) / 3 = 50 + 10 = 60
+        XCTAssertEqual(reading.meanArterialPressure, 60)
+    }
+
+    func testMeanArterialPressureWithHighBP() {
+        // Given: high BP 180/110
+        let reading = BloodPressureReading(systolic: 180, diastolic: 110, date: Date())
+
+        // MAP = 110 + (180 - 110) / 3 = 110 + 23 = 133
+        XCTAssertEqual(reading.meanArterialPressure, 133)
+    }
+
+    func testMeanArterialPressureIntegerDivision() {
+        // Given: BP values that result in non-integer division
+        let reading = BloodPressureReading(systolic: 125, diastolic: 85, date: Date())
+
+        // MAP = 85 + (125 - 85) / 3 = 85 + 40/3 = 85 + 13 = 98 (integer division)
+        XCTAssertEqual(reading.meanArterialPressure, 98)
+    }
+
+    func testMAPAtAlertThreshold() {
+        // Given: BP that results in MAP at exactly the alert threshold (60)
+        // MAP = 60 requires: DBP + (SBP - DBP) / 3 = 60
+        // For 80/50: MAP = 50 + 30/3 = 50 + 10 = 60
+        let reading = BloodPressureReading(systolic: 80, diastolic: 50, date: Date())
+
+        XCTAssertEqual(reading.meanArterialPressure, 60)
+        XCTAssertFalse(
+            reading.meanArterialPressure < AlertConstants.mapLowThreshold,
+            "MAP of 60 should NOT trigger alert (at threshold, not below)"
+        )
+    }
+
+    func testMAPBelowAlertThreshold() {
+        // Given: BP that results in MAP below threshold
+        // For 77/47: MAP = 47 + 30/3 = 47 + 10 = 57
+        let reading = BloodPressureReading(systolic: 77, diastolic: 47, date: Date())
+
+        XCTAssertEqual(reading.meanArterialPressure, 57)
+        XCTAssertTrue(
+            reading.meanArterialPressure < AlertConstants.mapLowThreshold,
+            "MAP of 57 should trigger alert"
+        )
+    }
+}
+
+// MARK: - OxygenSaturationReading Tests
+
+final class OxygenSaturationReadingTests: XCTestCase {
+
+    func testOxygenSaturationReadingInitialization() {
+        // Given: SpO2 value and timestamp
+        let timestamp = Date()
+        let percentage = 98
+
+        // When: creating OxygenSaturationReading
+        let reading = OxygenSaturationReading(percentage: percentage, date: timestamp)
+
+        // Then: values should be stored correctly
+        XCTAssertEqual(reading.percentage, 98)
+        XCTAssertEqual(reading.date, timestamp)
+    }
+
+    func testOxygenSaturationNormalValue() {
+        // Given: normal SpO2 of 98%
+        let reading = OxygenSaturationReading(percentage: 98, date: Date())
+
+        // Then: should NOT trigger alert
+        XCTAssertFalse(
+            reading.percentage < AlertConstants.oxygenSaturationLowThreshold,
+            "Normal SpO2 of 98% should NOT trigger alert"
+        )
+    }
+
+    func testOxygenSaturationAtThreshold() {
+        // Given: SpO2 at exactly 90%
+        let reading = OxygenSaturationReading(percentage: 90, date: Date())
+
+        // Then: should NOT trigger alert (threshold is <90)
+        XCTAssertFalse(
+            reading.percentage < AlertConstants.oxygenSaturationLowThreshold,
+            "SpO2 of 90% should NOT trigger alert (at threshold)"
+        )
+    }
+
+    func testOxygenSaturationBelowThreshold() {
+        // Given: low SpO2 of 89%
+        let reading = OxygenSaturationReading(percentage: 89, date: Date())
+
+        // Then: SHOULD trigger alert
+        XCTAssertTrue(
+            reading.percentage < AlertConstants.oxygenSaturationLowThreshold,
+            "SpO2 of 89% should trigger alert"
+        )
+    }
+
+    func testOxygenSaturationVeryLow() {
+        // Given: very low SpO2 of 75%
+        let reading = OxygenSaturationReading(percentage: 75, date: Date())
+
+        // Then: SHOULD trigger alert
+        XCTAssertTrue(
+            reading.percentage < AlertConstants.oxygenSaturationLowThreshold,
+            "Very low SpO2 of 75% should trigger alert"
+        )
+    }
+
+    func testOxygenSaturationMaxValue() {
+        // Given: maximum SpO2 of 100%
+        let reading = OxygenSaturationReading(percentage: 100, date: Date())
+
+        // Then: should NOT trigger alert
+        XCTAssertFalse(
+            reading.percentage < AlertConstants.oxygenSaturationLowThreshold,
+            "Maximum SpO2 of 100% should NOT trigger alert"
+        )
+    }
+
+    func testOxygenSaturationValidationRange() {
+        // Per spec: validation range is 70-100%
+        let validReadings = [70, 85, 95, 100]
+        let invalidLow = 69
+        let invalidHigh = 101
+
+        for percentage in validReadings {
+            XCTAssertTrue(
+                percentage >= AlertConstants.minimumOxygenSaturation &&
+                percentage <= AlertConstants.maximumOxygenSaturation,
+                "SpO2 of \(percentage)% should be within valid range"
+            )
+        }
+
+        XCTAssertFalse(
+            invalidLow >= AlertConstants.minimumOxygenSaturation,
+            "SpO2 of 69% should be below valid range"
+        )
+
+        XCTAssertFalse(
+            invalidHigh <= AlertConstants.maximumOxygenSaturation,
+            "SpO2 of 101% should be above valid range"
+        )
+    }
+}
