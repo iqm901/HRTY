@@ -1,10 +1,43 @@
 import SwiftUI
 import SwiftData
 
+// MARK: - Medication Category Tabs
+
+enum MedicationTab: String, CaseIterable {
+    case all = "All"
+    case betaBlocker = "Beta Blockers"
+    case raasInhibitor = "RAAS Inhibitors"
+    case mra = "MRA"
+    case sglt2 = "SGLT2 Inhibitors"
+    case diuretic = "Diuretics"
+    case other = "Other"
+
+    /// Returns the HeartFailureMedication.Category values that belong to this tab
+    var includedCategories: [HeartFailureMedication.Category] {
+        switch self {
+        case .all:
+            return HeartFailureMedication.Category.allCases
+        case .betaBlocker:
+            return [.betaBlocker]
+        case .raasInhibitor:
+            return [.aceInhibitor, .arb, .arni]
+        case .mra:
+            return [.mra]
+        case .sglt2:
+            return [.sglt2Inhibitor]
+        case .diuretic:
+            return [.loopDiuretic, .thiazideDiuretic]
+        case .other:
+            return [.other]
+        }
+    }
+}
+
 struct MedicationFormView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @FocusState private var isDosageFieldFocused: Bool
+    @State private var selectedTab: MedicationTab = .all
 
     @Bindable var viewModel: MedicationsViewModel
     let isEditing: Bool
@@ -96,25 +129,44 @@ struct MedicationFormView: View {
 
     // MARK: - Preset Medication Selection
 
+    /// Medications filtered by the currently selected tab, sorted alphabetically
+    private var filteredMedications: [HeartFailureMedication] {
+        HeartFailureMedication.allMedications
+            .filter { medication in
+                selectedTab.includedCategories.contains(medication.category)
+            }
+            .sorted { $0.displayName.localizedCaseInsensitiveCompare($1.displayName) == .orderedAscending }
+    }
+
     private var presetMedicationSection: some View {
         Group {
-            // Medication Picker
+            // Category Tab Bar
             Section {
-                Picker("Medication", selection: Binding(
-                    get: { viewModel.selectedPresetMedication },
-                    set: { viewModel.selectPresetMedication($0) }
-                )) {
-                    Text("Select a medication").tag(nil as HeartFailureMedication?)
+                categoryTabBar
+            } header: {
+                Text("Category")
+            }
 
-                    ForEach(HeartFailureMedication.medicationsByCategory, id: \.category) { category, medications in
-                        Section(header: Text(category.rawValue)) {
-                            ForEach(medications) { medication in
-                                Text(medication.displayName).tag(medication as HeartFailureMedication?)
+            // Medication List
+            Section {
+                ForEach(filteredMedications) { medication in
+                    Button {
+                        viewModel.selectPresetMedication(medication)
+                    } label: {
+                        HStack {
+                            Text(medication.displayName)
+                                .font(.hrtBody)
+                                .foregroundStyle(Color.hrtTextFallback)
+                            Spacer()
+                            if viewModel.selectedPresetMedication?.id == medication.id {
+                                Image(systemName: "checkmark")
+                                    .foregroundStyle(Color.hrtPinkFallback)
+                                    .fontWeight(.semibold)
                             }
                         }
                     }
+                    .buttonStyle(.plain)
                 }
-                .pickerStyle(.navigationLink)
             } header: {
                 Text("Medication")
             }
@@ -157,6 +209,62 @@ struct MedicationFormView: View {
                     }
                 }
             }
+        }
+    }
+
+    // MARK: - Category Tab Bar
+
+    private var categoryTabBar: some View {
+        let columns = [
+            GridItem(.adaptive(minimum: 80, maximum: 120), spacing: HRTSpacing.sm)
+        ]
+
+        return LazyVGrid(columns: columns, spacing: HRTSpacing.sm) {
+            ForEach(MedicationTab.allCases, id: \.self) { tab in
+                MedicationTabPill(
+                    title: tab.rawValue,
+                    isSelected: selectedTab == tab
+                ) {
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        selectedTab = tab
+                        // Clear selection when changing tabs
+                        if viewModel.selectedPresetMedication != nil {
+                            let currentCategory = viewModel.selectedPresetMedication?.category
+                            if let category = currentCategory,
+                               !tab.includedCategories.contains(category) {
+                                viewModel.selectPresetMedication(nil)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .padding(.vertical, HRTSpacing.xs)
+    }
+
+    // MARK: - Tab Pill Component
+
+    private struct MedicationTabPill: View {
+        let title: String
+        let isSelected: Bool
+        let action: () -> Void
+
+        var body: some View {
+            Button(action: action) {
+                Text(title)
+                    .font(.hrtCallout)
+                    .fontWeight(isSelected ? .semibold : .regular)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: .infinity)
+                    .padding(.horizontal, HRTSpacing.md)
+                    .padding(.vertical, HRTSpacing.sm)
+                    .background(isSelected ? Color.hrtPinkFallback : Color.hrtPinkLightFallback)
+                    .foregroundStyle(isSelected ? .white : Color.hrtTextFallback)
+                    .clipShape(Capsule())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("\(title) medications")
+            .accessibilityAddTraits(isSelected ? .isSelected : [])
         }
     }
 
