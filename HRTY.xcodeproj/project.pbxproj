@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		023000010000000100000001 /* MedicationConflictService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023000020000000100000001 /* MedicationConflictService.swift */; };
+		023000010000000100000002 /* MedicationConflictBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023000020000000100000002 /* MedicationConflictBanner.swift */; };
+		B20000010000000100000001 /* MedicationConflictServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000020000000100000001 /* MedicationConflictServiceTests.swift */; };
 		020000010000000100000001 /* DiureticDoseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020000020000000100000001 /* DiureticDoseService.swift */; };
 		63E3FE18315940D08A81709F /* VitalSignsEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDA8FBDCC544B2EA822AD07 /* VitalSignsEntry.swift */; };
 		54874CD30FA847BCACFFA400 /* BloodPressureEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 329B16C46A9C4E7A833D8CFB /* BloodPressureEntryView.swift */; };
@@ -112,6 +115,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		023000020000000100000001 /* MedicationConflictService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicationConflictService.swift; sourceTree = "<group>"; };
+		023000020000000100000002 /* MedicationConflictBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicationConflictBanner.swift; sourceTree = "<group>"; };
+		B20000020000000100000001 /* MedicationConflictServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicationConflictServiceTests.swift; sourceTree = "<group>"; };
 		020000020000000100000001 /* DiureticDoseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiureticDoseService.swift; sourceTree = "<group>"; };
 		EEDA8FBDCC544B2EA822AD07 /* VitalSignsEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VitalSignsEntry.swift; sourceTree = "<group>"; };
 		329B16C46A9C4E7A833D8CFB /* BloodPressureEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BloodPressureEntryView.swift; sourceTree = "<group>"; };
@@ -291,6 +297,7 @@
 		A1000005200000010000000100000004 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				023000020000000100000002 /* MedicationConflictBanner.swift */,
 				E998E324A4914EC7BE3057D4 /* SymptomManagementTabView.swift */,
 				E6BC209E01C14DABB5F0CD1B /* VitalSignsTabView.swift */,
 				8B20E79AD6E94FD7B00EB8C6 /* OxygenSaturationEntryView.swift */,
@@ -356,6 +363,7 @@
 		A1000005200000010000000100000007 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				023000020000000100000001 /* MedicationConflictService.swift */,
 				020000020000000100000001 /* DiureticDoseService.swift */,
 				62B091BAE36042B9A749B8CE /* VitalSignsAlertService.swift */,
 				A1000002200000010000000100000021 /* WeightAlertService.swift */,
@@ -371,6 +379,7 @@
 		B1000006200000010000000200000001 /* HRTYTests */ = {
 			isa = PBXGroup;
 			children = (
+				B20000020000000100000001 /* MedicationConflictServiceTests.swift */,
 				B1000002200000010000000200000001 /* TabTests.swift */,
 				B1000002200000010000000200000002 /* SymptomTests.swift */,
 				B1000002200000010000000200000003 /* MedicationsViewModelTests.swift */,
@@ -559,6 +568,8 @@
 				019000010000000100000007 /* HRTInput.swift in Sources */,
 				019000010000000100000008 /* HRTSeveritySelector.swift in Sources */,
 				019000010000000100000009 /* HRTFeedback.swift in Sources */,
+				023000010000000100000001 /* MedicationConflictService.swift in Sources */,
+				023000010000000100000002 /* MedicationConflictBanner.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -577,6 +588,7 @@
 				B1000001200000010000000200000009 /* NotificationServiceTests.swift in Sources */,
 				B100000120000001000000020000000A /* MedicationPhotoTests.swift in Sources */,
 				B100000120000001000000020000000B /* VitalSignsAlertServiceTests.swift in Sources */,
+				B20000010000000100000001 /* MedicationConflictServiceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -4,6 +4,8 @@ import SwiftData
 struct MedicationsView: View {
     @Environment(\.modelContext) private var modelContext
     @State private var viewModel = MedicationsViewModel()
+    @State private var showCustomDoseSheet: Bool = false
+    @State private var selectedDiureticMedication: Medication?
 
     var body: some View {
         NavigationStack {
@@ -13,6 +15,19 @@ struct MedicationsView: View {
 
                 ScrollView {
                     VStack(spacing: HRTSpacing.lg) {
+                        if viewModel.showConflictBanner {
+                            MedicationConflictBanner(
+                                conflicts: viewModel.detectedConflicts,
+                                onDismiss: {
+                                    viewModel.dismissConflictBanner()
+                                }
+                            )
+                        }
+
+                        if viewModel.hasDiuretics {
+                            diureticLoggingSection
+                        }
+
                         photosSection
 
                         medicationsSection
@@ -103,9 +118,20 @@ struct MedicationsView: View {
                     Text(error)
                 }
             }
+            .alert("Before You Add", isPresented: $viewModel.showingConflictWarning) {
+                Button("Cancel", role: .cancel) {
+                    viewModel.cancelConflictAdd()
+                }
+                Button("Add Anyway") {
+                    viewModel.confirmAddDespiteConflict(context: modelContext)
+                }
+            } message: {
+                Text(viewModel.conflictWarningMessage)
+            }
             .onAppear {
                 viewModel.loadMedications(context: modelContext)
                 viewModel.loadPhotos()
+                viewModel.loadDiuretics(context: modelContext)
             }
             .overlay(alignment: .bottom) {
                 if let message = viewModel.photoSavedMessage {
@@ -121,6 +147,92 @@ struct MedicationsView: View {
                 }
             }
             .animation(.easeInOut(duration: 0.3), value: viewModel.photoSavedMessage)
+            .sheet(isPresented: $showCustomDoseSheet) {
+                if let medication = selectedDiureticMedication {
+                    CustomDoseSheet(
+                        medication: medication,
+                        onSave: { amount, isExtra, timestamp in
+                            viewModel.logCustomDose(
+                                for: medication,
+                                amount: amount,
+                                isExtra: isExtra,
+                                timestamp: timestamp,
+                                context: modelContext
+                            )
+                            showCustomDoseSheet = false
+                            selectedDiureticMedication = nil
+                        },
+                        onCancel: {
+                            showCustomDoseSheet = false
+                            selectedDiureticMedication = nil
+                        }
+                    )
+                    .presentationDetents([.medium])
+                }
+            }
+        }
+    }
+
+    // MARK: - Diuretic Logging Section
+
+    private var diureticLoggingSection: some View {
+        VStack(alignment: .leading, spacing: HRTSpacing.sm) {
+            HStack {
+                HStack(spacing: HRTSpacing.sm) {
+                    Image(systemName: "pills.fill")
+                        .foregroundStyle(Color.hrtPinkFallback)
+                    Text("Today's Diuretics")
+                        .font(.hrtHeadline)
+                        .foregroundStyle(Color.hrtTextFallback)
+                }
+                Spacer()
+            }
+            .padding(.horizontal, HRTSpacing.md)
+
+            Text("Log your diuretic doses for today")
+                .font(.hrtCallout)
+                .foregroundStyle(Color.hrtTextSecondaryFallback)
+                .padding(.horizontal, HRTSpacing.md)
+
+            VStack(spacing: 4) {
+                ForEach(viewModel.diureticMedications, id: \.persistentModelID) { medication in
+                    DiureticRowView(
+                        medication: medication,
+                        doses: viewModel.doses(for: medication),
+                        onLogStandardDose: {
+                            viewModel.logStandardDose(for: medication, context: modelContext)
+                        },
+                        onLogCustomDose: {
+                            selectedDiureticMedication = medication
+                            showCustomDoseSheet = true
+                        },
+                        onDeleteDose: { dose in
+                            viewModel.deleteDose(dose, context: modelContext)
+                        }
+                    )
+
+                    if medication.persistentModelID != viewModel.diureticMedications.last?.persistentModelID {
+                        HRTDivider()
+                            .padding(.horizontal, HRTSpacing.md)
+                    }
+                }
+            }
+            .background(Color.hrtCardFallback)
+            .clipShape(RoundedRectangle(cornerRadius: HRTRadius.large))
+            .padding(.horizontal, HRTSpacing.md)
+
+            if viewModel.showDoseDeleteError {
+                HStack {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .foregroundStyle(Color.hrtCautionFallback)
+                    Text("Could not delete dose. Please try again.")
+                        .font(.hrtCaption)
+                        .foregroundStyle(Color.hrtTextSecondaryFallback)
+                }
+                .padding(.horizontal, HRTSpacing.md)
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel("Error: Could not delete dose")
+            }
         }
     }
 
@@ -216,7 +328,10 @@ struct MedicationsView: View {
     private var medicationsList: some View {
         LazyVStack(spacing: 0) {
             ForEach(viewModel.sortedMedications, id: \.id) { medication in
-                MedicationRowView(medication: medication)
+                MedicationRowView(
+                    medication: medication,
+                    isInConflict: viewModel.isInConflict(medication)
+                )
                     .contentShape(Rectangle())
                     .onTapGesture {
                         viewModel.prepareForEdit(medication: medication)

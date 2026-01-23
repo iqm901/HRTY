@@ -21,4 +21,9 @@ enum AppStorageKeys {
 
     /// Optional patient name/ID for PDF exports
     static let patientIdentifier = "patientIdentifier"
+
+    // MARK: - Medication Conflicts
+
+    /// Timestamp when the conflict banner was last dismissed
+    static let conflictBannerDismissedAt = "conflictBannerDismissedAt"
 }

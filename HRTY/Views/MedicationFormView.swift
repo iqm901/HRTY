@@ -61,9 +61,9 @@ struct MedicationFormView: View {
                                 dismiss()
                             }
                         } else {
-                            viewModel.saveMedication(context: modelContext)
-                            // Reset form for next medication (don't dismiss)
-                            if viewModel.validationError == nil {
+                            viewModel.checkAndSaveMedication(context: modelContext)
+                            // Reset form for next medication (don't dismiss) if no conflict warning
+                            if viewModel.validationError == nil && !viewModel.showingConflictWarning {
                                 viewModel.resetForm()
                             }
                         }
@@ -245,14 +245,17 @@ struct MedicationFormView: View {
 }
 
 #Preview("Edit Medication") {
-    let viewModel = MedicationsViewModel()
-    viewModel.nameInput = "Furosemide"
-    viewModel.dosageInput = "40"
-    viewModel.selectedUnit = "mg"
-    viewModel.scheduleInput = "Morning"
-    viewModel.isDiuretic = true
+    let viewModel = {
+        let vm = MedicationsViewModel()
+        vm.nameInput = "Furosemide"
+        vm.dosageInput = "40"
+        vm.selectedUnit = "mg"
+        vm.scheduleInput = "Morning"
+        vm.isDiuretic = true
+        return vm
+    }()
 
-    return MedicationFormView(
+    MedicationFormView(
         viewModel: viewModel,
         isEditing: true
     )

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct MedicationRowView: View {
     let medication: Medication
+    var isInConflict: Bool = false
 
     var body: some View {
         HStack(alignment: .center, spacing: HRTSpacing.sm) {
@@ -13,6 +14,10 @@ struct MedicationRowView: View {
 
                     if medication.isDiuretic {
                         diureticBadge
+                    }
+
+                    if isInConflict {
+                        reviewBadge
                     }
                 }
 
@@ -34,6 +39,7 @@ struct MedicationRowView: View {
                 .foregroundStyle(Color.hrtTextTertiaryFallback)
         }
         .padding(.vertical, HRTSpacing.xs)
+        .background(isInConflict ? Color.hrtCautionLight.opacity(0.5) : Color.clear)
         .contentShape(Rectangle())
         .accessibilityElement(children: .combine)
         .accessibilityLabel(accessibilityLabel)
@@ -54,6 +60,18 @@ struct MedicationRowView: View {
             .accessibilityLabel("This is a diuretic medication")
     }
 
+    private var reviewBadge: some View {
+        Text("Review")
+            .font(.hrtSmall)
+            .fontWeight(.medium)
+            .padding(.horizontal, HRTSpacing.sm)
+            .padding(.vertical, 2)
+            .background(Color.hrtCautionLight)
+            .foregroundStyle(Color.hrtCautionDark)
+            .clipShape(Capsule())
+            .accessibilityLabel("This medication needs review")
+    }
+
     // MARK: - Computed Properties
 
     private var dosageText: String {
@@ -70,6 +88,9 @@ struct MedicationRowView: View {
         var label = "\(medication.name), \(dosageText)"
         if medication.isDiuretic {
             label += ", diuretic"
+        }
+        if isInConflict {
+            label += ", needs review"
         }
         if !medication.schedule.isEmpty {
             label += ", taken \(medication.schedule)"

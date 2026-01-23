@@ -12,6 +12,32 @@ final class MedicationsViewModel {
     var showingDeleteConfirmation = false
     var medicationToDelete: Medication?
 
+    // MARK: - Conflict State
+    var detectedConflicts: [MedicationConflict] = []
+    var showingConflictWarning = false
+    var pendingConflictMedication: PendingMedication?
+    @ObservationIgnored
+    private var conflictBannerDismissedAt: Date? {
+        get {
+            UserDefaults.standard.object(forKey: AppStorageKeys.conflictBannerDismissedAt) as? Date
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: AppStorageKeys.conflictBannerDismissedAt)
+        }
+    }
+    @ObservationIgnored
+    private var lastConflictMedicationIds: Set<String> = []
+
+    /// Pending medication data when conflict is detected
+    struct PendingMedication {
+        let name: String
+        let dosage: Double
+        let unit: String
+        let schedule: String
+        let isDiuretic: Bool
+        let categoryRawValue: String?
+    }
+
     // MARK: - Photo State
     var photos: [MedicationPhoto] = []
     var showingPhotoCaptureView = false
@@ -68,10 +94,15 @@ final class MedicationsViewModel {
     // MARK: - Services
     private let photoService = PhotoService.shared
     private let diureticDoseService: DiureticDoseServiceProtocol
+    private let conflictService: MedicationConflictServiceProtocol
 
     // MARK: - Initialization
-    init(diureticDoseService: DiureticDoseServiceProtocol = DiureticDoseService()) {
+    init(
+        diureticDoseService: DiureticDoseServiceProtocol = DiureticDoseService(),
+        conflictService: MedicationConflictServiceProtocol = MedicationConflictService()
+    ) {
         self.diureticDoseService = diureticDoseService
+        self.conflictService = conflictService
     }
 
     // MARK: - Computed Properties
@@ -101,6 +132,37 @@ final class MedicationsViewModel {
         return !nameInput.trimmingCharacters(in: .whitespaces).isEmpty && dosage > 0
     }
 
+    /// Whether to show the conflict banner
+    var showConflictBanner: Bool {
+        guard !detectedConflicts.isEmpty else { return false }
+
+        // Get current conflict medication IDs
+        let currentConflictMedIds = Set(detectedConflicts.flatMap { $0.medications.map { $0.name } })
+
+        // If banner was dismissed, only show again if conflicts changed
+        if let dismissedAt = conflictBannerDismissedAt {
+            // Check if any medication was created after dismissal
+            let hasNewConflicts = medications.contains { med in
+                med.createdAt > dismissedAt && currentConflictMedIds.contains(med.name)
+            }
+            return hasNewConflicts
+        }
+
+        return true
+    }
+
+    /// Message to display in the conflict warning alert
+    var conflictWarningMessage: String {
+        guard let pending = pendingConflictMedication else { return "" }
+
+        // Find conflicts for the pending medication
+        let category = pending.categoryRawValue.flatMap { HeartFailureMedication.Category(rawValue: $0) }
+        guard let cat = category else { return "" }
+
+        let conflicts = conflictService.checkConflicts(newCategory: cat, existingMedications: medications)
+        return conflicts.first?.message ?? "This medication may overlap with one you already have listed."
+    }
+
     // MARK: - Methods
     func loadMedications(context: ModelContext) {
         let descriptor = FetchDescriptor<Medication>(
@@ -110,8 +172,11 @@ final class MedicationsViewModel {
 
         do {
             medications = try context.fetch(descriptor)
+            // Check for conflicts after loading
+            detectedConflicts = conflictService.findAllConflicts(in: medications)
         } catch {
             medications = []
+            detectedConflicts = []
         }
     }
 
@@ -184,13 +249,15 @@ final class MedicationsViewModel {
 
         let trimmedName = nameInput.trimmingCharacters(in: .whitespaces)
         let trimmedSchedule = scheduleInput.trimmingCharacters(in: .whitespaces)
+        let categoryRaw = selectedPresetMedication?.category.rawValue
 
         let medication = Medication(
             name: trimmedName,
             dosage: dosage,
             unit: selectedUnit,
             schedule: trimmedSchedule,
-            isDiuretic: isDiuretic
+            isDiuretic: isDiuretic,
+            categoryRawValue: categoryRaw
         )
 
         context.insert(medication)
@@ -203,6 +270,85 @@ final class MedicationsViewModel {
             // This allows the form to stay open for adding multiple medications
         } catch {
             validationError = "Could not save medication. Please try again."
+        }
+    }
+
+    /// Check for conflicts before saving, showing alert if conflicts found
+    func checkAndSaveMedication(context: ModelContext) {
+        guard validateForm() else { return }
+        guard let dosage = parsedDosage else { return }
+
+        let trimmedName = nameInput.trimmingCharacters(in: .whitespaces)
+        let trimmedSchedule = scheduleInput.trimmingCharacters(in: .whitespaces)
+        let categoryRaw = selectedPresetMedication?.category.rawValue
+
+        // Check for conflicts if we have a category
+        if let category = selectedPresetMedication?.category {
+            let conflicts = conflictService.checkConflicts(
+                newCategory: category,
+                existingMedications: medications
+            )
+
+            if !conflicts.isEmpty {
+                // Store pending medication and show warning
+                pendingConflictMedication = PendingMedication(
+                    name: trimmedName,
+                    dosage: dosage,
+                    unit: selectedUnit,
+                    schedule: trimmedSchedule,
+                    isDiuretic: isDiuretic,
+                    categoryRawValue: categoryRaw
+                )
+                showingConflictWarning = true
+                return
+            }
+        }
+
+        // No conflicts - save directly
+        saveMedication(context: context)
+    }
+
+    /// Confirm adding medication despite detected conflicts
+    func confirmAddDespiteConflict(context: ModelContext) {
+        guard let pending = pendingConflictMedication else { return }
+
+        let medication = Medication(
+            name: pending.name,
+            dosage: pending.dosage,
+            unit: pending.unit,
+            schedule: pending.schedule,
+            isDiuretic: pending.isDiuretic,
+            categoryRawValue: pending.categoryRawValue
+        )
+
+        context.insert(medication)
+
+        do {
+            try context.save()
+            loadMedications(context: context)
+            medicationSavedMessage = "\(pending.name) added"
+            pendingConflictMedication = nil
+            showingConflictWarning = false
+        } catch {
+            validationError = "Could not save medication. Please try again."
+        }
+    }
+
+    /// Cancel adding medication with conflicts
+    func cancelConflictAdd() {
+        pendingConflictMedication = nil
+        showingConflictWarning = false
+    }
+
+    /// Dismiss the conflict banner
+    func dismissConflictBanner() {
+        conflictBannerDismissedAt = Date()
+    }
+
+    /// Check if a medication is part of a detected conflict
+    func isInConflict(_ medication: Medication) -> Bool {
+        detectedConflicts.contains { conflict in
+            conflict.medications.contains { $0.persistentModelID == medication.persistentModelID }
         }
     }
 

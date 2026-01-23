@@ -13,9 +13,16 @@ final class Medication {
     var isDiuretic: Bool
     var isActive: Bool
     var createdAt: Date
+    var categoryRawValue: String?
 
     @Relationship(deleteRule: .nullify, inverse: \DiureticDose.medication)
     var doses: [DiureticDose]?
+
+    /// The medication category derived from the raw value
+    var category: HeartFailureMedication.Category? {
+        guard let rawValue = categoryRawValue else { return nil }
+        return HeartFailureMedication.Category(rawValue: rawValue)
+    }
 
     init(
         name: String,
@@ -24,7 +31,8 @@ final class Medication {
         schedule: String = "",
         isDiuretic: Bool = false,
         isActive: Bool = true,
-        createdAt: Date = Date()
+        createdAt: Date = Date(),
+        categoryRawValue: String? = nil
     ) {
         self.name = name
         self.dosage = dosage
@@ -33,5 +41,6 @@ final class Medication {
         self.isDiuretic = isDiuretic
         self.isActive = isActive
         self.createdAt = createdAt
+        self.categoryRawValue = categoryRawValue
     }
 }
