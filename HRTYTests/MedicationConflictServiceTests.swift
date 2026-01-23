@@ -470,4 +470,163 @@ final class MedicationConflictServiceTests: XCTestCase {
 
         XCTAssertTrue(message.contains("Metoprolol"), "Message should mention existing medication")
     }
+
+    // MARK: - Additional Edge Cases
+
+    func testEmptyMedicationListHasNoConflicts() {
+        // Given: no existing medications
+
+        // When: checking if adding any medication would conflict
+        let conflicts = sut.checkConflicts(
+            newCategory: .betaBlocker,
+            existingMedications: []
+        )
+
+        // Then: no conflicts should be detected
+        XCTAssertTrue(conflicts.isEmpty, "Empty medication list should have no conflicts")
+    }
+
+    func testFindAllConflictsWithEmptyList() {
+        // When: finding all conflicts in empty list
+        let conflicts = sut.findAllConflicts(in: [])
+
+        // Then: no conflicts
+        XCTAssertTrue(conflicts.isEmpty, "Empty medication list should have no conflicts")
+    }
+
+    func testMixedActiveAndInactiveMedications() {
+        // Given: one active and one inactive beta blocker
+        let activeMetoprolol = makeMedication(name: "Metoprolol", category: .betaBlocker, isActive: true)
+        let inactiveCarvedilol = makeMedication(name: "Carvedilol", category: .betaBlocker, isActive: false)
+
+        // When: finding all conflicts
+        let conflicts = sut.findAllConflicts(in: [activeMetoprolol, inactiveCarvedilol])
+
+        // Then: no conflicts (only one active medication)
+        XCTAssertTrue(conflicts.isEmpty, "Should only consider active medications")
+    }
+
+    func testMixedActiveInactiveCrossClassConflict() {
+        // Given: active ACE inhibitor and inactive ARB
+        let activeLisinopril = makeMedication(name: "Lisinopril", category: .aceInhibitor, isActive: true)
+        let inactiveLosartan = makeMedication(name: "Losartan", category: .arb, isActive: false)
+
+        // When: finding all conflicts
+        let conflicts = sut.findAllConflicts(in: [activeLisinopril, inactiveLosartan])
+
+        // Then: no cross-class conflict (ARB is inactive)
+        XCTAssertTrue(conflicts.isEmpty, "Inactive ARB should not conflict with active ACE inhibitor")
+    }
+
+    func testARNISameClassConflict() {
+        // Given: existing ARNI
+        let entresto = makeMedication(name: "Entresto", category: .arni)
+
+        // When: checking if adding another ARNI would conflict
+        let conflicts = sut.checkConflicts(
+            newCategory: .arni,
+            existingMedications: [entresto]
+        )
+
+        // Then: should detect same-class conflict
+        XCTAssertEqual(conflicts.count, 1, "Should detect one conflict")
+        if case .sameClass(let category) = conflicts.first?.type {
+            XCTAssertEqual(category, .arni, "Should be ARNI conflict")
+        } else {
+            XCTFail("Should be sameClass conflict type")
+        }
+    }
+
+    func testThiazideDiureticsDoNotConflict() {
+        // Given: existing thiazide diuretic
+        let hctz = makeMedication(name: "HCTZ", category: .thiazideDiuretic)
+
+        // When: checking if adding another thiazide diuretic would conflict
+        let conflicts = sut.checkConflicts(
+            newCategory: .thiazideDiuretic,
+            existingMedications: [hctz]
+        )
+
+        // Then: no conflict (thiazide diuretics are not in single-medication categories)
+        XCTAssertTrue(conflicts.isEmpty, "Thiazide diuretics should not trigger single-class conflict")
+    }
+
+    func testTripleCrossClassScenario() {
+        // Given: ACE inhibitor, ARB, and ARNI all present
+        let lisinopril = makeMedication(name: "Lisinopril", category: .aceInhibitor)
+        let losartan = makeMedication(name: "Losartan", category: .arb)
+        let entresto = makeMedication(name: "Entresto", category: .arni)
+
+        // When: finding all conflicts
+        let conflicts = sut.findAllConflicts(in: [lisinopril, losartan, entresto])
+
+        // Then: should detect all three cross-class conflicts
+        XCTAssertEqual(conflicts.count, 3, "Should find three cross-class conflicts (ACEi+ARB, ACEi+ARNI, ARB+ARNI)")
+
+        let conflictTypes = conflicts.map { $0.type }
+        XCTAssertTrue(conflictTypes.contains(where: {
+            if case .crossClass(.aceInhibitor, .arb) = $0 { return true }
+            return false
+        }), "Should have ACEi+ARB conflict")
+        XCTAssertTrue(conflictTypes.contains(where: {
+            if case .crossClass(.aceInhibitor, .arni) = $0 { return true }
+            return false
+        }), "Should have ACEi+ARNI conflict")
+        XCTAssertTrue(conflictTypes.contains(where: {
+            if case .crossClass(.arb, .arni) = $0 { return true }
+            return false
+        }), "Should have ARB+ARNI conflict")
+    }
+
+    func testSameClassAndCrossClassConflictsTogether() {
+        // Given: two ACE inhibitors and one ARB
+        let lisinopril = makeMedication(name: "Lisinopril", category: .aceInhibitor)
+        let enalapril = makeMedication(name: "Enalapril", category: .aceInhibitor)
+        let losartan = makeMedication(name: "Losartan", category: .arb)
+
+        // When: finding all conflicts
+        let conflicts = sut.findAllConflicts(in: [lisinopril, enalapril, losartan])
+
+        // Then: should find both same-class (2 ACEi) and cross-class (ACEi+ARB) conflicts
+        XCTAssertEqual(conflicts.count, 2, "Should find two conflicts")
+
+        let hasSameClassConflict = conflicts.contains(where: {
+            if case .sameClass(.aceInhibitor) = $0.type { return true }
+            return false
+        })
+        let hasCrossClassConflict = conflicts.contains(where: {
+            if case .crossClass = $0.type { return true }
+            return false
+        })
+
+        XCTAssertTrue(hasSameClassConflict, "Should have ACE inhibitor same-class conflict")
+        XCTAssertTrue(hasCrossClassConflict, "Should have cross-class conflict")
+    }
+
+    func testCheckConflictsWithOnlyInactiveMedications() {
+        // Given: only inactive medications
+        let inactiveMetoprolol = makeMedication(name: "Metoprolol", category: .betaBlocker, isActive: false)
+        let inactiveCarvedilol = makeMedication(name: "Carvedilol", category: .betaBlocker, isActive: false)
+
+        // When: checking if adding a beta blocker would conflict
+        let conflicts = sut.checkConflicts(
+            newCategory: .betaBlocker,
+            existingMedications: [inactiveMetoprolol, inactiveCarvedilol]
+        )
+
+        // Then: no conflicts (all existing are inactive)
+        XCTAssertTrue(conflicts.isEmpty, "Inactive medications should not cause conflicts when adding new medication")
+    }
+
+    func testFindAllConflictsWithOnlyInactiveMedications() {
+        // Given: two inactive beta blockers
+        let inactiveMetoprolol = makeMedication(name: "Metoprolol", category: .betaBlocker, isActive: false)
+        let inactiveCarvedilol = makeMedication(name: "Carvedilol", category: .betaBlocker, isActive: false)
+
+        // When: finding all conflicts
+        let conflicts = sut.findAllConflicts(in: [inactiveMetoprolol, inactiveCarvedilol])
+
+        // Then: no conflicts (both are inactive)
+        XCTAssertTrue(conflicts.isEmpty, "Inactive medications should not conflict with each other")
+    }
 }
