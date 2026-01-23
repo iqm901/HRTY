@@ -46,4 +46,35 @@ enum AlertConstants {
     /// Minimum weight change (in lbs) to be considered "up" or "down" rather than "stable"
     /// Changes smaller than this are treated as normal daily fluctuation
     static let weightStabilityThreshold: Double = 0.05
+
+    // MARK: - Vital Signs Alert Thresholds
+
+    /// Oxygen saturation below this value triggers low SpO2 alert (%)
+    static let oxygenSaturationLowThreshold: Int = 90
+
+    /// Systolic blood pressure below this value triggers low BP alert (mmHg)
+    static let systolicBPLowThreshold: Int = 90
+
+    /// Mean Arterial Pressure below this value triggers low MAP alert (mmHg)
+    static let mapLowThreshold: Int = 60
+
+    // MARK: - Vital Signs Validation Bounds
+
+    /// Minimum valid oxygen saturation (%)
+    static let minimumOxygenSaturation: Int = 70
+
+    /// Maximum valid oxygen saturation (%)
+    static let maximumOxygenSaturation: Int = 100
+
+    /// Minimum valid systolic blood pressure (mmHg)
+    static let minimumSystolicBP: Int = 60
+
+    /// Maximum valid systolic blood pressure (mmHg)
+    static let maximumSystolicBP: Int = 250
+
+    /// Minimum valid diastolic blood pressure (mmHg)
+    static let minimumDiastolicBP: Int = 40
+
+    /// Maximum valid diastolic blood pressure (mmHg)
+    static let maximumDiastolicBP: Int = 150
 }

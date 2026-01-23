@@ -17,6 +17,9 @@ final class DailyEntry {
     @Relationship(inverse: \AlertEvent.relatedDailyEntry)
     var alertEvents: [AlertEvent]?
 
+    @Relationship(deleteRule: .cascade, inverse: \VitalSignsEntry.dailyEntry)
+    var vitalSigns: VitalSignsEntry?
+
     init(
         date: Date = Date(),
         weight: Double? = nil,

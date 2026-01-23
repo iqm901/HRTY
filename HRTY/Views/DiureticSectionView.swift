@@ -129,30 +129,11 @@ struct DiureticSectionView: View {
 }
 
 #Preview {
-    let config = ModelConfiguration(isStoredInMemoryOnly: true)
-    let container = try! ModelContainer(for: DailyEntry.self, Medication.self, DiureticDose.self, configurations: config)
-
-    // Add sample medication
-    let medication = Medication(
-        name: "Furosemide",
-        dosage: 40,
-        unit: "mg",
-        schedule: "Morning",
-        isDiuretic: true
-    )
-    container.mainContext.insert(medication)
-
-    let viewModel = TodayViewModel()
-
-    return NavigationStack {
+    NavigationStack {
         ScrollView {
-            DiureticSectionView(viewModel: viewModel)
+            DiureticSectionView(viewModel: TodayViewModel())
                 .padding()
         }
     }
-    .modelContainer(container)
-    .onAppear {
-        viewModel.loadData(context: container.mainContext)
-        viewModel.loadDiuretics(context: container.mainContext)
-    }
+    .modelContainer(for: [DailyEntry.self, Medication.self, DiureticDose.self], inMemory: true)
 }

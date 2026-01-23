@@ -26,7 +26,8 @@ struct HRTYApp: App {
             SymptomEntry.self,
             DiureticDose.self,
             Medication.self,
-            AlertEvent.self
+            AlertEvent.self,
+            VitalSignsEntry.self
         ])
         let modelConfiguration = ModelConfiguration(
             schema: schema,
