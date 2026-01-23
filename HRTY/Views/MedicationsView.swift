@@ -113,6 +113,38 @@ struct MedicationsView: View {
             } message: {
                 Text(viewModel.conflictWarningMessage)
             }
+            .alert("Archive Medication?", isPresented: $viewModel.showingArchivePrompt) {
+                Button("Cancel", role: .cancel) {
+                    viewModel.cancelArchiveOrDelete()
+                }
+                Button("Archive") {
+                    viewModel.archiveMedication(context: modelContext)
+                }
+            } message: {
+                if let medication = viewModel.medicationToArchive {
+                    Text("Move \(medication.name) to Prior Medications? You can reactivate it later if needed.")
+                }
+            }
+            .alert("Keep Medication History?", isPresented: $viewModel.showingArchiveInsteadPrompt) {
+                Button("Cancel", role: .cancel) {
+                    viewModel.cancelArchiveOrDelete()
+                }
+                Button("Archive Instead") {
+                    viewModel.archiveInsteadOfDelete(context: modelContext)
+                }
+                Button("Delete Permanently", role: .destructive) {
+                    viewModel.permanentlyDeleteMedication(context: modelContext)
+                }
+            } message: {
+                if let medication = viewModel.medicationToDelete {
+                    Text("This medication has been tracked for more than a day. Would you like to archive \(medication.name) instead? Archiving preserves your history and lets you reactivate it later.")
+                }
+            }
+            .sheet(isPresented: $viewModel.showingPriorMedicationDetail) {
+                if let medication = viewModel.selectedPriorMedication {
+                    PriorMedicationDetailView(viewModel: viewModel, medication: medication)
+                }
+            }
             .onAppear {
                 viewModel.loadMedications(context: modelContext)
                 viewModel.loadPhotos()
@@ -183,7 +215,7 @@ struct MedicationsView: View {
                 HStack(spacing: HRTSpacing.sm) {
                     Image(systemName: "pills")
                         .foregroundStyle(Color.hrtPinkFallback)
-                    Text("My Medications")
+                    Text("Active Medications")
                         .font(.hrtHeadline)
                         .foregroundStyle(Color.hrtTextFallback)
                 }
@@ -205,6 +237,11 @@ struct MedicationsView: View {
                 medicationsEmptyState
             } else {
                 medicationsList
+            }
+
+            // Prior Medications Section
+            if viewModel.hasPriorMedications {
+                priorMedicationsSection
             }
         }
     }
@@ -235,8 +272,13 @@ struct MedicationsView: View {
                         viewModel.prepareForEdit(medication: medication)
                     }
                     .contextMenu {
+                        Button {
+                            viewModel.prepareForArchive(medication: medication)
+                        } label: {
+                            Label("Archive", systemImage: "archivebox")
+                        }
                         Button(role: .destructive) {
-                            viewModel.prepareForDelete(medication: medication)
+                            handleDeleteAction(for: medication)
                         } label: {
                             Label("Delete", systemImage: "trash")
                         }
@@ -251,6 +293,81 @@ struct MedicationsView: View {
             }
         }
         .background(Color.hrtCardFallback)
+        .clipShape(RoundedRectangle(cornerRadius: HRTRadius.large))
+        .padding(.horizontal, HRTSpacing.md)
+    }
+
+    private func handleDeleteAction(for medication: Medication) {
+        if viewModel.shouldPromptArchiveInsteadOfDelete(medication) {
+            viewModel.prepareForDeleteWithArchiveOption(medication: medication)
+        } else {
+            viewModel.prepareForDelete(medication: medication)
+        }
+    }
+
+    private var priorMedicationsSection: some View {
+        VStack(alignment: .leading, spacing: HRTSpacing.sm) {
+            // Collapsible header
+            Button {
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    viewModel.togglePriorSection()
+                }
+            } label: {
+                HStack {
+                    HStack(spacing: HRTSpacing.sm) {
+                        Image(systemName: "archivebox")
+                            .foregroundStyle(Color.hrtTextSecondaryFallback)
+                        Text("Prior Medications (\(viewModel.priorMedicationsCount))")
+                            .font(.hrtHeadline)
+                            .foregroundStyle(Color.hrtTextSecondaryFallback)
+                    }
+
+                    Spacer()
+
+                    Image(systemName: viewModel.isPriorSectionExpanded ? "chevron.up" : "chevron.down")
+                        .font(.caption)
+                        .foregroundStyle(Color.hrtTextSecondaryFallback)
+                }
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .padding(.horizontal, HRTSpacing.md)
+            .padding(.top, HRTSpacing.md)
+
+            if viewModel.isPriorSectionExpanded {
+                priorMedicationsList
+            }
+        }
+    }
+
+    private var priorMedicationsList: some View {
+        LazyVStack(spacing: 0) {
+            ForEach(viewModel.priorMedications, id: \.id) { medication in
+                HStack {
+                    Text(medication.name)
+                        .font(.hrtBody)
+                        .foregroundStyle(Color.hrtTextFallback)
+
+                    Spacer()
+
+                    Image(systemName: "chevron.right")
+                        .font(.caption)
+                        .foregroundStyle(Color.hrtTextSecondaryFallback)
+                }
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    viewModel.prepareForPriorDetail(medication: medication)
+                }
+                .padding(.horizontal, HRTSpacing.md)
+                .padding(.vertical, HRTSpacing.sm)
+
+                if medication.id != viewModel.priorMedications.last?.id {
+                    HRTDivider()
+                        .padding(.horizontal, HRTSpacing.md)
+                }
+            }
+        }
+        .background(Color.hrtCardFallback.opacity(0.6))
         .clipShape(RoundedRectangle(cornerRadius: HRTRadius.large))
         .padding(.horizontal, HRTSpacing.md)
     }

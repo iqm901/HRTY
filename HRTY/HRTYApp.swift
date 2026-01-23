@@ -26,6 +26,7 @@ struct HRTYApp: App {
             SymptomEntry.self,
             DiureticDose.self,
             Medication.self,
+            MedicationPeriod.self,
             AlertEvent.self,
             VitalSignsEntry.self
         ])

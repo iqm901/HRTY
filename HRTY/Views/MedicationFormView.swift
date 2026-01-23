@@ -80,9 +80,17 @@ struct MedicationFormView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Done") {
-                        dismiss()
-                        viewModel.resetForm()
+                    if !isEditing && viewModel.usePresetMedication && viewModel.selectedPresetMedication != nil {
+                        // Back button when a preset medication is selected
+                        Button("Back") {
+                            viewModel.selectPresetMedication(nil)
+                        }
+                    } else {
+                        // Done button to dismiss the form
+                        Button("Done") {
+                            dismiss()
+                            viewModel.resetForm()
+                        }
                     }
                 }
                 ToolbarItem(placement: .confirmationAction) {
@@ -140,39 +148,17 @@ struct MedicationFormView: View {
 
     private var presetMedicationSection: some View {
         Group {
-            // Category Tab Bar
-            Section {
-                categoryTabBar
-            } header: {
-                Text("Category")
-            }
-
-            // Medication List
-            Section {
-                ForEach(filteredMedications) { medication in
-                    Button {
-                        viewModel.selectPresetMedication(medication)
-                    } label: {
-                        HStack {
-                            Text(medication.displayName)
-                                .font(.hrtBody)
-                                .foregroundStyle(Color.hrtTextFallback)
-                            Spacer()
-                            if viewModel.selectedPresetMedication?.id == medication.id {
-                                Image(systemName: "checkmark")
-                                    .foregroundStyle(Color.hrtPinkFallback)
-                                    .fontWeight(.semibold)
-                            }
-                        }
-                    }
-                    .buttonStyle(.plain)
-                }
-            } header: {
-                Text("Medication")
-            }
-
-            // Dosage Picker (only shown when medication is selected)
             if let selectedMed = viewModel.selectedPresetMedication {
+                // SELECTED STATE: Show selected medication and dosage/frequency options
+                Section {
+                    Text(selectedMed.displayName)
+                        .font(.hrtBody)
+                        .foregroundStyle(Color.hrtTextFallback)
+                } header: {
+                    Text("Medication")
+                }
+
+                // Dosage Picker
                 Section {
                     Picker("Dosage", selection: Binding(
                         get: { viewModel.selectedDosageOption },
@@ -201,12 +187,31 @@ struct MedicationFormView: View {
                     }
                 } header: {
                     Text("Frequency")
-                } footer: {
-                    if selectedMed.isDiuretic {
-                        Label("This is a diuretic - doses will be tracked on the Today screen", systemImage: "drop.fill")
-                            .font(.hrtCaption)
-                            .foregroundStyle(Color.hrtPinkFallback)
+                }
+            } else {
+                // UNSELECTED STATE: Show category tabs and medication list
+                Section {
+                    categoryTabBar
+                } header: {
+                    Text("Category")
+                }
+
+                Section {
+                    ForEach(filteredMedications) { medication in
+                        Button {
+                            viewModel.selectPresetMedication(medication)
+                        } label: {
+                            HStack {
+                                Text(medication.displayName)
+                                    .font(.hrtBody)
+                                    .foregroundStyle(Color.hrtTextFallback)
+                                Spacer()
+                            }
+                        }
+                        .buttonStyle(.plain)
                     }
+                } header: {
+                    Text("Medication")
                 }
             }
         }

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		023000010000000100000001 /* MedicationPeriod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023000020000000100000001 /* MedicationPeriod.swift */; };
+		024000010000000100000001 /* PriorMedicationDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024000020000000100000001 /* PriorMedicationDetailView.swift */; };
 		020000010000000100000001 /* DiureticDoseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020000020000000100000001 /* DiureticDoseService.swift */; };
 		021000010000000100000002 /* MedicationConflictService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021000020000000100000002 /* MedicationConflictService.swift */; };
 		63E3FE18315940D08A81709F /* VitalSignsEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDA8FBDCC544B2EA822AD07 /* VitalSignsEntry.swift */; };
@@ -113,6 +115,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		023000020000000100000001 /* MedicationPeriod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicationPeriod.swift; sourceTree = "<group>"; };
+		024000020000000100000001 /* PriorMedicationDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriorMedicationDetailView.swift; sourceTree = "<group>"; };
 		020000020000000100000001 /* DiureticDoseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiureticDoseService.swift; sourceTree = "<group>"; };
 		021000020000000100000002 /* MedicationConflictService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicationConflictService.swift; sourceTree = "<group>"; };
 		EEDA8FBDCC544B2EA822AD07 /* VitalSignsEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VitalSignsEntry.swift; sourceTree = "<group>"; };
@@ -305,6 +309,7 @@
 				A1000002200000010000000100000011 /* SymptomRowView.swift */,
 				A1000002200000010000000100000014 /* MedicationRowView.swift */,
 				A1000002200000010000000100000015 /* MedicationFormView.swift */,
+				024000020000000100000001 /* PriorMedicationDetailView.swift */,
 				A1000002200000010000000100000016 /* DiureticSectionView.swift */,
 				A1000002200000010000000100000017 /* DiureticRowView.swift */,
 				A1000002200000010000000100000018 /* CustomDoseSheet.swift */,
@@ -333,6 +338,7 @@
 				A100000220000001000000010000000C /* SymptomEntry.swift */,
 				A100000220000001000000010000000D /* DiureticDose.swift */,
 				A100000220000001000000010000000E /* Medication.swift */,
+				023000020000000100000001 /* MedicationPeriod.swift */,
 				A100000220000001000000010000000F /* AlertEvent.swift */,
 				A1000002200000010000000100000020 /* AlertConstants.swift */,
 				A1000002200000010000000100000012 /* SeverityLevel.swift */,
@@ -488,6 +494,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				023000010000000100000001 /* MedicationPeriod.swift in Sources */,
+				024000010000000100000001 /* PriorMedicationDetailView.swift in Sources */,
 				020000010000000100000001 /* DiureticDoseService.swift in Sources */,
 				021000010000000100000002 /* MedicationConflictService.swift in Sources */,
 				63E3FE18315940D08A81709F /* VitalSignsEntry.swift in Sources */,

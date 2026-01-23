@@ -6,11 +6,25 @@ import UIKit
 final class MedicationsViewModel {
     // MARK: - State
     var medications: [Medication] = []
+    var priorMedications: [Medication] = []
     var showingAddMedication = false
     var showingEditMedication = false
     var selectedMedication: Medication?
     var showingDeleteConfirmation = false
     var medicationToDelete: Medication?
+
+    // MARK: - Archive State
+    var isPriorSectionExpanded = false
+    var showingArchivePrompt = false
+    var showingArchiveInsteadPrompt = false
+    var medicationToArchive: Medication?
+    var showingPriorMedicationDetail = false
+    var selectedPriorMedication: Medication?
+
+    // MARK: - Reactivation Form Fields
+    var reactivateDosageInput: String = ""
+    var reactivateSelectedUnit: String = "mg"
+    var reactivateScheduleInput: String = ""
 
     // MARK: - Photo State
     var photos: [MedicationPhoto] = []
@@ -114,16 +128,31 @@ final class MedicationsViewModel {
 
     // MARK: - Methods
     func loadMedications(context: ModelContext) {
-        let descriptor = FetchDescriptor<Medication>(
+        // Load active medications
+        let activeDescriptor = FetchDescriptor<Medication>(
             predicate: #Predicate { $0.isActive == true },
             sortBy: [SortDescriptor(\.name)]
         )
 
+        // Load archived/prior medications
+        let priorDescriptor = FetchDescriptor<Medication>(
+            predicate: #Predicate { $0.isActive == false },
+            sortBy: [SortDescriptor(\.archivedAt, order: .reverse)]
+        )
+
         do {
-            medications = try context.fetch(descriptor)
+            medications = try context.fetch(activeDescriptor)
+            priorMedications = try context.fetch(priorDescriptor)
+
+            // Ensure all medications have periods (migration)
+            for medication in medications + priorMedications {
+                medication.createInitialPeriodIfNeeded()
+            }
+
             refreshConflicts()
         } catch {
             medications = []
+            priorMedications = []
         }
     }
 
@@ -206,6 +235,15 @@ final class MedicationsViewModel {
             categoryRawValue: selectedPresetMedication?.category.rawValue
         )
 
+        // Create initial period for tracking history
+        let initialPeriod = MedicationPeriod(
+            dosage: dosage,
+            unit: selectedUnit,
+            schedule: trimmedSchedule,
+            startDate: Date()
+        )
+        medication.periods = [initialPeriod]
+
         context.insert(medication)
 
         do {
@@ -229,10 +267,14 @@ final class MedicationsViewModel {
         let trimmedSchedule = scheduleInput.trimmingCharacters(in: .whitespaces)
 
         medication.name = trimmedName
-        medication.dosage = dosage
-        medication.unit = selectedUnit
-        medication.schedule = trimmedSchedule
         medication.isDiuretic = isDiuretic
+
+        // Use updateDosage to track dosage changes as periods
+        medication.updateDosage(
+            newDosage: dosage,
+            newUnit: selectedUnit,
+            newSchedule: trimmedSchedule
+        )
 
         do {
             try context.save()
@@ -264,6 +306,147 @@ final class MedicationsViewModel {
 
     func clearDeleteError() {
         deleteError = nil
+    }
+
+    // MARK: - Archive Methods
+
+    /// Check if we should prompt to archive instead of delete
+    func shouldPromptArchiveInsteadOfDelete(_ medication: Medication) -> Bool {
+        return medication.canBeArchived
+    }
+
+    /// Prepare to archive a medication (shows archive confirmation)
+    func prepareForArchive(medication: Medication) {
+        medicationToArchive = medication
+        showingArchivePrompt = true
+    }
+
+    /// Prepare to delete with archive prompt (for medications > 1 day old)
+    func prepareForDeleteWithArchiveOption(medication: Medication) {
+        medicationToDelete = medication
+        showingArchiveInsteadPrompt = true
+    }
+
+    /// Archive a medication (move to prior medications)
+    func archiveMedication(context: ModelContext) {
+        guard let medication = medicationToArchive else { return }
+
+        medication.archive()
+
+        do {
+            try context.save()
+            loadMedications(context: context)
+            medicationToArchive = nil
+            showingArchivePrompt = false
+        } catch {
+            // Revert the archive since save failed
+            medication.isActive = true
+            medication.archivedAt = nil
+            deleteError = "Could not archive medication. Please try again."
+        }
+    }
+
+    /// Permanently delete a medication (hard delete from database)
+    func permanentlyDeleteMedication(context: ModelContext) {
+        guard let medication = medicationToDelete else { return }
+
+        context.delete(medication)
+
+        do {
+            try context.save()
+            loadMedications(context: context)
+            medicationToDelete = nil
+            showingArchiveInsteadPrompt = false
+            deleteError = nil
+        } catch {
+            deleteError = "Could not delete medication. Please try again."
+        }
+    }
+
+    /// Archive instead of delete (from delete prompt)
+    func archiveInsteadOfDelete(context: ModelContext) {
+        guard let medication = medicationToDelete else { return }
+
+        medication.archive()
+
+        do {
+            try context.save()
+            loadMedications(context: context)
+            medicationToDelete = nil
+            showingArchiveInsteadPrompt = false
+        } catch {
+            medication.isActive = true
+            medication.archivedAt = nil
+            deleteError = "Could not archive medication. Please try again."
+        }
+    }
+
+    /// Cancel archive or delete prompt
+    func cancelArchiveOrDelete() {
+        medicationToArchive = nil
+        medicationToDelete = nil
+        showingArchivePrompt = false
+        showingArchiveInsteadPrompt = false
+    }
+
+    // MARK: - Prior Medication Methods
+
+    /// Prepare to view a prior medication's detail
+    func prepareForPriorDetail(medication: Medication) {
+        selectedPriorMedication = medication
+        // Pre-fill reactivation form with last known dosage
+        reactivateDosageInput = String(format: "%.0f", medication.dosage)
+        reactivateSelectedUnit = medication.unit
+        reactivateScheduleInput = medication.schedule
+        showingPriorMedicationDetail = true
+    }
+
+    /// Reactivate a prior medication
+    func reactivateMedication(context: ModelContext) {
+        guard let medication = selectedPriorMedication else { return }
+        guard let dosage = Double(reactivateDosageInput), dosage > 0 else {
+            validationError = "Please enter a valid dosage"
+            return
+        }
+
+        medication.reactivate(
+            dosage: dosage,
+            unit: reactivateSelectedUnit,
+            schedule: reactivateScheduleInput.trimmingCharacters(in: .whitespaces)
+        )
+
+        do {
+            try context.save()
+            loadMedications(context: context)
+            refreshConflicts()
+            showingPriorMedicationDetail = false
+            selectedPriorMedication = nil
+            resetReactivationForm()
+        } catch {
+            validationError = "Could not reactivate medication. Please try again."
+        }
+    }
+
+    /// Reset reactivation form fields
+    func resetReactivationForm() {
+        reactivateDosageInput = ""
+        reactivateSelectedUnit = "mg"
+        reactivateScheduleInput = ""
+    }
+
+    /// Toggle the prior medications section expansion
+    func togglePriorSection() {
+        isPriorSectionExpanded.toggle()
+    }
+
+    /// Whether there are any prior medications
+    var hasPriorMedications: Bool {
+        !priorMedications.isEmpty
+    }
+
+    /// Count of prior medications for display
+    var priorMedicationsCount: Int {
+        priorMedications.count
     }
 
     // MARK: - Conflict Detection Methods

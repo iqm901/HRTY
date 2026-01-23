@@ -12,10 +12,6 @@ struct MedicationRowView: View {
                         .font(.hrtBodySemibold)
                         .foregroundStyle(Color.hrtTextFallback)
 
-                    if medication.isDiuretic {
-                        diureticBadge
-                    }
-
                     if isInConflict {
                         reviewBadge
                     }
