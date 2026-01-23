@@ -208,3 +208,56 @@ enum HRTAnimation {
     /// Gentle spring for subtle movements
     static let gentleSpring: Animation = .spring(response: 0.5, dampingFraction: 0.8)
 }
+
+// MARK: - Dynamic Type Scaling
+
+/// Provides consistent scaling values for Dynamic Type accessibility support.
+/// Use these utilities to scale UI elements appropriately across all text sizes.
+enum HRTDynamicTypeScaling {
+
+    /// Scale factor for progress indicators and loading spinners
+    static func progressIndicatorScale(for dynamicTypeSize: DynamicTypeSize) -> CGFloat {
+        switch dynamicTypeSize {
+        case .xSmall, .small, .medium:
+            return 0.8
+        case .large, .xLarge:
+            return 0.9
+        case .xxLarge, .xxxLarge:
+            return 1.0
+        case .accessibility1, .accessibility2:
+            return 1.1
+        case .accessibility3, .accessibility4, .accessibility5:
+            return 1.2
+        @unknown default:
+            return 0.9
+        }
+    }
+
+    /// Image scale for icons in buttons
+    static func buttonIconScale(for dynamicTypeSize: DynamicTypeSize) -> Image.Scale {
+        dynamicTypeSize.isAccessibilitySize ? .large : .medium
+    }
+
+    /// Image scale for small inline icons (timestamps, labels)
+    static func smallIconScale(for dynamicTypeSize: DynamicTypeSize) -> Image.Scale {
+        dynamicTypeSize.isAccessibilitySize ? .medium : .small
+    }
+
+    /// Vertical padding for secondary action buttons (like HealthKit import)
+    static func secondaryButtonVerticalPadding(for dynamicTypeSize: DynamicTypeSize) -> CGFloat {
+        switch dynamicTypeSize {
+        case .xSmall, .small, .medium:
+            return 12
+        case .large, .xLarge:
+            return 14
+        case .xxLarge, .xxxLarge:
+            return 16
+        case .accessibility1, .accessibility2:
+            return 18
+        case .accessibility3, .accessibility4, .accessibility5:
+            return 20
+        @unknown default:
+            return 14
+        }
+    }
+}

@@ -165,41 +165,15 @@ struct OxygenSaturationEntryView: View {
     // MARK: - Dynamic Type Support
 
     private var healthKitIconScale: CGFloat {
-        switch dynamicTypeSize {
-        case .xSmall, .small, .medium:
-            return 0.8
-        case .large, .xLarge:
-            return 0.9
-        case .xxLarge, .xxxLarge:
-            return 1.0
-        case .accessibility1, .accessibility2:
-            return 1.1
-        case .accessibility3, .accessibility4, .accessibility5:
-            return 1.2
-        @unknown default:
-            return 0.9
-        }
+        HRTDynamicTypeScaling.progressIndicatorScale(for: dynamicTypeSize)
     }
 
     private var healthKitImageScale: Image.Scale {
-        dynamicTypeSize.isAccessibilitySize ? .large : .medium
+        HRTDynamicTypeScaling.buttonIconScale(for: dynamicTypeSize)
     }
 
     private var healthKitButtonVerticalPadding: CGFloat {
-        switch dynamicTypeSize {
-        case .xSmall, .small, .medium:
-            return 12
-        case .large, .xLarge:
-            return 14
-        case .xxLarge, .xxxLarge:
-            return 16
-        case .accessibility1, .accessibility2:
-            return 18
-        case .accessibility3, .accessibility4, .accessibility5:
-            return 20
-        @unknown default:
-            return 14
-        }
+        HRTDynamicTypeScaling.secondaryButtonVerticalPadding(for: dynamicTypeSize)
     }
 }
 
