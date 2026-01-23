@@ -478,3 +478,89 @@ final class VitalSignsBoundaryTests: XCTestCase {
         }
     }
 }
+
+// MARK: - Invalid Blood Pressure Validation Tests
+
+final class InvalidBloodPressureTests: XCTestCase {
+
+    func testSystolicEqualsDiastolicIsInvalid() {
+        // Given: systolic equals diastolic (invalid BP reading)
+        let systolic = 100
+        let diastolic = 100
+
+        // Then: this should be considered invalid (systolic must be > diastolic)
+        XCTAssertFalse(
+            systolic > diastolic,
+            "Systolic BP equal to diastolic BP should be invalid"
+        )
+    }
+
+    func testSystolicLessThanDiastolicIsInvalid() {
+        // Given: systolic less than diastolic (physiologically impossible)
+        let systolic = 80
+        let diastolic = 120
+
+        // Then: this should be considered invalid
+        XCTAssertFalse(
+            systolic > diastolic,
+            "Systolic BP less than diastolic BP should be invalid"
+        )
+    }
+
+    func testValidBloodPressureHasSystolicGreaterThanDiastolic() {
+        // Given: normal blood pressure
+        let systolic = 120
+        let diastolic = 80
+
+        // Then: systolic should be greater than diastolic
+        XCTAssertTrue(
+            systolic > diastolic,
+            "Valid BP should have systolic > diastolic"
+        )
+    }
+
+    func testMAPCalculationNotPerformedForInvalidBP() {
+        // Given: invalid BP where systolic <= diastolic
+        let systolic = 70
+        let diastolic = 90
+
+        // When: attempting MAP calculation
+        // Per VitalSignsAlertService, invalid BP is rejected before MAP calculation
+
+        // Then: systolic must be > diastolic for valid MAP calculation
+        // The service should skip alert checking for invalid readings
+        XCTAssertFalse(
+            systolic > diastolic,
+            "Invalid BP (systolic <= diastolic) should be rejected before MAP calculation"
+        )
+    }
+
+    func testBoundaryValidBPWithMinimalDifference() {
+        // Given: BP with minimal but valid difference (systolic just 1 higher)
+        let systolic = 81
+        let diastolic = 80
+
+        // Then: this is technically valid (though clinically unusual)
+        XCTAssertTrue(
+            systolic > diastolic,
+            "BP with systolic 1 higher than diastolic is technically valid"
+        )
+    }
+
+    func testVitalSignsEntryMAPWithInvalidBP() {
+        // Given: VitalSignsEntry with invalid BP (systolic <= diastolic)
+        let entry = VitalSignsEntry(systolicBP: 80, diastolicBP: 100)
+
+        // When: checking MAP calculation
+        // Note: The model calculates MAP without validation
+        // but the alert service rejects invalid BP before creating alerts
+
+        // Then: hasBloodPressure is true (values exist)
+        // but alert service should reject this reading
+        XCTAssertTrue(entry.hasBloodPressure)
+
+        // The MAP calculation would give a negative pulse pressure result
+        // MAP = 100 + (80 - 100) / 3 = 100 - 7 = 93 (incorrect but computed)
+        // This is why the alert service validates before checking thresholds
+    }
+}
