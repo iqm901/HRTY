@@ -68,7 +68,7 @@ struct BloodPressureEntryView: View {
     // MARK: - Input Fields
 
     private var bloodPressureInputFields: some View {
-        HStack(spacing: HRTSpacing.md) {
+        HStack(alignment: .bottom, spacing: HRTSpacing.md) {
             VStack(spacing: HRTSpacing.xs) {
                 Text("Systolic")
                     .font(.hrtCaption)
@@ -79,7 +79,7 @@ struct BloodPressureEntryView: View {
                     .font(.hrtMetricMedium)
                     .multilineTextAlignment(.center)
                     .padding(HRTSpacing.md)
-                    .frame(height: 60)
+                    .frame(height: 70)
                     .background(Color.hrtBackgroundSecondaryFallback)
                     .clipShape(RoundedRectangle(cornerRadius: HRTRadius.medium))
                     .focused($focusedField, equals: .systolic)
@@ -90,7 +90,8 @@ struct BloodPressureEntryView: View {
             Text("/")
                 .font(.hrtTitle2)
                 .foregroundStyle(Color.hrtTextSecondaryFallback)
-                .padding(.top, 20)
+                .frame(height: 70)
+                .accessibilityHidden(true)
 
             VStack(spacing: HRTSpacing.xs) {
                 Text("Diastolic")
@@ -102,7 +103,7 @@ struct BloodPressureEntryView: View {
                     .font(.hrtMetricMedium)
                     .multilineTextAlignment(.center)
                     .padding(HRTSpacing.md)
-                    .frame(height: 60)
+                    .frame(height: 70)
                     .background(Color.hrtBackgroundSecondaryFallback)
                     .clipShape(RoundedRectangle(cornerRadius: HRTRadius.medium))
                     .focused($focusedField, equals: .diastolic)
@@ -113,7 +114,8 @@ struct BloodPressureEntryView: View {
             Text("mmHg")
                 .font(.hrtCallout)
                 .foregroundStyle(Color.hrtTextSecondaryFallback)
-                .padding(.top, 20)
+                .frame(height: 70)
+                .accessibilityHidden(true)
         }
     }
 
