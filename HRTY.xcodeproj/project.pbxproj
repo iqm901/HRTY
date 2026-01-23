@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		020000010000000100000001 /* DiureticDoseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020000020000000100000001 /* DiureticDoseService.swift */; };
+		021000010000000100000002 /* MedicationConflictService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021000020000000100000002 /* MedicationConflictService.swift */; };
 		63E3FE18315940D08A81709F /* VitalSignsEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDA8FBDCC544B2EA822AD07 /* VitalSignsEntry.swift */; };
 		54874CD30FA847BCACFFA400 /* BloodPressureEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 329B16C46A9C4E7A833D8CFB /* BloodPressureEntryView.swift */; };
 		21C27926255C42DBA75CB169 /* OxygenSaturationEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B20E79AD6E94FD7B00EB8C6 /* OxygenSaturationEntryView.swift */; };
@@ -113,6 +114,7 @@
 
 /* Begin PBXFileReference section */
 		020000020000000100000001 /* DiureticDoseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiureticDoseService.swift; sourceTree = "<group>"; };
+		021000020000000100000002 /* MedicationConflictService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicationConflictService.swift; sourceTree = "<group>"; };
 		EEDA8FBDCC544B2EA822AD07 /* VitalSignsEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VitalSignsEntry.swift; sourceTree = "<group>"; };
 		329B16C46A9C4E7A833D8CFB /* BloodPressureEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BloodPressureEntryView.swift; sourceTree = "<group>"; };
 		8B20E79AD6E94FD7B00EB8C6 /* OxygenSaturationEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OxygenSaturationEntryView.swift; sourceTree = "<group>"; };
@@ -357,6 +359,7 @@
 			isa = PBXGroup;
 			children = (
 				020000020000000100000001 /* DiureticDoseService.swift */,
+				021000020000000100000002 /* MedicationConflictService.swift */,
 				62B091BAE36042B9A749B8CE /* VitalSignsAlertService.swift */,
 				A1000002200000010000000100000021 /* WeightAlertService.swift */,
 				A1000002200000010000000100000022 /* SymptomAlertService.swift */,
@@ -486,6 +489,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				020000010000000100000001 /* DiureticDoseService.swift in Sources */,
+				021000010000000100000002 /* MedicationConflictService.swift in Sources */,
 				63E3FE18315940D08A81709F /* VitalSignsEntry.swift in Sources */,
 				54874CD30FA847BCACFFA400 /* BloodPressureEntryView.swift in Sources */,
 				21C27926255C42DBA75CB169 /* OxygenSaturationEntryView.swift in Sources */,

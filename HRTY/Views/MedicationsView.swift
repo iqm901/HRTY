@@ -103,6 +103,16 @@ struct MedicationsView: View {
                     Text(error)
                 }
             }
+            .alert("Before You Add", isPresented: $viewModel.showingConflictWarning) {
+                Button("Cancel", role: .cancel) {
+                    viewModel.cancelConflictAdd()
+                }
+                Button("Add Anyway") {
+                    viewModel.confirmAddDespiteConflict(context: modelContext)
+                }
+            } message: {
+                Text(viewModel.conflictWarningMessage)
+            }
             .onAppear {
                 viewModel.loadMedications(context: modelContext)
                 viewModel.loadPhotos()

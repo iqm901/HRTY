@@ -65,13 +65,24 @@ final class MedicationsViewModel {
     var deleteError: String?
     var medicationSavedMessage: String?
 
+    // MARK: - Conflict State
+    var detectedConflicts: [MedicationConflict] = []
+    var showingConflictWarning = false
+    var pendingConflictMedication: Medication?
+    var conflictWarningMessage: String = ""
+
     // MARK: - Services
     private let photoService = PhotoService.shared
     private let diureticDoseService: DiureticDoseServiceProtocol
+    private let conflictService: MedicationConflictServiceProtocol
 
     // MARK: - Initialization
-    init(diureticDoseService: DiureticDoseServiceProtocol = DiureticDoseService()) {
+    init(
+        diureticDoseService: DiureticDoseServiceProtocol = DiureticDoseService(),
+        conflictService: MedicationConflictServiceProtocol = MedicationConflictService()
+    ) {
         self.diureticDoseService = diureticDoseService
+        self.conflictService = conflictService
     }
 
     // MARK: - Computed Properties
@@ -110,6 +121,7 @@ final class MedicationsViewModel {
 
         do {
             medications = try context.fetch(descriptor)
+            refreshConflicts()
         } catch {
             medications = []
         }
@@ -190,7 +202,8 @@ final class MedicationsViewModel {
             dosage: dosage,
             unit: selectedUnit,
             schedule: trimmedSchedule,
-            isDiuretic: isDiuretic
+            isDiuretic: isDiuretic,
+            categoryRawValue: selectedPresetMedication?.category.rawValue
         )
 
         context.insert(medication)
@@ -198,6 +211,7 @@ final class MedicationsViewModel {
         do {
             try context.save()
             loadMedications(context: context)
+            refreshConflicts()
             medicationSavedMessage = "\(trimmedName) added"
             // Don't dismiss or reset here - let the view handle it
             // This allows the form to stay open for adding multiple medications
@@ -250,6 +264,86 @@ final class MedicationsViewModel {
 
     func clearDeleteError() {
         deleteError = nil
+    }
+
+    // MARK: - Conflict Detection Methods
+
+    /// Check for conflicts before saving. If conflicts exist, show warning; otherwise save directly.
+    func checkAndSaveMedication(context: ModelContext) {
+        guard validateForm() else { return }
+        guard let dosage = parsedDosage else { return }
+
+        // Only check conflicts for preset medications with a known category
+        if let category = selectedPresetMedication?.category {
+            let conflicts = conflictService.checkConflicts(
+                newCategory: category,
+                existingMedications: medications
+            )
+
+            if !conflicts.isEmpty {
+                // Store the pending medication info and show warning
+                let trimmedName = nameInput.trimmingCharacters(in: .whitespaces)
+                let trimmedSchedule = scheduleInput.trimmingCharacters(in: .whitespaces)
+
+                pendingConflictMedication = Medication(
+                    name: trimmedName,
+                    dosage: dosage,
+                    unit: selectedUnit,
+                    schedule: trimmedSchedule,
+                    isDiuretic: isDiuretic,
+                    categoryRawValue: category.rawValue
+                )
+
+                conflictWarningMessage = conflicts.first?.message ?? "A potential conflict was detected."
+                showingConflictWarning = true
+                return
+            }
+        }
+
+        // No conflicts, save directly
+        saveMedication(context: context)
+    }
+
+    /// Save medication despite detected conflicts
+    func confirmAddDespiteConflict(context: ModelContext) {
+        guard let medication = pendingConflictMedication else { return }
+
+        context.insert(medication)
+
+        do {
+            try context.save()
+            loadMedications(context: context)
+            refreshConflicts()
+            medicationSavedMessage = "\(medication.name) added"
+            pendingConflictMedication = nil
+            showingConflictWarning = false
+            resetForm()
+        } catch {
+            validationError = "Could not save medication. Please try again."
+        }
+    }
+
+    /// Cancel adding the conflicting medication
+    func cancelConflictAdd() {
+        pendingConflictMedication = nil
+        showingConflictWarning = false
+    }
+
+    /// Refresh the list of conflicts for display
+    func refreshConflicts() {
+        detectedConflicts = conflictService.findAllConflicts(in: medications)
+    }
+
+    /// Check if a specific medication is part of any conflict
+    func isInConflict(_ medication: Medication) -> Bool {
+        detectedConflicts.contains { conflict in
+            conflict.medications.contains { $0.persistentModelID == medication.persistentModelID }
+        }
+    }
+
+    /// Whether there are any active conflicts to display
+    var hasConflicts: Bool {
+        !detectedConflicts.isEmpty
     }
 
     // MARK: - Photo Methods

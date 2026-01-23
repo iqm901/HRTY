@@ -61,9 +61,9 @@ struct MedicationFormView: View {
                                 dismiss()
                             }
                         } else {
-                            viewModel.saveMedication(context: modelContext)
-                            // Reset form for next medication (don't dismiss)
-                            if viewModel.validationError == nil {
+                            viewModel.checkAndSaveMedication(context: modelContext)
+                            // Reset form for next medication (don't dismiss) if no conflict warning
+                            if viewModel.validationError == nil && !viewModel.showingConflictWarning {
                                 viewModel.resetForm()
                             }
                         }
