@@ -226,7 +226,10 @@ struct MedicationsView: View {
     private var medicationsList: some View {
         LazyVStack(spacing: 0) {
             ForEach(viewModel.sortedMedications, id: \.id) { medication in
-                MedicationRowView(medication: medication)
+                MedicationRowView(
+                    medication: medication,
+                    isInConflict: viewModel.isInConflict(medication)
+                )
                     .contentShape(Rectangle())
                     .onTapGesture {
                         viewModel.prepareForEdit(medication: medication)
