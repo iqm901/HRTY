@@ -1,8 +1,11 @@
 import Foundation
 
-// MARK: - Conflict Types
+// MARK: - Data Types
+// Note: These types are used by MedicationsViewModel and Views for conflict display.
+// They are co-located with the service for cohesion, as the service owns conflict detection logic.
 
-/// Represents a detected medication conflict
+/// Represents a detected medication conflict.
+/// Used to communicate conflict information between the service, view model, and views.
 struct MedicationConflict: Identifiable, Equatable {
     let id = UUID()
     let type: ConflictType
@@ -14,7 +17,9 @@ struct MedicationConflict: Identifiable, Equatable {
     }
 }
 
-/// The type of medication conflict detected
+/// The type of medication conflict detected.
+/// - sameClass: Multiple medications from the same therapeutic class (e.g., two beta-blockers)
+/// - crossClass: Medications from mutually exclusive classes (e.g., ACE inhibitor with ARB)
 enum ConflictType: Equatable {
     case sameClass(HeartFailureMedication.Category)
     case crossClass(HeartFailureMedication.Category, HeartFailureMedication.Category)
@@ -35,12 +40,16 @@ protocol MedicationConflictServiceProtocol {
 
 // MARK: - Implementation
 
+/// Stateless service that detects medication conflicts based on therapeutic class rules.
+/// This service is pure computation with no side effects, making it thread-safe and testable.
 final class MedicationConflictService: MedicationConflictServiceProtocol {
 
-    // MARK: - Conflict Rules
+    // MARK: - Conflict Rules (Static)
+    // These rules are defined as static constants since they represent domain knowledge
+    // that doesn't change at runtime. This makes the service instance effectively stateless.
 
-    /// Categories that should only have one medication
-    private let singleMedicationCategories: Set<HeartFailureMedication.Category> = [
+    /// Categories that should only have one medication (same-class restriction)
+    private static let singleMedicationCategories: Set<HeartFailureMedication.Category> = [
         .betaBlocker,
         .aceInhibitor,
         .arb,
@@ -50,8 +59,8 @@ final class MedicationConflictService: MedicationConflictServiceProtocol {
     ]
 
     /// Categories that conflict with each other (cross-class conflicts)
-    /// ACEi, ARB, and ARNI are mutually exclusive
-    private let crossClassConflicts: [(HeartFailureMedication.Category, HeartFailureMedication.Category)] = [
+    /// ACEi, ARB, and ARNI are mutually exclusive per clinical guidelines
+    private static let crossClassConflicts: [(HeartFailureMedication.Category, HeartFailureMedication.Category)] = [
         (.aceInhibitor, .arb),
         (.aceInhibitor, .arni),
         (.arb, .arni)
@@ -67,7 +76,7 @@ final class MedicationConflictService: MedicationConflictServiceProtocol {
         var conflicts: [MedicationConflict] = []
 
         // Check same-class conflicts
-        if singleMedicationCategories.contains(newCategory) {
+        if Self.singleMedicationCategories.contains(newCategory) {
             let sameClassMeds = activeMedications.filter { $0.category == newCategory }
             if !sameClassMeds.isEmpty {
                 let message = sameClassMessage(for: newCategory, existingMeds: sameClassMeds)
@@ -80,7 +89,7 @@ final class MedicationConflictService: MedicationConflictServiceProtocol {
         }
 
         // Check cross-class conflicts
-        for (cat1, cat2) in crossClassConflicts {
+        for (cat1, cat2) in Self.crossClassConflicts {
             if newCategory == cat1 {
                 let conflictingMeds = activeMedications.filter { $0.category == cat2 }
                 if !conflictingMeds.isEmpty {
@@ -121,7 +130,7 @@ final class MedicationConflictService: MedicationConflictServiceProtocol {
         var processedPairs: Set<String> = []
 
         // Check same-class conflicts
-        for category in singleMedicationCategories {
+        for category in Self.singleMedicationCategories {
             let medsInCategory = activeMedications.filter { $0.category == category }
             if medsInCategory.count > 1 {
                 let message = multipleSameClassMessage(for: category, meds: medsInCategory)
@@ -134,7 +143,7 @@ final class MedicationConflictService: MedicationConflictServiceProtocol {
         }
 
         // Check cross-class conflicts
-        for (cat1, cat2) in crossClassConflicts {
+        for (cat1, cat2) in Self.crossClassConflicts {
             let medsInCat1 = activeMedications.filter { $0.category == cat1 }
             let medsInCat2 = activeMedications.filter { $0.category == cat2 }
 
