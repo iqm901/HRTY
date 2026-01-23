@@ -35,7 +35,8 @@ struct MedicationConflictBanner: View {
                 Image(systemName: "xmark")
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(Color.hrtCautionDark)
-                    .padding(HRTSpacing.xs)
+                    .frame(minWidth: 44, minHeight: 44)
+                    .contentShape(Rectangle())
             }
             .accessibilityLabel("Dismiss medication note")
         }
