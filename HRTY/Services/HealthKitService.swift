@@ -3,11 +3,22 @@ import HealthKit
 
 /// Protocol for HealthKit service operations
 /// Enables dependency injection and testability
+
 /// Simple struct for weight readings from HealthKit
-struct WeightReading {
+struct WeightReading: Identifiable, Equatable {
+    let id: UUID
     let weight: Double
     let date: Date
+
+    init(weight: Double, date: Date) {
+        self.id = UUID()
+        self.weight = weight
+        self.date = date
+    }
 }
+
+// BloodPressureReading is defined in HRTY/Models/BloodPressureReading.swift
+// OxygenSaturationReading is defined in HRTY/Models/OxygenSaturationReading.swift
 
 protocol HealthKitServiceProtocol {
     var isAvailable: Bool { get }
@@ -17,6 +28,8 @@ protocol HealthKitServiceProtocol {
     func checkForPersistentAbnormalHeartRate() async -> (isAbnormal: Bool, isLow: Bool, readings: [HeartRateReading])
     func hasRecentBloodPressureReading(withinHours hours: Int) async -> Bool
     func fetchLatestWeight() async -> WeightReading?
+    func fetchLatestBloodPressure() async -> BloodPressureReading?
+    func fetchLatestOxygenSaturation() async -> OxygenSaturationReading?
 }
 
 /// Service responsible for HealthKit integration
@@ -65,6 +78,11 @@ final class HealthKitService: HealthKitServiceProtocol {
            let diastolicType = HKQuantityType.quantityType(forIdentifier: .bloodPressureDiastolic) {
             typesToRead.insert(systolicType)
             typesToRead.insert(diastolicType)
+        }
+
+        // Add oxygen saturation type
+        if let oxygenType = HKQuantityType.quantityType(forIdentifier: .oxygenSaturation) {
+            typesToRead.insert(oxygenType)
         }
 
         do {
@@ -261,6 +279,142 @@ final class HealthKitService: HealthKitServiceProtocol {
                 let weightInPounds = sample.quantity.doubleValue(for: HKUnit.pound())
                 let reading = WeightReading(weight: weightInPounds, date: sample.startDate)
                 continuation.resume(returning: reading)
+            }
+
+            healthStore.execute(query)
+        }
+    }
+
+    // MARK: - Fetch Latest Blood Pressure
+
+    /// Fetch the most recent blood pressure reading
+    /// - Returns: The latest blood pressure reading, or nil if not available
+    func fetchLatestBloodPressure() async -> BloodPressureReading? {
+        guard let healthStore = healthStore else { return nil }
+
+        guard let systolicType = HKQuantityType.quantityType(forIdentifier: .bloodPressureSystolic),
+              let diastolicType = HKQuantityType.quantityType(forIdentifier: .bloodPressureDiastolic) else {
+            return nil
+        }
+
+        // Fetch systolic first
+        let systolicReading = await fetchLatestQuantitySample(type: systolicType, unit: HKUnit.millimeterOfMercury())
+        guard let systolicValue = systolicReading?.value,
+              let systolicDate = systolicReading?.date else {
+            return nil
+        }
+
+        // Fetch diastolic from the same time window (within 1 minute of systolic)
+        let diastolicReading = await fetchQuantitySampleNear(
+            type: diastolicType,
+            unit: HKUnit.millimeterOfMercury(),
+            targetDate: systolicDate,
+            toleranceSeconds: 60
+        )
+
+        guard let diastolicValue = diastolicReading?.value else {
+            return nil
+        }
+
+        return BloodPressureReading(
+            systolic: Int(systolicValue),
+            diastolic: Int(diastolicValue),
+            date: systolicDate
+        )
+    }
+
+    // MARK: - Fetch Latest Oxygen Saturation
+
+    /// Fetch the most recent oxygen saturation reading
+    /// - Returns: The latest SpO2 reading, or nil if not available
+    func fetchLatestOxygenSaturation() async -> OxygenSaturationReading? {
+        guard let healthStore = healthStore else { return nil }
+
+        guard let oxygenType = HKQuantityType.quantityType(forIdentifier: .oxygenSaturation) else {
+            return nil
+        }
+
+        let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: false)
+
+        return await withCheckedContinuation { continuation in
+            let query = HKSampleQuery(
+                sampleType: oxygenType,
+                predicate: nil,
+                limit: 1,
+                sortDescriptors: [sortDescriptor]
+            ) { _, samples, error in
+                guard error == nil,
+                      let sample = samples?.first as? HKQuantitySample else {
+                    continuation.resume(returning: nil)
+                    return
+                }
+
+                // SpO2 is stored as a fraction (0.0-1.0), convert to percentage
+                let percentage = Int(sample.quantity.doubleValue(for: HKUnit.percent()) * 100)
+                let reading = OxygenSaturationReading(percentage: percentage, date: sample.startDate)
+                continuation.resume(returning: reading)
+            }
+
+            healthStore.execute(query)
+        }
+    }
+
+    // MARK: - Helper Methods
+
+    private func fetchLatestQuantitySample(type: HKQuantityType, unit: HKUnit) async -> (value: Double, date: Date)? {
+        guard let healthStore = healthStore else { return nil }
+
+        let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: false)
+
+        return await withCheckedContinuation { continuation in
+            let query = HKSampleQuery(
+                sampleType: type,
+                predicate: nil,
+                limit: 1,
+                sortDescriptors: [sortDescriptor]
+            ) { _, samples, error in
+                guard error == nil,
+                      let sample = samples?.first as? HKQuantitySample else {
+                    continuation.resume(returning: nil)
+                    return
+                }
+
+                let value = sample.quantity.doubleValue(for: unit)
+                continuation.resume(returning: (value, sample.startDate))
+            }
+
+            healthStore.execute(query)
+        }
+    }
+
+    private func fetchQuantitySampleNear(
+        type: HKQuantityType,
+        unit: HKUnit,
+        targetDate: Date,
+        toleranceSeconds: Int
+    ) async -> (value: Double, date: Date)? {
+        guard let healthStore = healthStore else { return nil }
+
+        let startDate = targetDate.addingTimeInterval(-Double(toleranceSeconds))
+        let endDate = targetDate.addingTimeInterval(Double(toleranceSeconds))
+        let predicate = HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: .strictStartDate)
+        let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: false)
+
+        return await withCheckedContinuation { continuation in
+            let query = HKSampleQuery(
+                sampleType: type,
+                predicate: predicate,
+                limit: 1,
+                sortDescriptors: [sortDescriptor]
+            ) { _, samples, error in
+                guard error == nil,
+                      let sample = samples?.first as? HKQuantitySample else {
+                    continuation.resume(returning: nil)
+                    return
+                }
+
+                let value = sample.quantity.doubleValue(for: unit)
+                continuation.resume(returning: (value, sample.startDate))
             }
 
             healthStore.execute(query)

@@ -38,6 +38,8 @@
 		1AF9431892C3E7B5D8C4EE03 /* HeartRateSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4E646B7A5AB199BF8D29DB9 /* HeartRateSectionView.swift */; };
 		353643CAB1C4A76C2E27DBE6 /* HeartRateTrendChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = F895498FAFEA9C574FD944BE /* HeartRateTrendChart.swift */; };
 		39F445D88F5E159013E6EC8A /* HeartRateReading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EF04028AE7D71BCAA7EA96C /* HeartRateReading.swift */; };
+		021000010000000100000001 /* BloodPressureReading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021000020000000100000001 /* BloodPressureReading.swift */; };
+		022000010000000100000001 /* OxygenSaturationReading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022000020000000100000001 /* OxygenSaturationReading.swift */; };
 		39F5445DABE3B8A3163C6E29 /* HeartRateAlertService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 326045A69E90D70EEBA45812 /* HeartRateAlertService.swift */; };
 		C1000001200000010000000200000009 /* AlertConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002200000010000000100000020 /* AlertConstants.swift */; };
 		4D8A49FF80365F7A21DD1B2E /* HeartRateAlertService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 326045A69E90D70EEBA45812 /* HeartRateAlertService.swift */; };
@@ -141,6 +143,8 @@
 		017000020000000100000005 /* MedicationPhotoViewerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicationPhotoViewerView.swift; sourceTree = "<group>"; };
 		326045A69E90D70EEBA45812 /* HeartRateAlertService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HeartRateAlertService.swift; path = HRTY/Services/HeartRateAlertService.swift; sourceTree = SOURCE_ROOT; };
 		6EF04028AE7D71BCAA7EA96C /* HeartRateReading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HeartRateReading.swift; path = HRTY/Models/HeartRateReading.swift; sourceTree = SOURCE_ROOT; };
+		021000020000000100000001 /* BloodPressureReading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BloodPressureReading.swift; sourceTree = "<group>"; };
+		022000020000000100000001 /* OxygenSaturationReading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OxygenSaturationReading.swift; sourceTree = "<group>"; };
 		A1000002200000010000000100000001 /* HRTYApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HRTYApp.swift; sourceTree = "<group>"; };
 		A1000002200000010000000100000002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		A1000002200000010000000100000003 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -318,6 +322,8 @@
 			isa = PBXGroup;
 			children = (
 				EEDA8FBDCC544B2EA822AD07 /* VitalSignsEntry.swift */,
+				021000020000000100000001 /* BloodPressureReading.swift */,
+				022000020000000100000001 /* OxygenSaturationReading.swift */,
 				018000020000000100000001 /* HeartFailureMedication.swift */,
 				A1000002200000010000000100000009 /* SymptomType.swift */,
 				A100000220000001000000010000000A /* AlertType.swift */,
@@ -530,6 +536,8 @@
 				1AF9431892C3E7B5D8C4EE03 /* HeartRateSectionView.swift in Sources */,
 				BBEB42D594C1A7C00B1643E2 /* HeartRateTrendChart.swift in Sources */,
 				71C64B1393006B13494C3B1B /* HeartRateReading.swift in Sources */,
+				021000010000000100000001 /* BloodPressureReading.swift in Sources */,
+				022000010000000100000001 /* OxygenSaturationReading.swift in Sources */,
 				016000010000000100000001 /* OnboardingContainerView.swift in Sources */,
 				016000010000000100000002 /* WelcomePageView.swift in Sources */,
 				016000010000000100000003 /* HealthKitPermissionPageView.swift in Sources */,
