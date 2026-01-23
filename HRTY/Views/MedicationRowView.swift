@@ -69,7 +69,7 @@ struct MedicationRowView: View {
             .background(Color.hrtCautionLight)
             .foregroundStyle(Color.hrtCautionDark)
             .clipShape(Capsule())
-            .accessibilityLabel("This medication needs review")
+            .accessibilityLabel("You may want to discuss this medication with your care team")
     }
 
     // MARK: - Computed Properties
@@ -90,7 +90,7 @@ struct MedicationRowView: View {
             label += ", diuretic"
         }
         if isInConflict {
-            label += ", needs review"
+            label += ", discuss with care team"
         }
         if !medication.schedule.isEmpty {
             label += ", taken \(medication.schedule)"
