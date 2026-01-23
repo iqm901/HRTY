@@ -629,4 +629,57 @@ final class MedicationConflictServiceTests: XCTestCase {
         // Then: no conflicts (both are inactive)
         XCTAssertTrue(conflicts.isEmpty, "Inactive medications should not conflict with each other")
     }
+
+    // MARK: - MedicationConflict Struct Tests
+
+    func testMedicationConflictHasUniqueId() {
+        // Given: same inputs for two conflicts
+        let med = makeMedication(name: "Metoprolol", category: .betaBlocker)
+
+        // When: detecting the same conflict twice
+        let conflicts1 = sut.checkConflicts(newCategory: .betaBlocker, existingMedications: [med])
+        let conflicts2 = sut.checkConflicts(newCategory: .betaBlocker, existingMedications: [med])
+
+        // Then: each conflict has a unique ID
+        guard let conflict1 = conflicts1.first, let conflict2 = conflicts2.first else {
+            XCTFail("Should have conflicts")
+            return
+        }
+        XCTAssertNotEqual(conflict1.id, conflict2.id, "Each conflict should have a unique ID")
+    }
+
+    func testMedicationConflictIsIdentifiable() {
+        // Given: a detected conflict
+        let med = makeMedication(name: "Metoprolol", category: .betaBlocker)
+        let conflicts = sut.checkConflicts(newCategory: .betaBlocker, existingMedications: [med])
+
+        // When/Then: conflict can be used in ForEach (Identifiable conformance)
+        guard let conflict = conflicts.first else {
+            XCTFail("Should have a conflict")
+            return
+        }
+        XCTAssertNotNil(conflict.id, "Conflict should have an ID for use in SwiftUI ForEach")
+    }
+
+    func testConflictTypeEqualityForSameClass() {
+        // Given: two same-class conflict types
+        let type1 = ConflictType.sameClass(.betaBlocker)
+        let type2 = ConflictType.sameClass(.betaBlocker)
+        let type3 = ConflictType.sameClass(.aceInhibitor)
+
+        // Then: same category types are equal, different are not
+        XCTAssertEqual(type1, type2, "Same category types should be equal")
+        XCTAssertNotEqual(type1, type3, "Different category types should not be equal")
+    }
+
+    func testConflictTypeEqualityForCrossClass() {
+        // Given: cross-class conflict types
+        let type1 = ConflictType.crossClass(.aceInhibitor, .arb)
+        let type2 = ConflictType.crossClass(.aceInhibitor, .arb)
+        let type3 = ConflictType.crossClass(.aceInhibitor, .arni)
+
+        // Then: same cross-class types are equal, different are not
+        XCTAssertEqual(type1, type2, "Same cross-class types should be equal")
+        XCTAssertNotEqual(type1, type3, "Different cross-class types should not be equal")
+    }
 }
