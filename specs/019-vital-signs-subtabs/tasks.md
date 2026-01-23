@@ -66,10 +66,10 @@
 - [x] Update MedicationsView UI
 
 ## Quality Checks
-- [ ] All vitals save correctly
-- [ ] HealthKit imports work for all vitals
-- [ ] Alerts trigger at correct thresholds
-- [ ] Diuretic logging works from MedicationsView
-- [ ] App builds without errors
-- [ ] Accessibility (VoiceOver) works on all new components
-- [ ] Dynamic Type sizing correct
+- [x] All vitals save correctly
+- [x] HealthKit imports work for all vitals
+- [x] Alerts trigger at correct thresholds
+- [x] Diuretic logging works from MedicationsView
+- [x] App builds without errors
+- [x] Accessibility (VoiceOver) works on all new components
+- [x] Dynamic Type sizing correct
