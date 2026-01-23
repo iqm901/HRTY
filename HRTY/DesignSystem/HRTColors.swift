@@ -113,6 +113,12 @@ extension Color {
     static let hrtCautionFallback = Color(red: 0.95, green: 0.80, blue: 0.45)
     static let hrtAlertFallback = Color(red: 0.92, green: 0.55, blue: 0.50)
 
+    // Caution variants - for medication conflict banners and review badges
+    /// Dark amber for caution text and icons
+    static let hrtCautionDark = Color(red: 0.70, green: 0.55, blue: 0.20)
+    /// Light amber/yellow for caution backgrounds
+    static let hrtCautionLight = Color(red: 1.0, green: 0.96, blue: 0.85)
+
     // Severity scale - fallbacks
     static let hrtSeverity1Fallback = Color(red: 0.70, green: 0.85, blue: 0.72)
     static let hrtSeverity2Fallback = Color(red: 0.80, green: 0.88, blue: 0.60)

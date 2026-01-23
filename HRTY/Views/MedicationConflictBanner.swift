@@ -61,16 +61,6 @@ struct MedicationConflictBanner: View {
     }
 }
 
-// MARK: - Color Extension for Caution Colors
-
-extension Color {
-    /// Dark amber for caution text and icons
-    static let hrtCautionDark = Color(red: 0.70, green: 0.55, blue: 0.20)
-
-    /// Light amber/yellow for caution backgrounds
-    static let hrtCautionLight = Color(red: 1.0, green: 0.96, blue: 0.85)
-}
-
 #Preview {
     VStack(spacing: HRTSpacing.lg) {
         MedicationConflictBanner(
