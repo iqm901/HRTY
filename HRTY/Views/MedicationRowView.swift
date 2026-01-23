@@ -99,7 +99,7 @@ struct MedicationRowView: View {
     }
 }
 
-#Preview {
+#Preview("Standard Medications") {
     List {
         MedicationRowView(medication: Medication(
             name: "Furosemide",
@@ -124,5 +124,42 @@ struct MedicationRowView: View {
             schedule: "Twice daily",
             isDiuretic: false
         ))
+    }
+}
+
+#Preview("Conflict State") {
+    List {
+        MedicationRowView(
+            medication: Medication(
+                name: "Metoprolol Succinate",
+                dosage: 50,
+                unit: "mg",
+                schedule: "Once daily",
+                isDiuretic: false
+            ),
+            isInConflict: true
+        )
+
+        MedicationRowView(
+            medication: Medication(
+                name: "Carvedilol",
+                dosage: 12.5,
+                unit: "mg",
+                schedule: "Twice daily",
+                isDiuretic: false
+            ),
+            isInConflict: true
+        )
+
+        MedicationRowView(
+            medication: Medication(
+                name: "Furosemide",
+                dosage: 40,
+                unit: "mg",
+                schedule: "Morning",
+                isDiuretic: true
+            ),
+            isInConflict: false
+        )
     }
 }
