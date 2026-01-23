@@ -22,7 +22,7 @@ struct MedicationConflictBanner: View {
                     .foregroundStyle(Color.hrtTextFallback)
                     .fixedSize(horizontal: false, vertical: true)
 
-                Text("Verify with your care team if you have questions.")
+                Text("Your care team can help if you have questions.")
                     .font(.hrtCaption)
                     .foregroundStyle(Color.hrtTextSecondaryFallback)
             }
@@ -45,7 +45,7 @@ struct MedicationConflictBanner: View {
         .clipShape(RoundedRectangle(cornerRadius: HRTRadius.large))
         .padding(.horizontal, HRTSpacing.md)
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("Medication note: \(bannerMessage). Verify with your care team if you have questions.")
+        .accessibilityLabel("Medication note: \(bannerMessage). Your care team can help if you have questions.")
         .accessibilityAddTraits(.isStaticText)
     }
 
