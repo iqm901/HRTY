@@ -185,7 +185,24 @@ final class MedicationConflictService: MedicationConflictServiceProtocol {
         let medNames = existingMeds.map { $0.name }.joined(separator: ", ")
         let newCategoryName = friendlyCategoryName(newCategory)
         let existingCategoryName = friendlyCategoryName(existingCategory)
-        return "You already have \(medNames) listed, which is an \(existingCategoryName). \(newCategoryName)s and \(existingCategoryName)s are typically not taken together. You may want to verify this with your care team."
+        let article = articleFor(existingCategoryName)
+        return "You already have \(medNames) listed, which is \(article) \(existingCategoryName). \(newCategoryName)s and \(existingCategoryName)s are typically not taken together. You may want to verify this with your care team."
+    }
+
+    private func articleFor(_ word: String) -> String {
+        // Use "an" before vowel sounds. Note: acronyms like "ACE", "ARB", "ARNI", "MRA"
+        // start with vowel sounds (ay-ce, ar, ar-nee, em-ar-ay), while "SGLT2" starts
+        // with "ess" (consonant sound)
+        let vowelSoundPrefixes = ["ACE", "ARB", "ARNI", "MRA"]
+        let uppercased = word.uppercased()
+        for prefix in vowelSoundPrefixes {
+            if uppercased.hasPrefix(prefix) {
+                return "an"
+            }
+        }
+        // Standard vowel check for other words
+        let firstChar = word.lowercased().first ?? "x"
+        return "aeiou".contains(firstChar) ? "an" : "a"
     }
 
     private func existingCrossClassMessage(
