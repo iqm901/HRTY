@@ -66,6 +66,10 @@ Four vital measurements, each with:
 - [x] Alert triggers for HR < 40 bpm
 - [x] All data persists correctly
 
+## Implementation Notes
+
+> **Architecture Note:** Heart rate alerts (HR < 40 bpm) are handled by the existing `HeartRateAlertService`, while new vital signs alerts (SpO2, BP, MAP) are handled by `VitalSignsAlertService`. This separation keeps the alert services focused and maintains the existing heart rate monitoring infrastructure.
+
 ## UI/UX Notes
 - Segmented control should use system styling
 - Keep warm, non-alarmist messaging
