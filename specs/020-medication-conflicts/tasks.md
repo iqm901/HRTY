@@ -90,3 +90,12 @@
 - [x] MedicationConflictBanner has proper 44pt dismiss button tap target
 - [x] Conflict detection messages use warm, non-clinical language
 - [x] Feature ready for release pending final QA cycle
+
+## Task 12: Business Analyst Review (Iteration 11)
+- [x] Review feature from patient perspective
+- [x] Verify user flows are intuitive and non-blocking
+- [x] Confirm "Before You Add" dialog gives clear patient choice
+- [x] Confirm conflict banner is dismissible with clear re-appearance logic
+- [x] Verify all messaging is warm, supportive, and non-alarmist
+- [x] Improved banner footer: "Your care team can help if you have questions"
+- [x] Build passes on iOS 26.2 simulator
