@@ -329,22 +329,6 @@ struct MedicationFormView: View {
             } footer: {
                 Text("When do you typically take this medication?")
             }
-
-            Section {
-                Toggle(isOn: $viewModel.isDiuretic) {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("This is a diuretic")
-                            .font(.body)
-                        Text("Water pills that help remove extra fluid")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                }
-                .accessibilityLabel("Diuretic medication toggle")
-                .accessibilityHint("Turn on if this is a diuretic, also known as a water pill")
-            } footer: {
-                Text("Diuretics are tracked separately to help monitor your daily fluid management.")
-            }
         }
     }
 }
@@ -363,7 +347,6 @@ struct MedicationFormView: View {
     viewModel.dosageInput = "40"
     viewModel.selectedUnit = "mg"
     viewModel.scheduleInput = "Morning"
-    viewModel.isDiuretic = true
 
     return MedicationFormView(
         viewModel: viewModel,

@@ -299,4 +299,37 @@ extension HeartFailureMedication {
         "Every other day",
         "As needed"
     ]
+
+    /// All known diuretic medications (generic and brand names)
+    static let knownDiureticNames: Set<String> = {
+        var names = Set<String>()
+        for med in allMedications where med.isDiuretic {
+            names.insert(med.genericName.lowercased())
+            if let brand = med.brandName {
+                names.insert(brand.lowercased())
+            }
+        }
+        return names
+    }()
+
+    /// Checks if a medication name matches a known diuretic
+    /// - Parameter name: The medication name to check (case-insensitive)
+    /// - Returns: true if the medication is a known diuretic
+    static func isDiuretic(medicationName name: String) -> Bool {
+        let normalizedName = name.lowercased().trimmingCharacters(in: .whitespaces)
+
+        // Check for exact match
+        if knownDiureticNames.contains(normalizedName) {
+            return true
+        }
+
+        // Check if name contains any known diuretic name (for partial matches like "Furosemide 40mg")
+        for diureticName in knownDiureticNames {
+            if normalizedName.contains(diureticName) {
+                return true
+            }
+        }
+
+        return false
+    }
 }

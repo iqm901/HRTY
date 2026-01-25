@@ -241,12 +241,17 @@ final class MedicationsViewModel {
         let trimmedSchedule = scheduleInput.trimmingCharacters(in: .whitespaces)
         let trimmedDosage = dosageInput.trimmingCharacters(in: .whitespaces)
 
+        // Auto-detect if medication is a diuretic
+        // Use preset's isDiuretic if available, otherwise detect from name
+        let detectedDiuretic = selectedPresetMedication?.isDiuretic
+            ?? HeartFailureMedication.isDiuretic(medicationName: trimmedName)
+
         let medication = Medication(
             name: trimmedName,
             dosage: trimmedDosage,
             unit: selectedUnit,
             schedule: trimmedSchedule,
-            isDiuretic: isDiuretic,
+            isDiuretic: detectedDiuretic,
             categoryRawValue: selectedPresetMedication?.category.rawValue
         )
 
@@ -506,12 +511,16 @@ final class MedicationsViewModel {
                 let trimmedName = nameInput.trimmingCharacters(in: .whitespaces)
                 let trimmedSchedule = scheduleInput.trimmingCharacters(in: .whitespaces)
 
+                // Auto-detect if medication is a diuretic
+                let detectedDiuretic = selectedPresetMedication?.isDiuretic
+                    ?? HeartFailureMedication.isDiuretic(medicationName: trimmedName)
+
                 pendingConflictMedication = Medication(
                     name: trimmedName,
                     dosage: trimmedDosage,
                     unit: selectedUnit,
                     schedule: trimmedSchedule,
-                    isDiuretic: isDiuretic,
+                    isDiuretic: detectedDiuretic,
                     categoryRawValue: category.rawValue
                 )
 
