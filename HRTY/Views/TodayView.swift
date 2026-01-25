@@ -1,17 +1,16 @@
 import SwiftUI
 import SwiftData
 
-/// Tab selection for the TodayView segmented control
-enum TodayTab: String, CaseIterable {
-    case vitalSigns = "Vital Signs"
-    case symptoms = "Symptoms"
-}
-
 struct TodayView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @State private var viewModel = TodayViewModel()
-    @State private var selectedTab: TodayTab = .vitalSigns
+
+    // MARK: - Symptom Check-in State
+    @State private var showSymptomWizard = false
+    @State private var checkInViewModel = SymptomCheckInViewModel()
+    @State private var hasIncompleteCheckIn = false
+    @State private var incompleteProgress: SymptomCheckInProgress?
 
     var body: some View {
         NavigationStack {
@@ -25,9 +24,9 @@ struct TodayView: View {
 
                         headerSection
 
-                        tabPicker
+                        symptomCheckInPrompt
 
-                        tabContent
+                        vitalSignsSection
                     }
                     .padding(.horizontal, HRTSpacing.md)
                     .padding(.vertical, HRTSpacing.md)
@@ -44,6 +43,7 @@ struct TodayView: View {
             .navigationTitle("Today")
             .task {
                 await viewModel.loadAllData(context: modelContext)
+                loadCheckInProgress()
             }
             .onChange(of: viewModel.activeWeightAlerts.count) { oldCount, newCount in
                 if newCount > oldCount {
@@ -70,43 +70,72 @@ struct TodayView: View {
                     announceVitalSignsAlertForVoiceOver()
                 }
             }
+            .fullScreenCover(isPresented: $showSymptomWizard) {
+                SymptomCheckInWizardView(
+                    viewModel: checkInViewModel,
+                    dailyEntry: viewModel.todayEntry,
+                    onComplete: {
+                        handleCheckInComplete()
+                    }
+                )
+            }
         }
     }
 
-    // MARK: - Tab Picker
+    // MARK: - Symptom Check-in Prompt
 
-    private var tabPicker: some View {
-        Picker("Today View", selection: $selectedTab) {
-            ForEach(TodayTab.allCases, id: \.self) { tab in
-                Text(tab.rawValue).tag(tab)
+    private var symptomCheckInPrompt: some View {
+        SymptomCheckInPromptView(
+            hasIncompleteCheckIn: hasIncompleteCheckIn,
+            completedCount: incompleteProgress?.completedCount ?? 0,
+            totalCount: SymptomCheckInProgress.totalSymptoms,
+            hasCompletedToday: viewModel.hasLoggedSymptoms && !hasIncompleteCheckIn,
+            onStartCheckIn: {
+                startCheckIn()
             }
-        }
-        .pickerStyle(.segmented)
-        .accessibilityLabel("Select tab")
-        .accessibilityHint("Choose between vital signs and symptom management")
+        )
     }
 
-    // MARK: - Tab Content
+    // MARK: - Vital Signs Section
 
-    @ViewBuilder
-    private var tabContent: some View {
-        Group {
-            switch selectedTab {
-            case .vitalSigns:
-                VitalSignsTabView(viewModel: viewModel)
-                    .transition(.asymmetric(
-                        insertion: .opacity.combined(with: .move(edge: .leading)),
-                        removal: .opacity.combined(with: .move(edge: .trailing))
-                    ))
-            case .symptoms:
-                SymptomManagementTabView(viewModel: viewModel)
-                    .transition(.asymmetric(
-                        insertion: .opacity.combined(with: .move(edge: .trailing)),
-                        removal: .opacity.combined(with: .move(edge: .leading))
-                    ))
+    private var vitalSignsSection: some View {
+        VitalSignsTabView(viewModel: viewModel)
+    }
+
+    // MARK: - Check-in Methods
+
+    private func loadCheckInProgress() {
+        incompleteProgress = SymptomCheckInProgress.fetchForToday(in: modelContext)
+        hasIncompleteCheckIn = incompleteProgress != nil && !(incompleteProgress?.isComplete ?? true)
+    }
+
+    private func startCheckIn() {
+        // Reset or load the check-in view model
+        if hasIncompleteCheckIn, let progress = incompleteProgress {
+            checkInViewModel.loadFromProgress(progress)
+        } else {
+            checkInViewModel.reset()
+            // Pre-populate with existing symptom data if any
+            for (symptomType, severity) in viewModel.symptomSeverities {
+                if severity > 1 {
+                    checkInViewModel.responses[symptomType] = severity
+                }
             }
         }
-        .animation(HRTAnimation.standard, value: selectedTab)
+        showSymptomWizard = true
+    }
+
+    private func handleCheckInComplete() {
+        // Reload symptom data after check-in completes
+        viewModel.loadSymptoms(context: modelContext)
+
+        // Check for alerts
+        viewModel.checkSymptomAlerts(context: modelContext)
+
+        // Reset check-in state
+        hasIncompleteCheckIn = false
+        incompleteProgress = nil
+        checkInViewModel.reset()
     }
 
     // MARK: - VoiceOver Support
@@ -238,5 +267,5 @@ struct TodayView: View {
 
 #Preview {
     TodayView()
-        .modelContainer(for: DailyEntry.self, inMemory: true)
+        .modelContainer(for: [DailyEntry.self, SymptomCheckInProgress.self], inMemory: true)
 }
