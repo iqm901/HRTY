@@ -311,9 +311,12 @@ final class TodayViewModel {
 
     /// Log a standard dose (quick entry with medication's default dosage)
     func logStandardDose(for medication: Medication, context: ModelContext) {
+        // Parse dosage String to Double for diuretic dose logging
+        guard let dosageAmount = Double(medication.dosage) else { return }
+
         logDose(
             for: medication,
-            amount: medication.dosage,
+            amount: dosageAmount,
             isExtra: false,
             timestamp: Date(),
             context: context

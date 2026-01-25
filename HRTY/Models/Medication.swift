@@ -7,7 +7,7 @@ final class Medication {
     static let availableUnits = ["mg", "mcg", "mL", "g", "units"]
 
     var name: String
-    var dosage: Double
+    var dosage: String
     var unit: String
     var schedule: String
     var isDiuretic: Bool
@@ -55,7 +55,7 @@ final class Medication {
 
     init(
         name: String,
-        dosage: Double,
+        dosage: String,
         unit: String = "mg",
         schedule: String = "",
         isDiuretic: Bool = false,
@@ -89,7 +89,7 @@ final class Medication {
     }
 
     /// Reactivates this medication with a new dosage period
-    func reactivate(dosage newDosage: Double, unit newUnit: String, schedule newSchedule: String) {
+    func reactivate(dosage newDosage: String, unit newUnit: String, schedule newSchedule: String) {
         // Create a new period
         let newPeriod = MedicationPeriod(
             dosage: newDosage,
@@ -112,7 +112,7 @@ final class Medication {
     }
 
     /// Updates the dosage, creating a new period if the dosage has changed
-    func updateDosage(newDosage: Double, newUnit: String, newSchedule: String) {
+    func updateDosage(newDosage: String, newUnit: String, newSchedule: String) {
         let dosageChanged = dosage != newDosage || unit != newUnit
 
         if dosageChanged {

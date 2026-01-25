@@ -28,7 +28,8 @@ struct HRTYApp: App {
             Medication.self,
             MedicationPeriod.self,
             AlertEvent.self,
-            VitalSignsEntry.self
+            VitalSignsEntry.self,
+            SymptomCheckInProgress.self
         ])
         let modelConfiguration = ModelConfiguration(
             schema: schema,
@@ -38,7 +39,28 @@ struct HRTYApp: App {
         do {
             return try ModelContainer(for: schema, configurations: [modelConfiguration])
         } catch {
-            fatalError("Could not create ModelContainer: \(error)")
+            // Schema migration failed (e.g., type changed from Double to String)
+            // Delete the old database and create a fresh one
+            // This is acceptable for V1 with no cloud sync - user data is on-device only
+            print("ModelContainer creation failed, attempting recovery: \(error)")
+
+            // Try to delete the existing store
+            let storeURL = URL.applicationSupportDirectory.appending(path: "default.store")
+            let walURL = storeURL.appendingPathExtension("wal")
+            let shmURL = storeURL.appendingPathExtension("shm")
+
+            do {
+                let fileManager = FileManager.default
+                for url in [storeURL, walURL, shmURL] {
+                    if fileManager.fileExists(atPath: url.path) {
+                        try fileManager.removeItem(at: url)
+                    }
+                }
+                // Retry creating the container
+                return try ModelContainer(for: schema, configurations: [modelConfiguration])
+            } catch {
+                fatalError("Could not create or recover ModelContainer: \(error)")
+            }
         }
     }()
 

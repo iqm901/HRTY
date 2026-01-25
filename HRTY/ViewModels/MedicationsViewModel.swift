@@ -117,13 +117,28 @@ final class MedicationsViewModel {
         sortedMedications.isEmpty
     }
 
-    var parsedDosage: Double? {
-        Double(dosageInput)
+    /// Validates if dosageInput is a valid dosage (numeric or combination like "49/51")
+    var isValidDosage: Bool {
+        let trimmed = dosageInput.trimmingCharacters(in: .whitespaces)
+        if trimmed.isEmpty { return false }
+
+        // Check for combination dosage (e.g., "49/51")
+        if trimmed.contains("/") {
+            let parts = trimmed.split(separator: "/")
+            return parts.count == 2 &&
+                   parts.allSatisfy { Double($0) != nil && Double($0)! > 0 }
+        }
+
+        // Check for simple numeric dosage
+        if let value = Double(trimmed) {
+            return value > 0
+        }
+
+        return false
     }
 
     var isFormValid: Bool {
-        guard let dosage = parsedDosage else { return false }
-        return !nameInput.trimmingCharacters(in: .whitespaces).isEmpty && dosage > 0
+        !nameInput.trimmingCharacters(in: .whitespaces).isEmpty && isValidDosage
     }
 
     // MARK: - Methods
@@ -184,7 +199,7 @@ final class MedicationsViewModel {
     func prepareForEdit(medication: Medication) {
         selectedMedication = medication
         nameInput = medication.name
-        dosageInput = String(format: "%.0f", medication.dosage)
+        dosageInput = medication.dosage
         selectedUnit = medication.unit
         scheduleInput = medication.schedule
         isDiuretic = medication.isDiuretic
@@ -211,8 +226,8 @@ final class MedicationsViewModel {
             return false
         }
 
-        guard let dosage = parsedDosage, dosage > 0 else {
-            validationError = "Please enter a valid dosage amount"
+        guard isValidDosage else {
+            validationError = "Please enter a valid dosage (e.g., 50 or 49/51)"
             return false
         }
 
@@ -221,14 +236,14 @@ final class MedicationsViewModel {
 
     func saveMedication(context: ModelContext) {
         guard validateForm() else { return }
-        guard let dosage = parsedDosage else { return }
 
         let trimmedName = nameInput.trimmingCharacters(in: .whitespaces)
         let trimmedSchedule = scheduleInput.trimmingCharacters(in: .whitespaces)
+        let trimmedDosage = dosageInput.trimmingCharacters(in: .whitespaces)
 
         let medication = Medication(
             name: trimmedName,
-            dosage: dosage,
+            dosage: trimmedDosage,
             unit: selectedUnit,
             schedule: trimmedSchedule,
             isDiuretic: isDiuretic,
@@ -237,7 +252,7 @@ final class MedicationsViewModel {
 
         // Create initial period for tracking history
         let initialPeriod = MedicationPeriod(
-            dosage: dosage,
+            dosage: trimmedDosage,
             unit: selectedUnit,
             schedule: trimmedSchedule,
             startDate: Date()
@@ -261,17 +276,17 @@ final class MedicationsViewModel {
     func updateMedication(context: ModelContext) {
         guard validateForm() else { return }
         guard let medication = selectedMedication else { return }
-        guard let dosage = parsedDosage else { return }
 
         let trimmedName = nameInput.trimmingCharacters(in: .whitespaces)
         let trimmedSchedule = scheduleInput.trimmingCharacters(in: .whitespaces)
+        let trimmedDosage = dosageInput.trimmingCharacters(in: .whitespaces)
 
         medication.name = trimmedName
         medication.isDiuretic = isDiuretic
 
         // Use updateDosage to track dosage changes as periods
         medication.updateDosage(
-            newDosage: dosage,
+            newDosage: trimmedDosage,
             newUnit: selectedUnit,
             newSchedule: trimmedSchedule
         )
@@ -395,7 +410,7 @@ final class MedicationsViewModel {
     func prepareForPriorDetail(medication: Medication) {
         selectedPriorMedication = medication
         // Pre-fill reactivation form with last known dosage
-        reactivateDosageInput = String(format: "%.0f", medication.dosage)
+        reactivateDosageInput = medication.dosage
         reactivateSelectedUnit = medication.unit
         reactivateScheduleInput = medication.schedule
         showingPriorMedicationDetail = true
@@ -404,13 +419,15 @@ final class MedicationsViewModel {
     /// Reactivate a prior medication
     func reactivateMedication(context: ModelContext) {
         guard let medication = selectedPriorMedication else { return }
-        guard let dosage = Double(reactivateDosageInput), dosage > 0 else {
-            validationError = "Please enter a valid dosage"
+
+        let trimmedDosage = reactivateDosageInput.trimmingCharacters(in: .whitespaces)
+        guard isValidReactivationDosage else {
+            validationError = "Please enter a valid dosage (e.g., 50 or 49/51)"
             return
         }
 
         medication.reactivate(
-            dosage: dosage,
+            dosage: trimmedDosage,
             unit: reactivateSelectedUnit,
             schedule: reactivateScheduleInput.trimmingCharacters(in: .whitespaces)
         )
@@ -425,6 +442,26 @@ final class MedicationsViewModel {
         } catch {
             validationError = "Could not reactivate medication. Please try again."
         }
+    }
+
+    /// Validates if reactivateDosageInput is a valid dosage
+    private var isValidReactivationDosage: Bool {
+        let trimmed = reactivateDosageInput.trimmingCharacters(in: .whitespaces)
+        if trimmed.isEmpty { return false }
+
+        // Check for combination dosage (e.g., "49/51")
+        if trimmed.contains("/") {
+            let parts = trimmed.split(separator: "/")
+            return parts.count == 2 &&
+                   parts.allSatisfy { Double($0) != nil && Double($0)! > 0 }
+        }
+
+        // Check for simple numeric dosage
+        if let value = Double(trimmed) {
+            return value > 0
+        }
+
+        return false
     }
 
     /// Reset reactivation form fields
@@ -454,7 +491,8 @@ final class MedicationsViewModel {
     /// Check for conflicts before saving. If conflicts exist, show warning; otherwise save directly.
     func checkAndSaveMedication(context: ModelContext) {
         guard validateForm() else { return }
-        guard let dosage = parsedDosage else { return }
+
+        let trimmedDosage = dosageInput.trimmingCharacters(in: .whitespaces)
 
         // Only check conflicts for preset medications with a known category
         if let category = selectedPresetMedication?.category {
@@ -470,7 +508,7 @@ final class MedicationsViewModel {
 
                 pendingConflictMedication = Medication(
                     name: trimmedName,
-                    dosage: dosage,
+                    dosage: trimmedDosage,
                     unit: selectedUnit,
                     schedule: trimmedSchedule,
                     isDiuretic: isDiuretic,
@@ -616,9 +654,12 @@ final class MedicationsViewModel {
 
     /// Log a standard dose (quick entry with medication's default dosage)
     func logStandardDose(for medication: Medication, context: ModelContext) {
+        // Parse dosage String to Double for diuretic dose logging
+        guard let dosageAmount = Double(medication.dosage) else { return }
+
         logDose(
             for: medication,
-            amount: medication.dosage,
+            amount: dosageAmount,
             isExtra: false,
             timestamp: Date(),
             context: context

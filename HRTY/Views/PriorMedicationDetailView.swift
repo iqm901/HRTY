@@ -105,10 +105,10 @@ struct PriorMedicationDetailView: View {
         Section {
             HStack {
                 TextField("Dosage", text: $viewModel.reactivateDosageInput)
-                    .keyboardType(.decimalPad)
+                    .keyboardType(.numbersAndPunctuation)
                     .focused($isDosageFieldFocused)
                     .accessibilityLabel("Dosage amount")
-                    .accessibilityHint("Enter the dosage number")
+                    .accessibilityHint("Enter the dosage number or combination like 49/51")
                     .toolbar {
                         ToolbarItemGroup(placement: .keyboard) {
                             Spacer()
@@ -155,8 +155,22 @@ struct PriorMedicationDetailView: View {
     // MARK: - Validation
 
     private var isReactivationFormValid: Bool {
-        guard let dosage = Double(viewModel.reactivateDosageInput) else { return false }
-        return dosage > 0
+        let trimmed = viewModel.reactivateDosageInput.trimmingCharacters(in: .whitespaces)
+        if trimmed.isEmpty { return false }
+
+        // Check for combination dosage (e.g., "49/51")
+        if trimmed.contains("/") {
+            let parts = trimmed.split(separator: "/")
+            return parts.count == 2 &&
+                   parts.allSatisfy { Double($0) != nil && Double($0)! > 0 }
+        }
+
+        // Check for simple numeric dosage
+        if let value = Double(trimmed) {
+            return value > 0
+        }
+
+        return false
     }
 }
 
@@ -168,7 +182,7 @@ struct PriorMedicationDetailView: View {
 
     let medication = Medication(
         name: "Furosemide",
-        dosage: 40,
+        dosage: "40",
         unit: "mg",
         schedule: "Once daily",
         isDiuretic: true,

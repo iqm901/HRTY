@@ -34,7 +34,7 @@ struct CustomDoseSheet: View {
                 }
             }
             .onAppear {
-                dosageText = formatDosage(medication.dosage)
+                dosageText = medication.dosage
             }
         }
     }
@@ -47,12 +47,12 @@ struct CustomDoseSheet: View {
                 Text(medication.name)
                     .font(.headline)
                 Spacer()
-                Text("Standard: \(formatDosage(medication.dosage)) \(medication.unit)")
+                Text("Standard: \(medication.dosage) \(medication.unit)")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
             .accessibilityElement(children: .combine)
-            .accessibilityLabel("\(medication.name), standard dose \(formatDosage(medication.dosage)) \(medication.unit)")
+            .accessibilityLabel("\(medication.name), standard dose \(medication.dosage) \(medication.unit)")
         }
     }
 
@@ -131,22 +131,13 @@ struct CustomDoseSheet: View {
         onSave(dosage, isExtraDose, timestamp)
     }
 
-    // MARK: - Helpers
-
-    private func formatDosage(_ value: Double) -> String {
-        if value == floor(value) {
-            return String(format: "%.0f", value)
-        } else {
-            return String(format: "%.1f", value)
-        }
-    }
 }
 
 #Preview {
     CustomDoseSheet(
         medication: Medication(
             name: "Furosemide",
-            dosage: 40,
+            dosage: "40",
             unit: "mg",
             schedule: "Morning",
             isDiuretic: true

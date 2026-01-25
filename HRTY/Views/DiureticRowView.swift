@@ -40,13 +40,7 @@ struct DiureticRowView: View {
     }
 
     private var dosageText: String {
-        let dosageFormatted: String
-        if medication.dosage == floor(medication.dosage) {
-            dosageFormatted = String(format: "%.0f", medication.dosage)
-        } else {
-            dosageFormatted = String(format: "%.1f", medication.dosage)
-        }
-        return "\(dosageFormatted) \(medication.unit)"
+        "\(medication.dosage) \(medication.unit)"
     }
 
     // MARK: - Today's Doses
@@ -218,7 +212,7 @@ struct FlowLayout: Layout {
 #Preview {
     let medication = Medication(
         name: "Furosemide",
-        dosage: 40,
+        dosage: "40",
         unit: "mg",
         schedule: "Morning",
         isDiuretic: true

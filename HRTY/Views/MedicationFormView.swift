@@ -286,10 +286,10 @@ struct MedicationFormView: View {
 
                 HStack {
                     TextField("Dosage", text: $viewModel.dosageInput)
-                        .keyboardType(.decimalPad)
+                        .keyboardType(.numbersAndPunctuation)
                         .focused($isDosageFieldFocused)
                         .accessibilityLabel("Dosage amount")
-                        .accessibilityHint("Enter the dosage number")
+                        .accessibilityHint("Enter the dosage number or combination like 49/51")
                         .toolbar {
                             ToolbarItemGroup(placement: .keyboard) {
                                 Spacer()
@@ -311,8 +311,8 @@ struct MedicationFormView: View {
             } header: {
                 Text("Medication Details")
             } footer: {
-                if !viewModel.dosageInput.isEmpty && viewModel.parsedDosage == nil {
-                    Text("Please enter a valid number for dosage")
+                if !viewModel.dosageInput.isEmpty && !viewModel.isValidDosage {
+                    Text("Please enter a valid dosage (e.g., 50 or 49/51)")
                         .foregroundStyle(Color.hrtAlertFallback)
                 } else {
                     Text("Enter the medication name and dosage as shown on your prescription.")

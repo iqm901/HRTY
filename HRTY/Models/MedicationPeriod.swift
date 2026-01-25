@@ -6,7 +6,7 @@ import SwiftData
 /// complete medication history even when dosages change or medications are archived/reactivated.
 @Model
 final class MedicationPeriod {
-    var dosage: Double
+    var dosage: String
     var unit: String
     var schedule: String
     var startDate: Date
@@ -16,7 +16,7 @@ final class MedicationPeriod {
     var medication: Medication?
 
     init(
-        dosage: Double,
+        dosage: String,
         unit: String,
         schedule: String,
         startDate: Date = Date(),
@@ -45,13 +45,9 @@ final class MedicationPeriod {
         }
     }
 
-    /// Formatted dosage for display, e.g., "40 mg"
+    /// Formatted dosage for display, e.g., "40 mg" or "49/51 mg"
     var dosageDisplay: String {
-        if dosage.truncatingRemainder(dividingBy: 1) == 0 {
-            return "\(Int(dosage)) \(unit)"
-        } else {
-            return String(format: "%.1f %@", dosage, unit)
-        }
+        "\(dosage) \(unit)"
     }
 
     /// Whether this period is currently active (no end date)

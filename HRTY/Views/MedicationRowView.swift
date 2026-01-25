@@ -73,13 +73,7 @@ struct MedicationRowView: View {
     // MARK: - Computed Properties
 
     private var dosageText: String {
-        let dosageFormatted: String
-        if medication.dosage == floor(medication.dosage) {
-            dosageFormatted = String(format: "%.0f", medication.dosage)
-        } else {
-            dosageFormatted = String(format: "%.1f", medication.dosage)
-        }
-        return "\(dosageFormatted) \(medication.unit)"
+        "\(medication.dosage) \(medication.unit)"
     }
 
     private var accessibilityLabel: String {
@@ -123,7 +117,7 @@ private extension Color {
     List {
         MedicationRowView(medication: Medication(
             name: "Furosemide",
-            dosage: 40,
+            dosage: "40",
             unit: "mg",
             schedule: "Morning",
             isDiuretic: true
@@ -131,7 +125,7 @@ private extension Color {
 
         MedicationRowView(medication: Medication(
             name: "Bumetanide",
-            dosage: 1,
+            dosage: "1",
             unit: "mg",
             schedule: "Morning",
             isDiuretic: true
@@ -139,7 +133,7 @@ private extension Color {
 
         MedicationRowView(medication: Medication(
             name: "Lisinopril",
-            dosage: 10,
+            dosage: "10",
             unit: "mg",
             schedule: "Morning",
             isDiuretic: false
@@ -147,7 +141,7 @@ private extension Color {
 
         MedicationRowView(medication: Medication(
             name: "Metoprolol",
-            dosage: 25,
+            dosage: "25",
             unit: "mg",
             schedule: "Twice daily",
             isDiuretic: false

@@ -19,9 +19,9 @@ final class MedicationsViewModelTests: XCTestCase {
 
     func testSortedMedicationsDiureticsFirst() {
         // Given: medications with mixed diuretic flags
-        let lisinopril = Medication(name: "Lisinopril", dosage: 10, isDiuretic: false)
-        let furosemide = Medication(name: "Furosemide", dosage: 40, isDiuretic: true)
-        let metoprolol = Medication(name: "Metoprolol", dosage: 25, isDiuretic: false)
+        let lisinopril = Medication(name: "Lisinopril", dosage: "10", isDiuretic: false)
+        let furosemide = Medication(name: "Furosemide", dosage: "40", isDiuretic: true)
+        let metoprolol = Medication(name: "Metoprolol", dosage: "25", isDiuretic: false)
 
         viewModel.medications = [lisinopril, furosemide, metoprolol]
 
@@ -34,9 +34,9 @@ final class MedicationsViewModelTests: XCTestCase {
 
     func testSortedMedicationsAlphabeticalWithinGroups() {
         // Given: multiple medications with same diuretic status
-        let lisinopril = Medication(name: "Lisinopril", dosage: 10, isDiuretic: false)
-        let amlodipine = Medication(name: "Amlodipine", dosage: 5, isDiuretic: false)
-        let metoprolol = Medication(name: "Metoprolol", dosage: 25, isDiuretic: false)
+        let lisinopril = Medication(name: "Lisinopril", dosage: "10", isDiuretic: false)
+        let amlodipine = Medication(name: "Amlodipine", dosage: "5", isDiuretic: false)
+        let metoprolol = Medication(name: "Metoprolol", dosage: "25", isDiuretic: false)
 
         viewModel.medications = [lisinopril, amlodipine, metoprolol]
 
@@ -51,9 +51,9 @@ final class MedicationsViewModelTests: XCTestCase {
 
     func testSortedMedicationsMultipleDiureticsAlphabetical() {
         // Given: multiple diuretics
-        let spironolactone = Medication(name: "Spironolactone", dosage: 25, isDiuretic: true)
-        let furosemide = Medication(name: "Furosemide", dosage: 40, isDiuretic: true)
-        let lisinopril = Medication(name: "Lisinopril", dosage: 10, isDiuretic: false)
+        let spironolactone = Medication(name: "Spironolactone", dosage: "25", isDiuretic: true)
+        let furosemide = Medication(name: "Furosemide", dosage: "40", isDiuretic: true)
+        let lisinopril = Medication(name: "Lisinopril", dosage: "10", isDiuretic: false)
 
         viewModel.medications = [spironolactone, furosemide, lisinopril]
 
@@ -68,8 +68,8 @@ final class MedicationsViewModelTests: XCTestCase {
 
     func testSortedMedicationsExcludesInactive() {
         // Given: mix of active and inactive medications
-        let active = Medication(name: "Active Med", dosage: 10, isActive: true)
-        let inactive = Medication(name: "Inactive Med", dosage: 20, isActive: false)
+        let active = Medication(name: "Active Med", dosage: "10", isActive: true)
+        let inactive = Medication(name: "Inactive Med", dosage: "20", isActive: false)
 
         viewModel.medications = [active, inactive]
 
@@ -83,8 +83,8 @@ final class MedicationsViewModelTests: XCTestCase {
 
     func testSortedMedicationsCaseInsensitive() {
         // Given: medications with different cases
-        let lower = Medication(name: "amlodipine", dosage: 5, isDiuretic: false)
-        let upper = Medication(name: "Betablocker", dosage: 10, isDiuretic: false)
+        let lower = Medication(name: "amlodipine", dosage: "5", isDiuretic: false)
+        let upper = Medication(name: "Betablocker", dosage: "10", isDiuretic: false)
 
         viewModel.medications = [upper, lower]
 
@@ -108,7 +108,7 @@ final class MedicationsViewModelTests: XCTestCase {
 
     func testHasNoMedicationsWhenAllInactive() {
         // Given: only inactive medications
-        let inactive = Medication(name: "Inactive", dosage: 10, isActive: false)
+        let inactive = Medication(name: "Inactive", dosage: "10", isActive: false)
         viewModel.medications = [inactive]
 
         // Then: hasNoMedications should be true
@@ -117,7 +117,7 @@ final class MedicationsViewModelTests: XCTestCase {
 
     func testHasNoMedicationsWhenHasActive() {
         // Given: at least one active medication
-        let active = Medication(name: "Active", dosage: 10, isActive: true)
+        let active = Medication(name: "Active", dosage: "10", isActive: true)
         viewModel.medications = [active]
 
         // Then: hasNoMedications should be false
@@ -198,26 +198,50 @@ final class MedicationsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.isFormValid)
     }
 
-    // MARK: - Parsed Dosage Tests
+    // MARK: - Dosage Validation Tests
 
-    func testParsedDosageWithValidInteger() {
+    func testIsValidDosageWithValidInteger() {
         viewModel.dosageInput = "40"
-        XCTAssertEqual(viewModel.parsedDosage, 40.0)
+        XCTAssertTrue(viewModel.isValidDosage)
     }
 
-    func testParsedDosageWithValidDecimal() {
+    func testIsValidDosageWithValidDecimal() {
         viewModel.dosageInput = "12.5"
-        XCTAssertEqual(viewModel.parsedDosage, 12.5)
+        XCTAssertTrue(viewModel.isValidDosage)
     }
 
-    func testParsedDosageWithInvalidInput() {
+    func testIsValidDosageWithCombinationDosage() {
+        // Entresto-style combination dosage
+        viewModel.dosageInput = "49/51"
+        XCTAssertTrue(viewModel.isValidDosage)
+    }
+
+    func testIsValidDosageWithAnotherCombination() {
+        // Another combination dosage
+        viewModel.dosageInput = "97/103"
+        XCTAssertTrue(viewModel.isValidDosage)
+    }
+
+    func testIsValidDosageWithInvalidInput() {
         viewModel.dosageInput = "not a number"
-        XCTAssertNil(viewModel.parsedDosage)
+        XCTAssertFalse(viewModel.isValidDosage)
     }
 
-    func testParsedDosageWithEmptyInput() {
+    func testIsValidDosageWithEmptyInput() {
         viewModel.dosageInput = ""
-        XCTAssertNil(viewModel.parsedDosage)
+        XCTAssertFalse(viewModel.isValidDosage)
+    }
+
+    func testIsValidDosageWithInvalidCombination() {
+        // Invalid - more than two parts
+        viewModel.dosageInput = "49/51/10"
+        XCTAssertFalse(viewModel.isValidDosage)
+    }
+
+    func testIsValidDosageWithInvalidCombinationFormat() {
+        // Invalid - non-numeric in combination
+        viewModel.dosageInput = "49/abc"
+        XCTAssertFalse(viewModel.isValidDosage)
     }
 
     // MARK: - Form Reset Tests
@@ -230,7 +254,7 @@ final class MedicationsViewModelTests: XCTestCase {
         viewModel.scheduleInput = "Morning"
         viewModel.isDiuretic = true
         viewModel.validationError = "Some error"
-        viewModel.selectedMedication = Medication(name: "Test", dosage: 10)
+        viewModel.selectedMedication = Medication(name: "Test", dosage: "10")
 
         // When: reset form
         viewModel.resetForm()
@@ -283,7 +307,7 @@ final class MedicationsViewModelTests: XCTestCase {
 
         // Then: should fail with appropriate error
         XCTAssertFalse(result)
-        XCTAssertEqual(viewModel.validationError, "Please enter a valid dosage amount")
+        XCTAssertEqual(viewModel.validationError, "Please enter a valid dosage (e.g., 50 or 49/51)")
     }
 
     func testValidateFormReturnsErrorForZeroDosage() {
@@ -296,7 +320,7 @@ final class MedicationsViewModelTests: XCTestCase {
 
         // Then: should fail with appropriate error
         XCTAssertFalse(result)
-        XCTAssertEqual(viewModel.validationError, "Please enter a valid dosage amount")
+        XCTAssertEqual(viewModel.validationError, "Please enter a valid dosage (e.g., 50 or 49/51)")
     }
 
     func testValidateFormSucceedsWithValidInput() {
@@ -346,7 +370,7 @@ final class MedicationsViewModelTests: XCTestCase {
         // Given: a medication to edit
         let medication = Medication(
             name: "Furosemide",
-            dosage: 40,
+            dosage: "40",
             unit: "mg",
             schedule: "Morning",
             isDiuretic: true
@@ -368,7 +392,7 @@ final class MedicationsViewModelTests: XCTestCase {
     func testPrepareForEditClearsValidationError() {
         // Given: existing validation error
         viewModel.validationError = "Previous error"
-        let medication = Medication(name: "Test", dosage: 10)
+        let medication = Medication(name: "Test", dosage: "10")
 
         // When: prepare for edit
         viewModel.prepareForEdit(medication: medication)
@@ -381,7 +405,7 @@ final class MedicationsViewModelTests: XCTestCase {
 
     func testPrepareForDeleteSetsStateCorrectly() {
         // Given: a medication to delete
-        let medication = Medication(name: "ToDelete", dosage: 10)
+        let medication = Medication(name: "ToDelete", dosage: "10")
 
         // When: prepare for delete
         viewModel.prepareForDelete(medication: medication)
@@ -417,7 +441,7 @@ final class MedicationModelTests: XCTestCase {
 
     func testMedicationDefaultValues() {
         // When: creating medication with minimal parameters
-        let medication = Medication(name: "Test", dosage: 10)
+        let medication = Medication(name: "Test", dosage: "10")
 
         // Then: default values should be set
         XCTAssertEqual(medication.unit, "mg")
@@ -437,7 +461,7 @@ final class MedicationModelTests: XCTestCase {
         // When: creating medication with custom values
         let medication = Medication(
             name: "Furosemide",
-            dosage: 40,
+            dosage: "40",
             unit: "mcg",
             schedule: "Twice daily",
             isDiuretic: true,
@@ -446,11 +470,26 @@ final class MedicationModelTests: XCTestCase {
 
         // Then: values should be set correctly
         XCTAssertEqual(medication.name, "Furosemide")
-        XCTAssertEqual(medication.dosage, 40)
+        XCTAssertEqual(medication.dosage, "40")
         XCTAssertEqual(medication.unit, "mcg")
         XCTAssertEqual(medication.schedule, "Twice daily")
         XCTAssertTrue(medication.isDiuretic)
         XCTAssertTrue(medication.isActive)
+    }
+
+    func testMedicationCombinationDosage() {
+        // When: creating medication with combination dosage (Entresto-style)
+        let medication = Medication(
+            name: "Sacubitril/Valsartan",
+            dosage: "49/51",
+            unit: "mg",
+            schedule: "Twice daily"
+        )
+
+        // Then: values should be set correctly
+        XCTAssertEqual(medication.name, "Sacubitril/Valsartan")
+        XCTAssertEqual(medication.dosage, "49/51")
+        XCTAssertEqual(medication.unit, "mg")
     }
 }
 
