@@ -22,13 +22,21 @@ enum AlertConstants {
     /// Maximum valid weight entry (in lbs)
     static let maximumWeight: Double = 500.0
 
-    // MARK: - Heart Rate Alert Thresholds (for future use)
+    // MARK: - Heart Rate Alert Thresholds
 
     /// Heart rate below this value triggers low heart rate alert (bpm)
     static let heartRateLowThreshold: Int = 40
 
     /// Heart rate above this value triggers high heart rate alert (bpm)
     static let heartRateHighThreshold: Int = 120
+
+    // MARK: - Heart Rate Validation Bounds
+
+    /// Minimum valid heart rate entry (bpm)
+    static let minimumHeartRate: Int = 30
+
+    /// Maximum valid heart rate entry (bpm)
+    static let maximumHeartRate: Int = 250
 
     // MARK: - Symptom Alert Thresholds
 

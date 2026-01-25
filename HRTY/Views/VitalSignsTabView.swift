@@ -10,10 +10,6 @@ struct VitalSignsTabView: View {
 
     var body: some View {
         VStack(spacing: HRTSpacing.lg) {
-            timingRecommendation
-
-            heartRateSection
-
             weightEntrySection
 
             BloodPressureEntryView(
@@ -31,6 +27,23 @@ struct VitalSignsTabView: View {
                 },
                 onSave: {
                     viewModel.saveBloodPressure(context: modelContext)
+                }
+            )
+
+            HeartRateEntryView(
+                heartRateInput: $viewModel.heartRateInput,
+                isHealthKitAvailable: viewModel.isHealthKitAvailable,
+                isLoadingHealthKit: viewModel.isLoadingHRHealthKit,
+                healthKitTimestamp: viewModel.heartRateHealthKitTimestamp,
+                validationError: viewModel.heartRateValidationError,
+                showSaveSuccess: viewModel.showHRSaveSuccess,
+                onImportFromHealthKit: {
+                    Task {
+                        await viewModel.importHeartRateFromHealthKit()
+                    }
+                },
+                onSave: {
+                    viewModel.saveHeartRate(context: modelContext)
                 }
             )
 
@@ -53,34 +66,6 @@ struct VitalSignsTabView: View {
 
             Spacer(minLength: HRTSpacing.xxl)
         }
-    }
-
-    // MARK: - Timing Recommendation
-
-    private var timingRecommendation: some View {
-        HStack(spacing: HRTSpacing.sm) {
-            Image(systemName: "clock")
-                .foregroundStyle(Color.hrtTextTertiaryFallback)
-            Text("For best results, check your vitals at the same time each day, ideally 2 hours after taking blood pressure medications.")
-                .font(.hrtCaption)
-                .foregroundStyle(Color.hrtTextTertiaryFallback)
-        }
-        .padding(HRTSpacing.sm)
-        .background(Color.hrtBackgroundSecondaryFallback.opacity(0.5))
-        .clipShape(RoundedRectangle(cornerRadius: HRTRadius.small))
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel("Timing tip: For best results, check your vitals at the same time each day, ideally 2 hours after taking blood pressure medications.")
-    }
-
-    // MARK: - Heart Rate Section
-
-    private var heartRateSection: some View {
-        HeartRateSectionView(
-            heartRate: viewModel.formattedHeartRate,
-            timestamp: viewModel.heartRateTimestamp,
-            isLoading: viewModel.isLoadingHeartRate,
-            isAvailable: viewModel.healthKitAvailable
-        )
     }
 
     // MARK: - Weight Entry Section

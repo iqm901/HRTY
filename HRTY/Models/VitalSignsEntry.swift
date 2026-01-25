@@ -20,6 +20,12 @@ final class VitalSignsEntry {
     /// Timestamp of the oxygen saturation reading
     var oxygenSaturationTimestamp: Date?
 
+    /// Resting heart rate in beats per minute (bpm)
+    var heartRate: Int?
+
+    /// Timestamp of the heart rate reading
+    var heartRateTimestamp: Date?
+
     /// Reference to the daily entry this vital signs record belongs to
     @Relationship
     var dailyEntry: DailyEntry?
@@ -36,6 +42,8 @@ final class VitalSignsEntry {
         bloodPressureTimestamp: Date? = nil,
         oxygenSaturation: Int? = nil,
         oxygenSaturationTimestamp: Date? = nil,
+        heartRate: Int? = nil,
+        heartRateTimestamp: Date? = nil,
         dailyEntry: DailyEntry? = nil
     ) {
         self.systolicBP = systolicBP
@@ -43,6 +51,8 @@ final class VitalSignsEntry {
         self.bloodPressureTimestamp = bloodPressureTimestamp
         self.oxygenSaturation = oxygenSaturation
         self.oxygenSaturationTimestamp = oxygenSaturationTimestamp
+        self.heartRate = heartRate
+        self.heartRateTimestamp = heartRateTimestamp
         self.dailyEntry = dailyEntry
         self.createdAt = Date()
         self.updatedAt = Date()
@@ -75,5 +85,16 @@ final class VitalSignsEntry {
     /// Whether oxygen saturation has been recorded
     var hasOxygenSaturation: Bool {
         oxygenSaturation != nil
+    }
+
+    /// Whether heart rate has been recorded
+    var hasHeartRate: Bool {
+        heartRate != nil
+    }
+
+    /// Formatted heart rate string (e.g., "72 bpm")
+    var formattedHeartRate: String? {
+        guard let hr = heartRate else { return nil }
+        return "\(hr) bpm"
     }
 }

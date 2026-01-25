@@ -54,6 +54,13 @@ final class TodayViewModel {
     var oxygenSaturationHealthKitTimestamp: String?
     var showSpO2SaveSuccess: Bool = false
 
+    // MARK: - Heart Rate Input State
+    var heartRateInput: String = ""
+    var heartRateValidationError: String?
+    var isLoadingHRHealthKit: Bool = false
+    var heartRateHealthKitTimestamp: String?
+    var showHRSaveSuccess: Bool = false
+
     // MARK: - Loading State
     var isLoading: Bool = false
 
@@ -631,6 +638,9 @@ final class TodayViewModel {
         if let spo2 = vitalSigns.oxygenSaturation {
             oxygenSaturationInput = String(spo2)
         }
+        if let hr = vitalSigns.heartRate {
+            heartRateInput = String(hr)
+        }
     }
 
     /// Load unacknowledged vital signs alerts for display
@@ -878,6 +888,115 @@ final class TodayViewModel {
         }
 
         isLoadingSpO2HealthKit = false
+    }
+
+    // MARK: - Heart Rate Entry Methods
+
+    /// Parsed heart rate
+    var parsedHeartRate: Int? {
+        Int(heartRateInput)
+    }
+
+    /// Validate heart rate input
+    func validateHeartRate() -> Bool {
+        heartRateValidationError = nil
+
+        guard !heartRateInput.isEmpty else {
+            heartRateValidationError = "Please enter your heart rate"
+            return false
+        }
+
+        guard let hr = parsedHeartRate else {
+            heartRateValidationError = "Please enter a valid number"
+            return false
+        }
+
+        guard hr >= AlertConstants.minimumHeartRate else {
+            heartRateValidationError = "Heart rate must be at least \(AlertConstants.minimumHeartRate) bpm"
+            return false
+        }
+
+        guard hr <= AlertConstants.maximumHeartRate else {
+            heartRateValidationError = "Heart rate must be at most \(AlertConstants.maximumHeartRate) bpm"
+            return false
+        }
+
+        return true
+    }
+
+    /// Save heart rate to the vital signs entry
+    func saveHeartRate(context: ModelContext) {
+        guard validateHeartRate() else { return }
+        guard let hr = parsedHeartRate else { return }
+
+        if todayEntry == nil {
+            todayEntry = DailyEntry.getOrCreate(for: Date(), in: context)
+        }
+
+        guard let entry = todayEntry else { return }
+
+        // Get or create vital signs entry
+        let vitalSigns: VitalSignsEntry
+        if let existing = entry.vitalSigns {
+            vitalSigns = existing
+        } else {
+            vitalSigns = VitalSignsEntry(dailyEntry: entry)
+            context.insert(vitalSigns)
+            entry.vitalSigns = vitalSigns
+        }
+
+        vitalSigns.heartRate = hr
+        vitalSigns.heartRateTimestamp = Date()
+        vitalSigns.updatedAt = Date()
+        entry.updatedAt = Date()
+
+        do {
+            try context.save()
+            showHRSaveSuccess = true
+
+            // Check for heart rate alerts after successful save
+            Task {
+                await checkHeartRateAlerts(context: context)
+            }
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
+                self?.showHRSaveSuccess = false
+            }
+        } catch {
+            heartRateValidationError = "Could not save heart rate. Please try again."
+        }
+    }
+
+    /// Import heart rate from HealthKit
+    @MainActor
+    func importHeartRateFromHealthKit() async {
+        guard healthKitAvailable else {
+            heartRateValidationError = "HealthKit is not available on this device"
+            return
+        }
+
+        isLoadingHRHealthKit = true
+        heartRateValidationError = nil
+        heartRateHealthKitTimestamp = nil
+
+        let authorized = await healthKitService.requestAuthorization()
+        guard authorized else {
+            isLoadingHRHealthKit = false
+            heartRateValidationError = "Unable to access Health data"
+            return
+        }
+
+        if let reading = await healthKitService.fetchLatestRestingHeartRate() {
+            heartRateInput = String(reading.heartRate)
+
+            let formatter = RelativeDateTimeFormatter()
+            formatter.unitsStyle = .full
+            heartRateHealthKitTimestamp = "from Health \(formatter.localizedString(for: reading.date, relativeTo: Date()))"
+        } else {
+            heartRateValidationError = "No recent heart rate data found"
+        }
+
+        isLoadingHRHealthKit = false
     }
 
     // MARK: - Vital Signs Alert Methods

@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7859E4FED0D7EA08C97D038A /* SymptomCheckInSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A7C0660E053A24F396A156B /* SymptomCheckInSummaryView.swift */; };
+		88B57CFC0763C7C89D28D08B /* SymptomCheckInWizardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77D273B604ECD0FC7FEB6918 /* SymptomCheckInWizardView.swift */; };
+		A5FFC8B8425E0F8587F20FAD /* SymptomStepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178BA23E6533AE023F42273B /* SymptomStepView.swift */; };
+		CA15CF1637332963A3FE94D5 /* SymptomCheckInPromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 996A73D5AA34719503EACCC4 /* SymptomCheckInPromptView.swift */; };
+		CA4EF31A18ED87DCE8DA9822 /* SymptomCheckInViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDA38025C20318152420224D /* SymptomCheckInViewModel.swift */; };
+		6B21A2D5E2AFA7FE2B305FA2 /* SymptomCheckInProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = C078620C819A21486CAACAC3 /* SymptomCheckInProgress.swift */; };
 		023000010000000100000001 /* MedicationPeriod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023000020000000100000001 /* MedicationPeriod.swift */; };
 		024000010000000100000001 /* PriorMedicationDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024000020000000100000001 /* PriorMedicationDetailView.swift */; };
 		020000010000000100000001 /* DiureticDoseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020000020000000100000001 /* DiureticDoseService.swift */; };
@@ -14,6 +20,7 @@
 		63E3FE18315940D08A81709F /* VitalSignsEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDA8FBDCC544B2EA822AD07 /* VitalSignsEntry.swift */; };
 		54874CD30FA847BCACFFA400 /* BloodPressureEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 329B16C46A9C4E7A833D8CFB /* BloodPressureEntryView.swift */; };
 		21C27926255C42DBA75CB169 /* OxygenSaturationEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B20E79AD6E94FD7B00EB8C6 /* OxygenSaturationEntryView.swift */; };
+		025000010000000100000001 /* HeartRateEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025000020000000100000001 /* HeartRateEntryView.swift */; };
 		51FC4D65391F46B8BBC611E7 /* VitalSignsTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6BC209E01C14DABB5F0CD1B /* VitalSignsTabView.swift */; };
 		6528ED42AC41451588E2F64F /* SymptomManagementTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E998E324A4914EC7BE3057D4 /* SymptomManagementTabView.swift */; };
 		39630526A4D74DC496B9557B /* VitalSignsAlertService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62B091BAE36042B9A749B8CE /* VitalSignsAlertService.swift */; };
@@ -115,6 +122,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2A7C0660E053A24F396A156B /* SymptomCheckInSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymptomCheckInSummaryView.swift; sourceTree = "<group>"; };
+		77D273B604ECD0FC7FEB6918 /* SymptomCheckInWizardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymptomCheckInWizardView.swift; sourceTree = "<group>"; };
+		178BA23E6533AE023F42273B /* SymptomStepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymptomStepView.swift; sourceTree = "<group>"; };
+		996A73D5AA34719503EACCC4 /* SymptomCheckInPromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymptomCheckInPromptView.swift; sourceTree = "<group>"; };
+		EDA38025C20318152420224D /* SymptomCheckInViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymptomCheckInViewModel.swift; sourceTree = "<group>"; };
+		C078620C819A21486CAACAC3 /* SymptomCheckInProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymptomCheckInProgress.swift; sourceTree = "<group>"; };
 		023000020000000100000001 /* MedicationPeriod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicationPeriod.swift; sourceTree = "<group>"; };
 		024000020000000100000001 /* PriorMedicationDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriorMedicationDetailView.swift; sourceTree = "<group>"; };
 		020000020000000100000001 /* DiureticDoseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiureticDoseService.swift; sourceTree = "<group>"; };
@@ -122,6 +135,7 @@
 		EEDA8FBDCC544B2EA822AD07 /* VitalSignsEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VitalSignsEntry.swift; sourceTree = "<group>"; };
 		329B16C46A9C4E7A833D8CFB /* BloodPressureEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BloodPressureEntryView.swift; sourceTree = "<group>"; };
 		8B20E79AD6E94FD7B00EB8C6 /* OxygenSaturationEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OxygenSaturationEntryView.swift; sourceTree = "<group>"; };
+		025000020000000100000001 /* HeartRateEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartRateEntryView.swift; sourceTree = "<group>"; };
 		E6BC209E01C14DABB5F0CD1B /* VitalSignsTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VitalSignsTabView.swift; sourceTree = "<group>"; };
 		E998E324A4914EC7BE3057D4 /* SymptomManagementTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymptomManagementTabView.swift; sourceTree = "<group>"; };
 		62B091BAE36042B9A749B8CE /* VitalSignsAlertService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VitalSignsAlertService.swift; sourceTree = "<group>"; };
@@ -226,6 +240,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		368EF31B795D1697A97F251F /* SymptomCheckIn */ = {
+			isa = PBXGroup;
+			children = (
+				996A73D5AA34719503EACCC4 /* SymptomCheckInPromptView.swift */,
+				178BA23E6533AE023F42273B /* SymptomStepView.swift */,
+				77D273B604ECD0FC7FEB6918 /* SymptomCheckInWizardView.swift */,
+				2A7C0660E053A24F396A156B /* SymptomCheckInSummaryView.swift */,
+			);
+			path = SymptomCheckIn;
+			sourceTree = "<group>";
+		};
 		A1000005200000010000000100000001 = {
 			isa = PBXGroup;
 			children = (
@@ -297,10 +322,12 @@
 		A1000005200000010000000100000004 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				368EF31B795D1697A97F251F /* SymptomCheckIn */,
 				E998E324A4914EC7BE3057D4 /* SymptomManagementTabView.swift */,
 				E6BC209E01C14DABB5F0CD1B /* VitalSignsTabView.swift */,
 				8B20E79AD6E94FD7B00EB8C6 /* OxygenSaturationEntryView.swift */,
 				329B16C46A9C4E7A833D8CFB /* BloodPressureEntryView.swift */,
+				025000020000000100000001 /* HeartRateEntryView.swift */,
 				A1000002200000010000000100000004 /* TodayView.swift */,
 				A1000002200000010000000100000005 /* TrendsView.swift */,
 				A1000002200000010000000100000006 /* MedicationsView.swift */,
@@ -328,6 +355,7 @@
 		A1000005200000010000000100000005 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				C078620C819A21486CAACAC3 /* SymptomCheckInProgress.swift */,
 				EEDA8FBDCC544B2EA822AD07 /* VitalSignsEntry.swift */,
 				021000020000000100000001 /* BloodPressureReading.swift */,
 				022000020000000100000001 /* OxygenSaturationReading.swift */,
@@ -352,6 +380,7 @@
 		A1000005200000010000000100000006 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				EDA38025C20318152420224D /* SymptomCheckInViewModel.swift */,
 				A1000002200000010000000100000010 /* TodayViewModel.swift */,
 				A1000002200000010000000100000013 /* MedicationsViewModel.swift */,
 				A1000002200000010000000100000023 /* TrendsViewModel.swift */,
@@ -494,13 +523,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				023000010000000100000001 /* MedicationPeriod.swift in Sources */,
+								6B21A2D5E2AFA7FE2B305FA2 /* SymptomCheckInProgress.swift in Sources */,
+				CA4EF31A18ED87DCE8DA9822 /* SymptomCheckInViewModel.swift in Sources */,
+				CA15CF1637332963A3FE94D5 /* SymptomCheckInPromptView.swift in Sources */,
+				A5FFC8B8425E0F8587F20FAD /* SymptomStepView.swift in Sources */,
+				88B57CFC0763C7C89D28D08B /* SymptomCheckInWizardView.swift in Sources */,
+				7859E4FED0D7EA08C97D038A /* SymptomCheckInSummaryView.swift in Sources */,
+023000010000000100000001 /* MedicationPeriod.swift in Sources */,
 				024000010000000100000001 /* PriorMedicationDetailView.swift in Sources */,
 				020000010000000100000001 /* DiureticDoseService.swift in Sources */,
 				021000010000000100000002 /* MedicationConflictService.swift in Sources */,
 				63E3FE18315940D08A81709F /* VitalSignsEntry.swift in Sources */,
 				54874CD30FA847BCACFFA400 /* BloodPressureEntryView.swift in Sources */,
 				21C27926255C42DBA75CB169 /* OxygenSaturationEntryView.swift in Sources */,
+				025000010000000100000001 /* HeartRateEntryView.swift in Sources */,
 				51FC4D65391F46B8BBC611E7 /* VitalSignsTabView.swift in Sources */,
 				6528ED42AC41451588E2F64F /* SymptomManagementTabView.swift in Sources */,
 				39630526A4D74DC496B9557B /* VitalSignsAlertService.swift in Sources */,
