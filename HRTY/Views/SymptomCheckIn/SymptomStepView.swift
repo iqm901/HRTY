@@ -43,16 +43,17 @@ struct SymptomStepView: View {
     // MARK: - Question
 
     private var questionText: some View {
-        Text("How much are you experiencing this symptom today?")
+        Text("How much are you experiencing\nthis symptom today?")
             .font(.hrtBody)
             .foregroundStyle(Color.hrtTextSecondaryFallback)
             .multilineTextAlignment(.center)
+            .fixedSize(horizontal: false, vertical: true)
     }
 
     // MARK: - Severity Selector
 
     private var severitySelector: some View {
-        HStack(spacing: HRTSpacing.sm) {
+        VStack(spacing: HRTSpacing.sm) {
             ForEach(1...5, id: \.self) { severity in
                 severityButton(for: severity)
             }
@@ -68,18 +69,17 @@ struct SymptomStepView: View {
         return Button {
             onSeveritySelected(severity)
         } label: {
-            VStack(spacing: HRTSpacing.xs) {
+            HStack(spacing: HRTSpacing.md) {
                 Text("\(severity)")
                     .font(.hrtTitle2)
                     .fontWeight(.semibold)
-
+                    .frame(width: 32)
                 Text(severityLevel.label)
-                    .font(.hrtCaption)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.8)
+                    .font(.hrtBody)
+                Spacer()
             }
             .frame(maxWidth: .infinity)
-            .padding(.vertical, HRTSpacing.md)
+            .padding(HRTSpacing.md)
             .background(
                 isSelected
                     ? severityColor(for: severity)

@@ -32,7 +32,6 @@ struct SymptomCheckInWizardView: View {
             }
         }
         .animation(HRTAnimation.standard, value: viewModel.showingSummary)
-        .animation(HRTAnimation.standard, value: viewModel.currentStep)
         .confirmationDialog(
             "Save your progress?",
             isPresented: $showCloseConfirmation,
@@ -65,6 +64,10 @@ struct SymptomCheckInWizardView: View {
                         selectedSeverity: viewModel.responses[symptom],
                         onSeveritySelected: { severity in
                             viewModel.setSeverity(severity)
+                            // Auto-advance after brief delay for visual feedback
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                                viewModel.nextStep()
+                            }
                         }
                     )
                     .tag(index)
@@ -147,10 +150,12 @@ struct SymptomCheckInWizardView: View {
 
             Spacer()
 
-            nextButton
+            // Only show Next/Review button on last step (auto-advance handles other steps)
+            if viewModel.isLastStep {
+                nextButton
+            }
         }
         .padding(HRTSpacing.md)
-        .background(Color.hrtCardFallback)
     }
 
     private var backButton: some View {
