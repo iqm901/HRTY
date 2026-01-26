@@ -1,92 +1,12 @@
 import SwiftUI
 import SwiftData
 
-// MARK: - Heart Failure Medication Category Tabs
-
-enum MedicationTab: String, CaseIterable {
-    case all = "All"
-    case betaBlocker = "Beta Blockers"
-    case raasInhibitor = "RAAS Inhibitors"
-    case mra = "MRA"
-    case sglt2 = "SGLT2 Inhibitors"
-    case diuretic = "Diuretics"
-    case other = "Other"
-
-    /// Returns the HeartFailureMedication.Category values that belong to this tab
-    var includedCategories: [HeartFailureMedication.Category] {
-        switch self {
-        case .all:
-            return HeartFailureMedication.Category.allCases
-        case .betaBlocker:
-            return [.betaBlocker]
-        case .raasInhibitor:
-            return [.aceInhibitor, .arb, .arni]
-        case .mra:
-            return [.mra]
-        case .sglt2:
-            return [.sglt2Inhibitor]
-        case .diuretic:
-            return [.loopDiuretic, .thiazideDiuretic]
-        case .other:
-            return [.other]
-        }
-    }
-}
-
-// MARK: - Other Medication Category Tabs
-
-enum OtherMedicationTab: String, CaseIterable {
-    case all = "All"
-    case statins = "Statins"
-    case anticoagulants = "Anticoag"
-    case antiplatelets = "Antiplatelets"
-    case ccb = "CCBs"
-    case antiarrhythmics = "Antiarrhythm"
-    case nitrates = "Nitrates"
-    case betaBlockers = "Beta Block"
-    case aceArb = "ACE-I/ARBs"
-    case diuretics = "Diuretics"
-    case diabetes = "Diabetes"
-    case other = "Other"
-
-    /// Returns the OtherMedicationCategory values that belong to this tab
-    var includedCategories: [OtherMedicationCategory] {
-        switch self {
-        case .all:
-            return OtherMedicationCategory.allCases
-        case .statins:
-            return [.statin]
-        case .anticoagulants:
-            return [.anticoagulant]
-        case .antiplatelets:
-            return [.antiplatelet]
-        case .ccb:
-            return [.calciumChannelBlockerDHP, .calciumChannelBlockerNonDHP]
-        case .antiarrhythmics:
-            return [.antiarrhythmic]
-        case .nitrates:
-            return [.nitrate]
-        case .betaBlockers:
-            return [.additionalBetaBlocker]
-        case .aceArb:
-            return [.additionalAceInhibitor, .additionalArb]
-        case .diuretics:
-            return [.additionalDiuretic, .potassiumSupplement]
-        case .diabetes:
-            return [.glp1Agonist, .diabetesMed]
-        case .other:
-            return [.alphaBlocker, .centralAgent, .thyroid, .pulmonaryHTN, .other]
-        }
-    }
-}
-
 struct MedicationFormView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @FocusState private var isDosageFieldFocused: Bool
     @FocusState private var isSearchFieldFocused: Bool
-    @State private var selectedTab: MedicationTab = .all
-    @State private var selectedOtherTab: OtherMedicationTab = .all
+    @State private var limitToHeartFailure: Bool = true
 
     @Bindable var viewModel: MedicationsViewModel
     let isEditing: Bool
@@ -112,28 +32,16 @@ struct MedicationFormView: View {
                     searchSection
                 }
 
-                // Show search results when searching, otherwise show regular content
-                if viewModel.isSearchActive && !isEditing {
+                // Show appropriate content based on state
+                if isEditing {
+                    customMedicationSection
+                } else if viewModel.entryMode == .custom {
+                    customMedicationSection
+                } else if viewModel.isSearchActive {
                     searchResultsSection
                 } else {
-                    // Entry mode toggle (only when not editing)
-                    if !isEditing {
-                        medicationTypeSection
-                    }
-
-                    // Show appropriate section based on entry mode
-                    if !isEditing {
-                        switch viewModel.entryMode {
-                        case .heartFailure:
-                            presetMedicationSection
-                        case .other:
-                            otherMedicationSection
-                        case .custom:
-                            customMedicationSection
-                        }
-                    } else {
-                        customMedicationSection
-                    }
+                    // Show all medications when not searching
+                    allMedicationsSection
                 }
 
                 if let error = viewModel.validationError {
@@ -205,7 +113,7 @@ struct MedicationFormView: View {
             HStack {
                 Image(systemName: "magnifyingglass")
                     .foregroundStyle(Color.secondary)
-                TextField("Search all medications...", text: $viewModel.searchText)
+                TextField("Search medications...", text: $viewModel.searchText)
                     .textContentType(.none)
                     .autocorrectionDisabled()
                     .focused($isSearchFieldFocused)
@@ -219,18 +127,35 @@ struct MedicationFormView: View {
                     .buttonStyle(.plain)
                 }
             }
+
+            Toggle("Limit to heart failure medications", isOn: $limitToHeartFailure)
+                .font(.hrtCallout)
         }
     }
 
     // MARK: - Search Results Section
 
+    /// Filtered search results based on the limitToHeartFailure toggle
+    private var filteredSearchResults: (heartFailure: [HeartFailureMedication], other: [OtherMedication]) {
+        if limitToHeartFailure {
+            return (viewModel.heartFailureSearchResults, [])
+        } else {
+            return (viewModel.heartFailureSearchResults, viewModel.otherMedicationSearchResults)
+        }
+    }
+
+    /// Whether there are any search results after applying the filter
+    private var hasFilteredResults: Bool {
+        !filteredSearchResults.heartFailure.isEmpty || !filteredSearchResults.other.isEmpty
+    }
+
     private var searchResultsSection: some View {
         Group {
-            if viewModel.hasSearchResults {
+            if hasFilteredResults {
                 // Heart Failure Medications results
-                if !viewModel.heartFailureSearchResults.isEmpty {
+                if !filteredSearchResults.heartFailure.isEmpty {
                     Section {
-                        ForEach(viewModel.heartFailureSearchResults) { medication in
+                        ForEach(filteredSearchResults.heartFailure) { medication in
                             Button {
                                 selectFromSearch(heartFailureMedication: medication)
                             } label: {
@@ -256,10 +181,10 @@ struct MedicationFormView: View {
                     }
                 }
 
-                // Other Medications results
-                if !viewModel.otherMedicationSearchResults.isEmpty {
+                // Other Medications results (only shown when not limited to HF)
+                if !filteredSearchResults.other.isEmpty {
                     Section {
-                        ForEach(viewModel.otherMedicationSearchResults) { medication in
+                        ForEach(filteredSearchResults.other) { medication in
                             Button {
                                 selectFromSearch(otherMedication: medication)
                             } label: {
@@ -289,6 +214,21 @@ struct MedicationFormView: View {
                     Text("No medications found for \"\(viewModel.searchText)\"")
                         .foregroundStyle(Color.secondary)
                         .font(.hrtCallout)
+
+                    Button {
+                        viewModel.entryMode = .custom
+                        viewModel.nameInput = viewModel.searchText
+                        viewModel.clearSearch()
+                        isSearchFieldFocused = false
+                    } label: {
+                        HStack {
+                            Image(systemName: "square.and.pencil")
+                            Text("Manually enter Medication")
+                        }
+                        .font(.hrtBody)
+                        .foregroundStyle(Color.hrtPinkFallback)
+                    }
+                    .buttonStyle(.plain)
                 }
             }
         }
@@ -310,97 +250,17 @@ struct MedicationFormView: View {
         isSearchFieldFocused = false
     }
 
-    // MARK: - Medication Type Toggle
+    // MARK: - All Medications Section (when not searching)
 
-    private var medicationTypeSection: some View {
-        Section {
-            Picker("Entry Type", selection: $viewModel.entryMode) {
-                ForEach(MedicationEntryMode.allCases, id: \.self) { mode in
-                    Text(mode.rawValue).tag(mode)
-                }
-            }
-            .pickerStyle(.segmented)
-            .onChange(of: viewModel.entryMode) { _, _ in
-                // Clear selection when switching modes
-                clearMedicationSelection()
-            }
-        } footer: {
-            Text(entryModeFooterText)
-        }
-    }
-
-    private var entryModeFooterText: String {
-        switch viewModel.entryMode {
-        case .heartFailure:
-            return "Select from common heart failure medications"
-        case .other:
-            return "Select from other cardiac medications"
-        case .custom:
-            return "Enter any medication manually"
-        }
-    }
-
-    // MARK: - Preset Medication Selection
-
-    /// Medications filtered by the currently selected tab, sorted alphabetically
-    private var filteredMedications: [HeartFailureMedication] {
-        HeartFailureMedication.allMedications
-            .filter { medication in
-                selectedTab.includedCategories.contains(medication.category)
-            }
-            .sorted { $0.displayName.localizedCaseInsensitiveCompare($1.displayName) == .orderedAscending }
-    }
-
-    private var presetMedicationSection: some View {
+    private var allMedicationsSection: some View {
         Group {
+            // Check if a medication is selected (either HF or Other)
             if let selectedMed = viewModel.selectedPresetMedication {
-                // SELECTED STATE: Show selected medication and dosage/frequency options
-                Section {
-                    Text(selectedMed.displayName)
-                        .font(.hrtBody)
-                        .foregroundStyle(Color.hrtTextFallback)
-                } header: {
-                    Text("Medication")
-                }
-
-                // Dosage Picker
-                Section {
-                    Picker("Dosage", selection: Binding(
-                        get: { viewModel.selectedDosageOption },
-                        set: { viewModel.selectDosage($0) }
-                    )) {
-                        Text("Select dosage").tag("")
-                        ForEach(selectedMed.availableDosages, id: \.self) { dosage in
-                            Text("\(dosage) \(selectedMed.unit)").tag(dosage)
-                        }
-                    }
-                    .pickerStyle(.navigationLink)
-                } header: {
-                    Text("Dosage")
-                }
-
-                // Frequency Picker
-                Section {
-                    Picker("Frequency", selection: $viewModel.selectedFrequency) {
-                        ForEach(HeartFailureMedication.frequencyOptions, id: \.self) { frequency in
-                            Text(frequency).tag(frequency)
-                        }
-                    }
-                    .pickerStyle(.navigationLink)
-                    .onChange(of: viewModel.selectedFrequency) { _, newValue in
-                        viewModel.scheduleInput = newValue
-                    }
-                } header: {
-                    Text("Frequency")
-                }
+                selectedHeartFailureMedicationSection(selectedMed)
+            } else if let selectedMed = viewModel.selectedOtherMedication {
+                selectedOtherMedicationSection(selectedMed)
             } else {
-                // UNSELECTED STATE: Show category tabs and medication list
-                Section {
-                    categoryTabBar
-                } header: {
-                    Text("Category")
-                }
-
+                // Show all medications filtered by checkbox
                 Section {
                     ForEach(filteredMedications) { medication in
                         Button {
@@ -411,183 +271,144 @@ struct MedicationFormView: View {
                                     .font(.hrtBody)
                                     .foregroundStyle(Color.hrtTextFallback)
                                 Spacer()
+                                Text("HF")
+                                    .font(.hrtCaption2)
+                                    .fontWeight(.medium)
+                                    .padding(.horizontal, HRTSpacing.sm)
+                                    .padding(.vertical, HRTSpacing.xs)
+                                    .background(Color.hrtPinkFallback.opacity(0.2))
+                                    .foregroundStyle(Color.hrtPinkFallback)
+                                    .clipShape(Capsule())
                             }
                         }
                         .buttonStyle(.plain)
                     }
+
+                    // Show other medications if not limited to HF
+                    if !limitToHeartFailure {
+                        ForEach(filteredOtherMedications) { medication in
+                            Button {
+                                viewModel.selectOtherMedication(medication)
+                            } label: {
+                                HStack {
+                                    Text(medication.displayName)
+                                        .font(.hrtBody)
+                                        .foregroundStyle(Color.hrtTextFallback)
+                                    Spacer()
+                                    Text("Other")
+                                        .font(.hrtCaption2)
+                                        .fontWeight(.medium)
+                                        .padding(.horizontal, HRTSpacing.sm)
+                                        .padding(.vertical, HRTSpacing.xs)
+                                        .background(Color.secondary.opacity(0.2))
+                                        .foregroundStyle(Color.secondary)
+                                        .clipShape(Capsule())
+                                }
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
                 } header: {
-                    Text("Medication")
+                    Text("Medications")
                 }
             }
         }
     }
 
-    // MARK: - Other Medication Selection
-
-    /// Other medications filtered by the currently selected tab, sorted alphabetically
-    private var filteredOtherMedications: [OtherMedication] {
-        OtherMedication.allMedications
-            .filter { medication in
-                selectedOtherTab.includedCategories.contains(medication.category)
+    /// Section shown when a heart failure medication is selected
+    private func selectedHeartFailureMedicationSection(_ selectedMed: HeartFailureMedication) -> some View {
+        Group {
+            Section {
+                Text(selectedMed.displayName)
+                    .font(.hrtBody)
+                    .foregroundStyle(Color.hrtTextFallback)
+            } header: {
+                Text("Medication")
             }
+
+            Section {
+                Picker("Dosage", selection: Binding(
+                    get: { viewModel.selectedDosageOption },
+                    set: { viewModel.selectDosage($0) }
+                )) {
+                    Text("Select dosage").tag("")
+                    ForEach(selectedMed.availableDosages, id: \.self) { dosage in
+                        Text("\(dosage) \(selectedMed.unit)").tag(dosage)
+                    }
+                }
+                .pickerStyle(.navigationLink)
+            } header: {
+                Text("Dosage")
+            }
+
+            Section {
+                Picker("Frequency", selection: $viewModel.selectedFrequency) {
+                    ForEach(HeartFailureMedication.frequencyOptions, id: \.self) { frequency in
+                        Text(frequency).tag(frequency)
+                    }
+                }
+                .pickerStyle(.navigationLink)
+                .onChange(of: viewModel.selectedFrequency) { _, newValue in
+                    viewModel.scheduleInput = newValue
+                }
+            } header: {
+                Text("Frequency")
+            }
+        }
+    }
+
+    /// Section shown when an other medication is selected
+    private func selectedOtherMedicationSection(_ selectedMed: OtherMedication) -> some View {
+        Group {
+            Section {
+                Text(selectedMed.displayName)
+                    .font(.hrtBody)
+                    .foregroundStyle(Color.hrtTextFallback)
+            } header: {
+                Text("Medication")
+            }
+
+            Section {
+                Picker("Dosage", selection: Binding(
+                    get: { viewModel.otherMedicationSelectedDosageOption },
+                    set: { viewModel.selectOtherMedicationDosage($0) }
+                )) {
+                    Text("Select dosage").tag("")
+                    ForEach(selectedMed.availableDosages, id: \.self) { dosage in
+                        Text("\(dosage) \(selectedMed.unit)").tag(dosage)
+                    }
+                }
+                .pickerStyle(.navigationLink)
+            } header: {
+                Text("Dosage")
+            }
+
+            Section {
+                Picker("Frequency", selection: $viewModel.otherMedicationSelectedFrequency) {
+                    ForEach(HeartFailureMedication.frequencyOptions, id: \.self) { frequency in
+                        Text(frequency).tag(frequency)
+                    }
+                }
+                .pickerStyle(.navigationLink)
+                .onChange(of: viewModel.otherMedicationSelectedFrequency) { _, newValue in
+                    viewModel.scheduleInput = newValue
+                }
+            } header: {
+                Text("Frequency")
+            }
+        }
+    }
+
+    /// All heart failure medications sorted alphabetically
+    private var filteredMedications: [HeartFailureMedication] {
+        HeartFailureMedication.allMedications
             .sorted { $0.displayName.localizedCaseInsensitiveCompare($1.displayName) == .orderedAscending }
     }
 
-    private var otherMedicationSection: some View {
-        Group {
-            if let selectedMed = viewModel.selectedOtherMedication {
-                // SELECTED STATE: Show selected medication and dosage/frequency options
-                Section {
-                    Text(selectedMed.displayName)
-                        .font(.hrtBody)
-                        .foregroundStyle(Color.hrtTextFallback)
-                } header: {
-                    Text("Medication")
-                }
-
-                // Dosage Picker
-                Section {
-                    Picker("Dosage", selection: Binding(
-                        get: { viewModel.otherMedicationSelectedDosageOption },
-                        set: { viewModel.selectOtherMedicationDosage($0) }
-                    )) {
-                        Text("Select dosage").tag("")
-                        ForEach(selectedMed.availableDosages, id: \.self) { dosage in
-                            Text("\(dosage) \(selectedMed.unit)").tag(dosage)
-                        }
-                    }
-                    .pickerStyle(.navigationLink)
-                } header: {
-                    Text("Dosage")
-                }
-
-                // Frequency Picker
-                Section {
-                    Picker("Frequency", selection: $viewModel.otherMedicationSelectedFrequency) {
-                        ForEach(HeartFailureMedication.frequencyOptions, id: \.self) { frequency in
-                            Text(frequency).tag(frequency)
-                        }
-                    }
-                    .pickerStyle(.navigationLink)
-                    .onChange(of: viewModel.otherMedicationSelectedFrequency) { _, newValue in
-                        viewModel.scheduleInput = newValue
-                    }
-                } header: {
-                    Text("Frequency")
-                }
-            } else {
-                // UNSELECTED STATE: Show category tabs and medication list
-                Section {
-                    otherCategoryTabBar
-                } header: {
-                    Text("Category")
-                }
-
-                Section {
-                    ForEach(filteredOtherMedications) { medication in
-                        Button {
-                            viewModel.selectOtherMedication(medication)
-                        } label: {
-                            HStack {
-                                Text(medication.displayName)
-                                    .font(.hrtBody)
-                                    .foregroundStyle(Color.hrtTextFallback)
-                                Spacer()
-                            }
-                        }
-                        .buttonStyle(.plain)
-                    }
-                } header: {
-                    Text("Medication")
-                }
-            }
-        }
-    }
-
-    // MARK: - Category Tab Bar (Heart Failure)
-
-    private var categoryTabBar: some View {
-        let columns = [
-            GridItem(.adaptive(minimum: 80, maximum: 120), spacing: HRTSpacing.sm)
-        ]
-
-        return LazyVGrid(columns: columns, spacing: HRTSpacing.sm) {
-            ForEach(MedicationTab.allCases, id: \.self) { tab in
-                MedicationTabPill(
-                    title: tab.rawValue,
-                    isSelected: selectedTab == tab
-                ) {
-                    withAnimation(.easeInOut(duration: 0.2)) {
-                        selectedTab = tab
-                        // Clear selection when changing tabs
-                        if viewModel.selectedPresetMedication != nil {
-                            let currentCategory = viewModel.selectedPresetMedication?.category
-                            if let category = currentCategory,
-                               !tab.includedCategories.contains(category) {
-                                viewModel.selectPresetMedication(nil)
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        .padding(.vertical, HRTSpacing.xs)
-    }
-
-    // MARK: - Category Tab Bar (Other Medications)
-
-    private var otherCategoryTabBar: some View {
-        let columns = [
-            GridItem(.adaptive(minimum: 80, maximum: 120), spacing: HRTSpacing.sm)
-        ]
-
-        return LazyVGrid(columns: columns, spacing: HRTSpacing.sm) {
-            ForEach(OtherMedicationTab.allCases, id: \.self) { tab in
-                MedicationTabPill(
-                    title: tab.rawValue,
-                    isSelected: selectedOtherTab == tab
-                ) {
-                    withAnimation(.easeInOut(duration: 0.2)) {
-                        selectedOtherTab = tab
-                        // Clear selection when changing tabs
-                        if viewModel.selectedOtherMedication != nil {
-                            let currentCategory = viewModel.selectedOtherMedication?.category
-                            if let category = currentCategory,
-                               !tab.includedCategories.contains(category) {
-                                viewModel.selectOtherMedication(nil)
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        .padding(.vertical, HRTSpacing.xs)
-    }
-
-    // MARK: - Tab Pill Component
-
-    private struct MedicationTabPill: View {
-        let title: String
-        let isSelected: Bool
-        let action: () -> Void
-
-        var body: some View {
-            Button(action: action) {
-                Text(title)
-                    .font(.hrtCallout)
-                    .fontWeight(isSelected ? .semibold : .regular)
-                    .multilineTextAlignment(.center)
-                    .frame(maxWidth: .infinity)
-                    .padding(.horizontal, HRTSpacing.md)
-                    .padding(.vertical, HRTSpacing.sm)
-                    .background(isSelected ? Color.hrtPinkFallback : Color.hrtPinkLightFallback)
-                    .foregroundStyle(isSelected ? .white : Color.hrtTextFallback)
-                    .clipShape(Capsule())
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel("\(title) medications")
-            .accessibilityAddTraits(isSelected ? .isSelected : [])
-        }
+    /// All other medications sorted alphabetically
+    private var filteredOtherMedications: [OtherMedication] {
+        OtherMedication.allMedications
+            .sorted { $0.displayName.localizedCaseInsensitiveCompare($1.displayName) == .orderedAscending }
     }
 
     // MARK: - Custom Medication Entry

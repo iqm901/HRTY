@@ -64,6 +64,10 @@ final class TodayViewModel {
     // MARK: - Loading State
     var isLoading: Bool = false
 
+    // MARK: - Streak State
+    var currentStreak: Int = 0
+    var personalBestStreak: Int = 0
+
     // MARK: - Data State
     var todayEntry: DailyEntry?
     var yesterdayEntry: DailyEntry?
@@ -235,6 +239,74 @@ final class TodayViewModel {
 
         let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: today) ?? today
         yesterdayEntry = DailyEntry.fetchForDate(yesterday, in: context)
+
+        // Calculate streak
+        calculateStreak(context: context)
+    }
+
+    // MARK: - Streak Calculation
+
+    private let personalBestStreakKey = "personalBestStreak"
+
+    /// Calculate the current check-in streak (consecutive days with vitals or symptoms logged)
+    func calculateStreak(context: ModelContext) {
+        let calendar = Calendar.current
+        var streak = 0
+        var checkDate = Date()
+
+        // Check if today has a complete check-in
+        if let entry = todayEntry, hasCompleteCheckIn(entry) {
+            streak = 1
+            checkDate = calendar.date(byAdding: .day, value: -1, to: checkDate) ?? checkDate
+        }
+
+        // Count consecutive previous days with complete check-ins
+        while true {
+            if let entry = DailyEntry.fetchForDate(checkDate, in: context),
+               hasCompleteCheckIn(entry) {
+                streak += 1
+                checkDate = calendar.date(byAdding: .day, value: -1, to: checkDate) ?? checkDate
+            } else {
+                break
+            }
+        }
+
+        currentStreak = streak
+
+        // Load and update personal best
+        personalBestStreak = UserDefaults.standard.integer(forKey: personalBestStreakKey)
+        if currentStreak > personalBestStreak {
+            personalBestStreak = currentStreak
+            UserDefaults.standard.set(personalBestStreak, forKey: personalBestStreakKey)
+        }
+    }
+
+    /// Check if a daily entry has a complete check-in (any vital OR symptoms logged)
+    private func hasCompleteCheckIn(_ entry: DailyEntry) -> Bool {
+        // Check if any vital sign was recorded
+        let hasVitals = entry.weight != nil ||
+                        entry.vitalSigns?.hasBloodPressure == true ||
+                        entry.vitalSigns?.hasHeartRate == true ||
+                        entry.vitalSigns?.hasOxygenSaturation == true
+
+        // Check if symptoms were logged (any symptom above default severity of 1)
+        let hasSymptoms = entry.symptoms?.contains { $0.severity > 1 } ?? false
+
+        return hasVitals || hasSymptoms
+    }
+
+    /// Streak message for display
+    var streakMessage: String {
+        if currentStreak == 0 {
+            return "Every check-in counts. Start your streak today!"
+        } else if currentStreak >= personalBestStreak && personalBestStreak > 1 {
+            return "\(currentStreak)-day streak! You're at your personal best!"
+        } else if personalBestStreak > currentStreak {
+            let daysToGo = personalBestStreak - currentStreak
+            return "\(currentStreak)-day streak! You're \(daysToGo) day\(daysToGo == 1 ? "" : "s") away from your personal best."
+        } else {
+            return "\(currentStreak)-day streak! Keep it going!"
+        }
     }
 
     // MARK: - Weight Unit Conversion

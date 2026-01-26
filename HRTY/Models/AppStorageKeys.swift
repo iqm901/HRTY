@@ -31,4 +31,9 @@ enum AppStorageKeys {
 
     /// Whether the user has dismissed the vitals educational message
     static let hasSeenVitalsEducationalMessage = "hasSeenVitalsEducationalMessage"
+
+    // MARK: - Streak
+
+    /// Whether to show the streak card on the Today screen
+    static let showStreakCard = "showStreakCard"
 }

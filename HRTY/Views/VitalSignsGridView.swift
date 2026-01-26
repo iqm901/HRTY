@@ -8,7 +8,7 @@ struct VitalSignsGridView: View {
 
     @State private var expandedTile: VitalSignType?
     @AppStorage(AppStorageKeys.weightUnit) private var weightUnit: String = "lbs"
-    @AppStorage(AppStorageKeys.hasSeenVitalsEducationalMessage) private var hasSeenVitalsEducationalMessage = false
+    @AppStorage(AppStorageKeys.showStreakCard) private var showStreakCard: Bool = true
 
     private let gridColumns = [
         GridItem(.flexible(), spacing: HRTSpacing.sm),
@@ -17,8 +17,8 @@ struct VitalSignsGridView: View {
 
     var body: some View {
         VStack(spacing: HRTSpacing.sm) {
-            if !hasSeenVitalsEducationalMessage {
-                educationalMessageCard
+            if showStreakCard {
+                streakMessageCard
             }
 
             if let expanded = expandedTile {
@@ -33,11 +33,18 @@ struct VitalSignsGridView: View {
         .animation(.spring(response: 0.35, dampingFraction: 0.8), value: expandedTile)
     }
 
-    // MARK: - Educational Message
+    // MARK: - Streak Message Card
 
-    private var educationalMessageCard: some View {
+    private var streakMessageCard: some View {
         HStack(alignment: .center, spacing: HRTSpacing.sm) {
-            Text("Checking your vitals is a small change that can make a big difference.")
+            // Plus icon for streak
+            if viewModel.currentStreak > 0 {
+                Image(systemName: "plus.circle.fill")
+                    .font(.system(size: 22, weight: .bold))
+                    .foregroundStyle(Color.hrtPinkFallback)
+            }
+
+            Text(viewModel.streakMessage)
                 .font(.hrtSubheadline)
                 .foregroundStyle(Color.hrtTextSecondaryFallback)
                 .fixedSize(horizontal: false, vertical: true)
@@ -46,7 +53,7 @@ struct VitalSignsGridView: View {
 
             Button {
                 withAnimation {
-                    hasSeenVitalsEducationalMessage = true
+                    showStreakCard = false
                 }
             } label: {
                 Image(systemName: "xmark")
@@ -56,7 +63,7 @@ struct VitalSignsGridView: View {
                     .background(Color.hrtTextTertiaryFallback.opacity(0.15))
                     .clipShape(Circle())
             }
-            .accessibilityLabel("Dismiss message")
+            .accessibilityLabel("Dismiss streak message")
         }
         .padding(HRTSpacing.md)
         .background(Color.hrtCardFallback)
