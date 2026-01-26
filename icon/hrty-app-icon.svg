@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- HRTY App Icon - E7h "Soft & Light" -->
+  <!-- Heart failure management app -->
+  <!-- Design: Organic, flowing open loop suggesting connection, acceptance, grace -->
+  
+  <!-- iOS-standard squircle background -->
+  <rect x="0" y="0" width="512" height="512" rx="115" ry="115" fill="#f26680"/>
+  
+  <!-- Abstract open heart loop - soft landing, lighter stroke -->
+  <path d="
+    M 256 378
+    C 178 368, 120 310, 120 238
+    C 120 168, 172 120, 240 120
+    C 282 120, 314 145, 326 180
+    C 338 145, 372 125, 410 165
+    C 442 200, 432 268, 390 310
+    C 348 352, 298 370, 256 378
+  " fill="none" stroke="#ffffff" stroke-width="36" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
