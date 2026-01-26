@@ -18,6 +18,7 @@ struct VitalSignsGridView: View {
         VStack(spacing: HRTSpacing.sm) {
             if let expanded = expandedTile {
                 expandedContent(for: expanded)
+                    .transition(scaleTransition(for: expanded))
 
                 collapsedTilesRow(excluding: expanded)
             } else {
@@ -25,6 +26,13 @@ struct VitalSignsGridView: View {
             }
         }
         .animation(.spring(response: 0.35, dampingFraction: 0.8), value: expandedTile)
+    }
+
+    // MARK: - Custom Transition
+
+    private func scaleTransition(for type: VitalSignType) -> AnyTransition {
+        .scale(scale: 0.01, anchor: type.gridAnchor)
+        .combined(with: .opacity)
     }
 
     // MARK: - Grid Content (Normal State)
@@ -39,7 +47,7 @@ struct VitalSignsGridView: View {
                     isExpanded: false,
                     isCollapsed: false,
                     onTap: {
-                        withAnimation {
+                        withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
                             expandedTile = type
                         }
                     }
@@ -73,6 +81,7 @@ struct VitalSignsGridView: View {
                 },
                 onSave: {
                     viewModel.saveWeight(context: modelContext)
+                    collapseAfterSave()
                 },
                 onClearHealthKit: {
                     viewModel.clearHealthKitWeight()
@@ -100,6 +109,7 @@ struct VitalSignsGridView: View {
                 },
                 onSave: {
                     viewModel.saveBloodPressure(context: modelContext)
+                    collapseAfterSave()
                 },
                 onDone: {
                     withAnimation {
@@ -123,6 +133,7 @@ struct VitalSignsGridView: View {
                 },
                 onSave: {
                     viewModel.saveHeartRate(context: modelContext)
+                    collapseAfterSave()
                 },
                 onDone: {
                     withAnimation {
@@ -146,6 +157,7 @@ struct VitalSignsGridView: View {
                 },
                 onSave: {
                     viewModel.saveOxygenSaturation(context: modelContext)
+                    collapseAfterSave()
                 },
                 onDone: {
                     withAnimation {
@@ -178,6 +190,13 @@ struct VitalSignsGridView: View {
     }
 
     // MARK: - Helper Methods
+
+    /// Collapses the expanded tile immediately with smooth shrink-to-corner animation
+    private func collapseAfterSave() {
+        withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
+            expandedTile = nil
+        }
+    }
 
     private func isCompleted(for type: VitalSignType) -> Bool {
         switch type {

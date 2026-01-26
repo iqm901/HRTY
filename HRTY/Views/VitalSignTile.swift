@@ -21,9 +21,9 @@ enum VitalSignType: String, CaseIterable, Identifiable {
     var label: String {
         switch self {
         case .weight: return "Weight"
-        case .bloodPressure: return "BP"
-        case .heartRate: return "HR"
-        case .oxygenSaturation: return "SpO2"
+        case .bloodPressure: return "Blood Pressure"
+        case .heartRate: return "Heart Rate"
+        case .oxygenSaturation: return "Oxygen"
         }
     }
 
@@ -42,6 +42,16 @@ enum VitalSignType: String, CaseIterable, Identifiable {
         case .bloodPressure: return "mmHg"
         case .heartRate: return "bpm"
         case .oxygenSaturation: return "%"
+        }
+    }
+
+    /// Anchor point for matched geometry animation based on grid position
+    var gridAnchor: UnitPoint {
+        switch self {
+        case .weight: return .topLeading           // Top-left: expands down and right
+        case .bloodPressure: return .topTrailing   // Top-right: expands down and left
+        case .heartRate: return .bottomLeading     // Bottom-left: expands up and right
+        case .oxygenSaturation: return .bottomTrailing // Bottom-right: expands up and left
         }
     }
 
