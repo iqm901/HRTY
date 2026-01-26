@@ -44,6 +44,7 @@ struct VitalSparklineView: View {
     let color: Color
     let dataPoints: [Double]
     let onTap: (() -> Void)?
+    let valueStatus: VitalSignStatus
 
     init(
         title: String,
@@ -51,6 +52,7 @@ struct VitalSparklineView: View {
         unit: String,
         color: Color,
         dataPoints: [Double],
+        valueStatus: VitalSignStatus = .normal,
         onTap: (() -> Void)? = nil
     ) {
         self.title = title
@@ -58,6 +60,7 @@ struct VitalSparklineView: View {
         self.unit = unit
         self.color = color
         self.dataPoints = dataPoints
+        self.valueStatus = valueStatus
         self.onTap = onTap
     }
 
@@ -73,12 +76,14 @@ struct VitalSparklineView: View {
                     HStack(alignment: .firstTextBaseline, spacing: 4) {
                         Text(value ?? "--")
                             .font(.hrtTitle3)
-                            .fontWeight(.medium)
-                            .foregroundStyle(Color.hrtTextFallback)
+                            .fontWeight(valueStatus.fontWeight)
+                            .foregroundStyle(valueStatus.color)
 
-                        Text(unit)
-                            .font(.hrtCaption)
-                            .foregroundStyle(Color.hrtTextSecondaryFallback)
+                        if !unit.isEmpty {
+                            Text(unit)
+                                .font(.hrtCaption)
+                                .foregroundStyle(Color.hrtTextSecondaryFallback)
+                        }
                     }
                 }
                 .frame(minWidth: 80, alignment: .leading)

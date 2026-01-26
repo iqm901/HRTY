@@ -5,6 +5,14 @@ struct VitalsOverviewView: View {
     let viewModel: TrendsViewModel
     @Binding var selectedVital: VitalType
 
+    /// Computed weight status based on weight gain (positive change)
+    private var weightStatus: VitalSignStatus {
+        guard let change = viewModel.weightChange, change > 0 else {
+            return .normal
+        }
+        return VitalSignStatus.forWeightGain(change)
+    }
+
     var body: some View {
         VStack(spacing: HRTSpacing.sm) {
             // Weight sparkline
@@ -14,6 +22,7 @@ struct VitalsOverviewView: View {
                 unit: "lbs",
                 color: VitalType.weight.color,
                 dataPoints: viewModel.weightEntries.map { $0.weight },
+                valueStatus: weightStatus,
                 onTap: { selectedVital = .weight }
             )
 
@@ -34,16 +43,18 @@ struct VitalsOverviewView: View {
                 unit: "bpm",
                 color: VitalType.heartRate.color,
                 dataPoints: viewModel.heartRateEntries.map { Double($0.heartRate) },
+                valueStatus: viewModel.currentHeartRate.map { VitalSignStatus.forHeartRate($0) } ?? .normal,
                 onTap: { selectedVital = .heartRate }
             )
 
             // Oxygen Saturation sparkline
             VitalSparklineView(
-                title: "Oxygen",
-                value: viewModel.formattedCurrentO2,
+                title: "Oxygen Saturation",
+                value: viewModel.currentOxygenSaturation.map { "\($0)" },
                 unit: "%",
                 color: VitalType.oxygenSaturation.color,
                 dataPoints: viewModel.oxygenSaturationEntries.map { Double($0.percentage) },
+                valueStatus: viewModel.currentOxygenSaturation.map { VitalSignStatus.forOxygenSaturation($0) } ?? .normal,
                 onTap: { selectedVital = .oxygenSaturation }
             )
         }
