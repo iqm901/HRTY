@@ -423,6 +423,7 @@ final class ExportDataTests: XCTestCase {
         let symptomEntries = [SymptomDataPoint(date: Date(), symptomType: .chestPain, severity: 2, hasAlert: false)]
         let diureticDoses: [DiureticDoseData] = []
         let alertEvents: [AlertEventData] = []
+        let medicationChangeInsights: [MedicationChangeInsight] = []
 
         // When: creating ExportData
         let exportData = ExportData(
@@ -431,7 +432,8 @@ final class ExportDataTests: XCTestCase {
             weightEntries: weightEntries,
             symptomEntries: symptomEntries,
             diureticDoses: diureticDoses,
-            alertEvents: alertEvents
+            alertEvents: alertEvents,
+            medicationChangeInsights: medicationChangeInsights
         )
 
         // Then: values should be set correctly
@@ -442,6 +444,7 @@ final class ExportDataTests: XCTestCase {
         XCTAssertEqual(exportData.symptomEntries.count, 1)
         XCTAssertTrue(exportData.diureticDoses.isEmpty)
         XCTAssertTrue(exportData.alertEvents.isEmpty)
+        XCTAssertTrue(exportData.medicationChangeInsights.isEmpty)
     }
 
     func testExportDataWithNilPatientIdentifier() {
@@ -456,7 +459,8 @@ final class ExportDataTests: XCTestCase {
             weightEntries: [],
             symptomEntries: [],
             diureticDoses: [],
-            alertEvents: []
+            alertEvents: [],
+            medicationChangeInsights: []
         )
 
         // Then: patient identifier should be nil
@@ -475,7 +479,8 @@ final class ExportDataTests: XCTestCase {
             weightEntries: [],
             symptomEntries: [],
             diureticDoses: [],
-            alertEvents: []
+            alertEvents: [],
+            medicationChangeInsights: []
         )
 
         // Then: all collections should be empty
@@ -483,6 +488,7 @@ final class ExportDataTests: XCTestCase {
         XCTAssertTrue(exportData.symptomEntries.isEmpty)
         XCTAssertTrue(exportData.diureticDoses.isEmpty)
         XCTAssertTrue(exportData.alertEvents.isEmpty)
+        XCTAssertTrue(exportData.medicationChangeInsights.isEmpty)
     }
 }
 

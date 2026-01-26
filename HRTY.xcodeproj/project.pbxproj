@@ -120,6 +120,12 @@
 		027000010000000100000003 /* VitalsOverviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027000020000000100000003 /* VitalsOverviewView.swift */; };
 		027000010000000100000004 /* BloodPressureTrendChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027000020000000100000004 /* BloodPressureTrendChart.swift */; };
 		027000010000000100000005 /* OxygenSaturationTrendChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027000020000000100000005 /* OxygenSaturationTrendChart.swift */; };
+		028000010000000100000001 /* MedicationChangeInsight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028000020000000100000001 /* MedicationChangeInsight.swift */; };
+		028000010000000100000002 /* CardiovascularMedication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028000020000000100000002 /* CardiovascularMedication.swift */; };
+		028000010000000100000003 /* MedicationChangeAnalysisService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028000020000000100000003 /* MedicationChangeAnalysisService.swift */; };
+		B100000120000001000000020000000C /* CardiovascularMedicationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B100000220000001000000020000000C /* CardiovascularMedicationTests.swift */; };
+		B100000120000001000000020000000D /* MedicationChangeAnalysisServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B100000220000001000000020000000D /* MedicationChangeAnalysisServiceTests.swift */; };
+
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -242,6 +248,12 @@
 		027000020000000100000003 /* VitalsOverviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VitalsOverviewView.swift; sourceTree = "<group>"; };
 		027000020000000100000004 /* BloodPressureTrendChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BloodPressureTrendChart.swift; sourceTree = "<group>"; };
 		027000020000000100000005 /* OxygenSaturationTrendChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OxygenSaturationTrendChart.swift; sourceTree = "<group>"; };
+		028000020000000100000001 /* MedicationChangeInsight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicationChangeInsight.swift; sourceTree = "<group>"; };
+		028000020000000100000002 /* CardiovascularMedication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardiovascularMedication.swift; sourceTree = "<group>"; };
+		028000020000000100000003 /* MedicationChangeAnalysisService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicationChangeAnalysisService.swift; sourceTree = "<group>"; };
+		B100000220000001000000020000000C /* CardiovascularMedicationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardiovascularMedicationTests.swift; sourceTree = "<group>"; };
+		B100000220000001000000020000000D /* MedicationChangeAnalysisServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicationChangeAnalysisServiceTests.swift; sourceTree = "<group>"; };
+
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -406,6 +418,8 @@
 				A100000220000001000000010000002A /* TrendDataPoints.swift */,
 				A100000220000001000000010000002C /* AppStorageKeys.swift */,
 				017000020000000100000002 /* MedicationPhoto.swift */,
+				028000020000000100000001 /* MedicationChangeInsight.swift */,
+				028000020000000100000002 /* CardiovascularMedication.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -435,6 +449,7 @@
 				A1000002200000010000000100000029 /* PDFGenerator.swift */,
 				A100000220000001000000010000002D /* NotificationService.swift */,
 				017000020000000100000001 /* PhotoService.swift */,
+				028000020000000100000003 /* MedicationChangeAnalysisService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -453,6 +468,8 @@
 				B1000002200000010000000200000009 /* NotificationServiceTests.swift */,
 				B100000220000001000000020000000A /* MedicationPhotoTests.swift */,
 				B100000220000001000000020000000B /* VitalSignsAlertServiceTests.swift */,
+				B100000220000001000000020000000C /* CardiovascularMedicationTests.swift */,
+				B100000220000001000000020000000D /* MedicationChangeAnalysisServiceTests.swift */,
 			);
 			path = HRTYTests;
 			sourceTree = "<group>";
@@ -651,6 +668,9 @@
 				019000010000000100000007 /* HRTInput.swift in Sources */,
 				019000010000000100000008 /* HRTSeveritySelector.swift in Sources */,
 				019000010000000100000009 /* HRTFeedback.swift in Sources */,
+				028000010000000100000001 /* MedicationChangeInsight.swift in Sources */,
+				028000010000000100000002 /* CardiovascularMedication.swift in Sources */,
+				028000010000000100000003 /* MedicationChangeAnalysisService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -669,6 +689,8 @@
 				B1000001200000010000000200000009 /* NotificationServiceTests.swift in Sources */,
 				B100000120000001000000020000000A /* MedicationPhotoTests.swift in Sources */,
 				B100000120000001000000020000000B /* VitalSignsAlertServiceTests.swift in Sources */,
+				B100000120000001000000020000000C /* CardiovascularMedicationTests.swift in Sources */,
+				B100000120000001000000020000000D /* MedicationChangeAnalysisServiceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -68,6 +68,16 @@ final class PDFGenerator {
 
             currentY = drawSymptomSection(at: currentY, data: data, in: context.cgContext)
 
+            // Medication changes section - may need new page
+            if currentY > pageHeight - 200 {
+                context.beginPage()
+                currentY = margin
+            } else {
+                currentY += 20
+            }
+
+            currentY = drawMedicationChangesSection(at: currentY, data: data, in: context.cgContext)
+
             // Diuretic section - may need new page
             if currentY > pageHeight - 200 {
                 context.beginPage()
@@ -386,6 +396,142 @@ final class PDFGenerator {
             ]
             noteText.draw(at: CGPoint(x: margin, y: currentY), withAttributes: noteAttributes)
             currentY += 16
+        }
+
+        return currentY
+    }
+
+    private func drawMedicationChangesSection(at y: CGFloat, data: ExportData, in context: CGContext) -> CGFloat {
+        var currentY = y
+
+        // Only show section if there are medication changes with observations
+        let insightsWithObservations = data.medicationChangeInsights.filter { $0.hasObservations }
+
+        guard !insightsWithObservations.isEmpty else {
+            return currentY
+        }
+
+        currentY = drawSectionHeading("Medication Changes & Clinical Context", at: currentY)
+
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .medium
+        dateFormatter.timeStyle = .none
+
+        for (index, insight) in insightsWithObservations.enumerated() {
+            // Check if we need a new page
+            if currentY > pageHeight - 200 {
+                return currentY // Let the caller handle page break
+            }
+
+            // Medication name and category
+            var titleText = insight.medicationName
+            if let category = insight.category {
+                titleText += " (\(category.rawValue))"
+            }
+
+            let titleAttributes: [NSAttributedString.Key: Any] = [
+                .font: subheadingFont,
+                .foregroundColor: accentColor
+            ]
+            titleText.draw(at: CGPoint(x: margin, y: currentY), withAttributes: titleAttributes)
+            currentY += 18
+
+            // Change description
+            let changeText = "Changed: \(dateFormatter.string(from: insight.changeDate)) — \(insight.changeDescription)"
+            let changeAttributes: [NSAttributedString.Key: Any] = [
+                .font: bodyFont,
+                .foregroundColor: primaryColor
+            ]
+            changeText.draw(at: CGPoint(x: margin + 10, y: currentY), withAttributes: changeAttributes)
+            currentY += 18
+
+            // Observations header
+            let obsHeaderText = "Observations in the \(MedicationChangeAnalysisService.lookbackDays) days before this change:"
+            let obsHeaderAttributes: [NSAttributedString.Key: Any] = [
+                .font: captionFont,
+                .foregroundColor: secondaryColor
+            ]
+            obsHeaderText.draw(at: CGPoint(x: margin + 10, y: currentY), withAttributes: obsHeaderAttributes)
+            currentY += 14
+
+            // Individual observations
+            for observation in insight.observations {
+                let bulletColor: UIColor
+                switch observation.severity {
+                case .informational:
+                    bulletColor = secondaryColor
+                case .notable:
+                    bulletColor = alertColor
+                case .significant:
+                    bulletColor = UIColor.systemRed
+                }
+
+                let bulletText = "• \(observation.description)"
+                let bulletAttributes: [NSAttributedString.Key: Any] = [
+                    .font: bodyFont,
+                    .foregroundColor: bulletColor
+                ]
+
+                // Word wrap observation text
+                let paragraphStyle = NSMutableParagraphStyle()
+                paragraphStyle.lineBreakMode = .byWordWrapping
+                paragraphStyle.headIndent = margin + 20
+
+                let attributedBullet = NSAttributedString(string: bulletText, attributes: [
+                    .font: bodyFont,
+                    .foregroundColor: bulletColor,
+                    .paragraphStyle: paragraphStyle
+                ])
+
+                let bulletRect = attributedBullet.boundingRect(
+                    with: CGSize(width: contentWidth - 20, height: .greatestFiniteMagnitude),
+                    options: [.usesLineFragmentOrigin],
+                    context: nil
+                )
+
+                attributedBullet.draw(in: CGRect(x: margin + 15, y: currentY, width: contentWidth - 20, height: bulletRect.height + 2))
+                currentY += bulletRect.height + 4
+
+                // Check if we need a new page mid-observations
+                if currentY > pageHeight - 100 {
+                    break
+                }
+            }
+
+            // Context message
+            if let contextMessage = insight.contextMessage {
+                currentY += 4
+
+                let paragraphStyle = NSMutableParagraphStyle()
+                paragraphStyle.lineBreakMode = .byWordWrapping
+
+                let contextAttributes: [NSAttributedString.Key: Any] = [
+                    .font: UIFont.italicSystemFont(ofSize: 11),
+                    .foregroundColor: secondaryColor,
+                    .paragraphStyle: paragraphStyle
+                ]
+
+                let attributedContext = NSAttributedString(string: contextMessage, attributes: contextAttributes)
+                let contextRect = attributedContext.boundingRect(
+                    with: CGSize(width: contentWidth - 20, height: .greatestFiniteMagnitude),
+                    options: [.usesLineFragmentOrigin],
+                    context: nil
+                )
+
+                attributedContext.draw(in: CGRect(x: margin + 10, y: currentY, width: contentWidth - 20, height: contextRect.height + 2))
+                currentY += contextRect.height + 8
+            }
+
+            // Add separator between medications (except for last one)
+            if index < insightsWithObservations.count - 1 {
+                currentY += 8
+                context.setStrokeColor(UIColor.separator.cgColor)
+                context.setLineWidth(0.5)
+                context.move(to: CGPoint(x: margin + 20, y: currentY))
+                context.addLine(to: CGPoint(x: pageWidth - margin - 20, y: currentY))
+                context.strokePath()
+                currentY += 12
+            }
         }
 
         return currentY

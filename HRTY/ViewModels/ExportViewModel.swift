@@ -18,6 +18,7 @@ struct ExportData {
     let symptomEntries: [SymptomDataPoint]
     let diureticDoses: [DiureticDoseData]
     let alertEvents: [AlertEventData]
+    let medicationChangeInsights: [MedicationChangeInsight]
 }
 
 /// Simplified diuretic dose data for export
@@ -195,13 +196,22 @@ final class ExportViewModel {
         }
         alertEvents.sort { $0.date < $1.date }
 
+        // Medication change insights
+        let analysisService = MedicationChangeAnalysisService()
+        let medicationChangeInsights = analysisService.analyzeChanges(
+            from: startDate,
+            to: endDate,
+            context: context
+        )
+
         return ExportData(
             dateRange: (startDate, endDate),
             patientIdentifier: patientIdentifierForExport,
             weightEntries: weightEntries,
             symptomEntries: symptomEntries,
             diureticDoses: diureticDoses,
-            alertEvents: alertEvents
+            alertEvents: alertEvents,
+            medicationChangeInsights: medicationChangeInsights
         )
     }
 }
