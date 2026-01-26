@@ -237,7 +237,10 @@ final class TodayViewModel {
         yesterdayEntry = DailyEntry.fetchForDate(yesterday, in: context)
     }
 
-    func validateWeight() -> Bool {
+    // MARK: - Weight Unit Conversion
+    private let kgToLbs = 2.20462
+
+    func validateWeight(unit: String = "lbs") -> Bool {
         validationError = nil
 
         guard !weightInput.isEmpty else {
@@ -250,22 +253,42 @@ final class TodayViewModel {
             return false
         }
 
-        guard weight >= AlertConstants.minimumWeight else {
-            validationError = "Weight must be at least \(Int(AlertConstants.minimumWeight)) lbs"
+        // Convert thresholds to the user's unit for validation messages
+        let minWeight: Double
+        let maxWeight: Double
+        let unitLabel: String
+
+        if unit == "kg" {
+            minWeight = AlertConstants.minimumWeight / kgToLbs
+            maxWeight = AlertConstants.maximumWeight / kgToLbs
+            unitLabel = "kg"
+        } else {
+            minWeight = AlertConstants.minimumWeight
+            maxWeight = AlertConstants.maximumWeight
+            unitLabel = "lbs"
+        }
+
+        guard weight >= minWeight else {
+            validationError = "Weight must be at least \(Int(minWeight)) \(unitLabel)"
             return false
         }
 
-        guard weight <= AlertConstants.maximumWeight else {
-            validationError = "Weight must be less than \(Int(AlertConstants.maximumWeight)) lbs"
+        guard weight <= maxWeight else {
+            validationError = "Weight must be less than \(Int(maxWeight)) \(unitLabel)"
             return false
         }
 
         return true
     }
 
-    func saveWeight(context: ModelContext) {
-        guard validateWeight() else { return }
-        guard let weight = parsedWeight else { return }
+    func saveWeight(context: ModelContext, unit: String = "lbs") {
+        guard validateWeight(unit: unit) else { return }
+        guard var weight = parsedWeight else { return }
+
+        // Convert kg to lbs for storage (app stores all weights in lbs)
+        if unit == "kg" {
+            weight = weight * kgToLbs
+        }
 
         if todayEntry == nil {
             todayEntry = DailyEntry.getOrCreate(for: Date(), in: context)

@@ -55,7 +55,8 @@ struct VitalSignsGridView: View {
                     heartRateValue: heartRateValue,
                     systolicBP: systolicBP,
                     diastolicBP: diastolicBP,
-                    oxygenSaturationValue: oxygenSaturationValue
+                    oxygenSaturationValue: oxygenSaturationValue,
+                    displayUnit: displayUnit(for: type)
                 )
             }
         }
@@ -85,7 +86,7 @@ struct VitalSignsGridView: View {
                     }
                 },
                 onSave: {
-                    viewModel.saveWeight(context: modelContext)
+                    viewModel.saveWeight(context: modelContext, unit: weightUnit)
                     collapseAfterSave()
                 },
                 onClearHealthKit: {
@@ -193,7 +194,8 @@ struct VitalSignsGridView: View {
                     heartRateValue: heartRateValue,
                     systolicBP: systolicBP,
                     diastolicBP: diastolicBP,
-                    oxygenSaturationValue: oxygenSaturationValue
+                    oxygenSaturationValue: oxygenSaturationValue,
+                    displayUnit: displayUnit(for: type)
                 )
             }
         }
@@ -221,16 +223,40 @@ struct VitalSignsGridView: View {
         }
     }
 
+    private let lbsToKg = 0.453592
+
     private func lastValue(for type: VitalSignType) -> String? {
         switch type {
         case .weight:
-            return viewModel.todayWeightValue
+            return formattedWeight
         case .bloodPressure:
             return viewModel.todayBPValue
         case .heartRate:
             return viewModel.todayHRValue
         case .oxygenSaturation:
             return viewModel.todaySpO2Value
+        }
+    }
+
+    /// Weight formatted in the user's preferred unit
+    private var formattedWeight: String? {
+        guard let weightInLbs = viewModel.todayEntry?.weight else { return nil }
+        if weightUnit == "kg" {
+            let weightInKg = weightInLbs * lbsToKg
+            return String(format: "%.1f", weightInKg)
+        } else {
+            return String(format: "%.1f", weightInLbs)
+        }
+    }
+
+    /// Returns the display unit for a vital sign type
+    /// Weight uses user's preference; others use their default unit
+    private func displayUnit(for type: VitalSignType) -> String? {
+        switch type {
+        case .weight:
+            return weightUnit
+        default:
+            return nil // Use default unit from VitalSignType
         }
     }
 

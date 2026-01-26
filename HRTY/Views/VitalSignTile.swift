@@ -180,6 +180,14 @@ struct VitalSignTile: View {
     var diastolicBP: Int?
     var oxygenSaturationValue: Int?
 
+    // Optional display unit override (e.g., "kg" instead of default "lbs" for weight)
+    var displayUnit: String?
+
+    /// The unit to display (uses override if provided, otherwise type's default)
+    private var effectiveUnit: String {
+        displayUnit ?? type.unit
+    }
+
     /// Computed vital sign status based on raw values
     private var vitalSignStatus: VitalSignStatus {
         switch type {
@@ -239,7 +247,7 @@ struct VitalSignTile: View {
                     Text(value)
                         .font(.system(size: 24, weight: vitalSignStatus.fontWeight, design: .rounded))
                         .foregroundStyle(vitalSignStatus.color)
-                    Text(type.unit)
+                    Text(effectiveUnit)
                         .font(.hrtCaption)
                         .foregroundStyle(Color.hrtTextSecondaryFallback)
                     Spacer()
@@ -283,7 +291,7 @@ struct VitalSignTile: View {
 
     private var accessibilityLabel: String {
         if isCompleted, let value = lastValue {
-            return "\(type.fullLabel): \(value) \(type.unit), completed"
+            return "\(type.fullLabel): \(value) \(effectiveUnit), completed"
         } else {
             return "\(type.fullLabel): not entered"
         }
