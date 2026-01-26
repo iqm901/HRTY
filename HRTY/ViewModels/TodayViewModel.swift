@@ -156,6 +156,51 @@ final class TodayViewModel {
         symptomSeverities.values.contains { $0 > 1 }
     }
 
+    // MARK: - Vital Signs Status (for Grid Tiles)
+
+    /// Returns true if weight has been entered today
+    var hasEnteredWeightToday: Bool {
+        todayEntry?.weight != nil
+    }
+
+    /// Returns true if blood pressure has been entered today
+    var hasEnteredBPToday: Bool {
+        todayEntry?.vitalSigns?.hasBloodPressure ?? false
+    }
+
+    /// Returns true if heart rate has been entered today
+    var hasEnteredHRToday: Bool {
+        todayEntry?.vitalSigns?.hasHeartRate ?? false
+    }
+
+    /// Returns true if oxygen saturation has been entered today
+    var hasEnteredSpO2Today: Bool {
+        todayEntry?.vitalSigns?.hasOxygenSaturation ?? false
+    }
+
+    /// Today's recorded weight value for display
+    var todayWeightValue: String? {
+        guard let weight = todayEntry?.weight else { return nil }
+        return String(format: "%.1f", weight)
+    }
+
+    /// Today's recorded blood pressure for display
+    var todayBPValue: String? {
+        todayEntry?.vitalSigns?.formattedBloodPressure
+    }
+
+    /// Today's recorded heart rate for display
+    var todayHRValue: String? {
+        guard let hr = todayEntry?.vitalSigns?.heartRate else { return nil }
+        return "\(hr)"
+    }
+
+    /// Today's recorded oxygen saturation for display
+    var todaySpO2Value: String? {
+        guard let spo2 = todayEntry?.vitalSigns?.oxygenSaturation else { return nil }
+        return "\(spo2)"
+    }
+
     // MARK: - Methods
 
     /// Load all data asynchronously to prevent UI freezing

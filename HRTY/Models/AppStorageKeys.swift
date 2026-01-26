@@ -21,4 +21,9 @@ enum AppStorageKeys {
 
     /// Optional patient name/ID for PDF exports
     static let patientIdentifier = "patientIdentifier"
+
+    // MARK: - Units
+
+    /// Weight unit preference ("lbs" or "kg")
+    static let weightUnit = "weightUnit"
 }

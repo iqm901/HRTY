@@ -77,6 +77,15 @@ extension Font {
     /// Tiny metric - 20pt medium rounded (inline metrics)
     static let hrtMetricTiny = Font.system(size: 20, weight: .medium, design: .rounded)
 
+    // MARK: - Metric Fonts (Light Variants)
+    // For compact entry forms with lighter weight
+
+    /// Medium metric light - 32pt medium rounded (compact entry)
+    static let hrtMetricMediumLight = Font.system(size: 32, weight: .medium, design: .rounded)
+
+    /// Small metric light - 24pt regular rounded (compact entry)
+    static let hrtMetricSmallLight = Font.system(size: 24, weight: .regular, design: .rounded)
+
     // MARK: - Label Fonts
     // For form labels and input descriptions
 

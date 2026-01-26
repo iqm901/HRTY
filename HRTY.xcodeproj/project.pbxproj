@@ -21,6 +21,12 @@
 		54874CD30FA847BCACFFA400 /* BloodPressureEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 329B16C46A9C4E7A833D8CFB /* BloodPressureEntryView.swift */; };
 		21C27926255C42DBA75CB169 /* OxygenSaturationEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B20E79AD6E94FD7B00EB8C6 /* OxygenSaturationEntryView.swift */; };
 		025000010000000100000001 /* HeartRateEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025000020000000100000001 /* HeartRateEntryView.swift */; };
+		026000010000000100000001 /* VitalSignTile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026000020000000100000001 /* VitalSignTile.swift */; };
+		026000010000000100000002 /* VitalSignsGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026000020000000100000002 /* VitalSignsGridView.swift */; };
+		026000010000000100000003 /* CompactWeightEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026000020000000100000003 /* CompactWeightEntryView.swift */; };
+		026000010000000100000004 /* CompactBloodPressureEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026000020000000100000004 /* CompactBloodPressureEntryView.swift */; };
+		026000010000000100000005 /* CompactHeartRateEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026000020000000100000005 /* CompactHeartRateEntryView.swift */; };
+		026000010000000100000006 /* CompactOxygenSaturationEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026000020000000100000006 /* CompactOxygenSaturationEntryView.swift */; };
 		51FC4D65391F46B8BBC611E7 /* VitalSignsTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6BC209E01C14DABB5F0CD1B /* VitalSignsTabView.swift */; };
 		6528ED42AC41451588E2F64F /* SymptomManagementTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E998E324A4914EC7BE3057D4 /* SymptomManagementTabView.swift */; };
 		39630526A4D74DC496B9557B /* VitalSignsAlertService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62B091BAE36042B9A749B8CE /* VitalSignsAlertService.swift */; };
@@ -136,6 +142,12 @@
 		329B16C46A9C4E7A833D8CFB /* BloodPressureEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BloodPressureEntryView.swift; sourceTree = "<group>"; };
 		8B20E79AD6E94FD7B00EB8C6 /* OxygenSaturationEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OxygenSaturationEntryView.swift; sourceTree = "<group>"; };
 		025000020000000100000001 /* HeartRateEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartRateEntryView.swift; sourceTree = "<group>"; };
+		026000020000000100000001 /* VitalSignTile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VitalSignTile.swift; sourceTree = "<group>"; };
+		026000020000000100000002 /* VitalSignsGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VitalSignsGridView.swift; sourceTree = "<group>"; };
+		026000020000000100000003 /* CompactWeightEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactWeightEntryView.swift; sourceTree = "<group>"; };
+		026000020000000100000004 /* CompactBloodPressureEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactBloodPressureEntryView.swift; sourceTree = "<group>"; };
+		026000020000000100000005 /* CompactHeartRateEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactHeartRateEntryView.swift; sourceTree = "<group>"; };
+		026000020000000100000006 /* CompactOxygenSaturationEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactOxygenSaturationEntryView.swift; sourceTree = "<group>"; };
 		E6BC209E01C14DABB5F0CD1B /* VitalSignsTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VitalSignsTabView.swift; sourceTree = "<group>"; };
 		E998E324A4914EC7BE3057D4 /* SymptomManagementTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymptomManagementTabView.swift; sourceTree = "<group>"; };
 		62B091BAE36042B9A749B8CE /* VitalSignsAlertService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VitalSignsAlertService.swift; sourceTree = "<group>"; };
@@ -328,6 +340,12 @@
 				8B20E79AD6E94FD7B00EB8C6 /* OxygenSaturationEntryView.swift */,
 				329B16C46A9C4E7A833D8CFB /* BloodPressureEntryView.swift */,
 				025000020000000100000001 /* HeartRateEntryView.swift */,
+				026000020000000100000001 /* VitalSignTile.swift */,
+				026000020000000100000002 /* VitalSignsGridView.swift */,
+				026000020000000100000003 /* CompactWeightEntryView.swift */,
+				026000020000000100000004 /* CompactBloodPressureEntryView.swift */,
+				026000020000000100000005 /* CompactHeartRateEntryView.swift */,
+				026000020000000100000006 /* CompactOxygenSaturationEntryView.swift */,
 				A1000002200000010000000100000004 /* TodayView.swift */,
 				A1000002200000010000000100000005 /* TrendsView.swift */,
 				A1000002200000010000000100000006 /* MedicationsView.swift */,
@@ -537,6 +555,12 @@
 				54874CD30FA847BCACFFA400 /* BloodPressureEntryView.swift in Sources */,
 				21C27926255C42DBA75CB169 /* OxygenSaturationEntryView.swift in Sources */,
 				025000010000000100000001 /* HeartRateEntryView.swift in Sources */,
+				026000010000000100000001 /* VitalSignTile.swift in Sources */,
+				026000010000000100000002 /* VitalSignsGridView.swift in Sources */,
+				026000010000000100000003 /* CompactWeightEntryView.swift in Sources */,
+				026000010000000100000004 /* CompactBloodPressureEntryView.swift in Sources */,
+				026000010000000100000005 /* CompactHeartRateEntryView.swift in Sources */,
+				026000010000000100000006 /* CompactOxygenSaturationEntryView.swift in Sources */,
 				51FC4D65391F46B8BBC611E7 /* VitalSignsTabView.swift in Sources */,
 				6528ED42AC41451588E2F64F /* SymptomManagementTabView.swift in Sources */,
 				39630526A4D74DC496B9557B /* VitalSignsAlertService.swift in Sources */,
