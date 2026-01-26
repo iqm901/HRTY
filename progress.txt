@@ -1,6 +1,53 @@
 ## Codebase Patterns
 
-(Add reusable patterns discovered during implementation here)
+- Use @Observable (iOS 17+) for view models, not @ObservableObject
+- SwiftData models in HRTY/Models/ directory
+- All clinical thresholds defined in AlertConstants.swift
+- Design system components in HRTY/DesignSystem/ (HRTButton, HRTRow, HRTInput, etc.)
+- Color fallbacks use pattern Color.hrt[Name]Fallback (e.g., Color.hrtPinkFallback)
+- Typography via HRTTypography extensions on Font (e.g., .hrtTitle, .hrtBody)
+- Spacing via HRTSpacing constants (xs, sm, md, lg, xl)
+- Alert messages must be warm, non-alarmist, coaching (patient-facing app)
+- ViewModels handle business logic; Views are declarative
+- Use iPhone 17 simulator for testing (iPhone 15 no longer available)
+- HealthKit integration via HealthKitService singleton
+- Notifications via NotificationService singleton
+- Build command: xcodebuild -scheme HRTY -destination 'platform=iOS Simulator,name=iPhone 17' build
+- Test command: xcodebuild -scheme HRTY -destination 'platform=iOS Simulator,name=iPhone 17' test
 
 ---
 
+## 2026-01-25 - PRD Completion Audit (HRTY-001 through HRTY-018)
+
+- What was implemented: Verified all 18 user stories are fully implemented
+- Files changed: prd.json (marked all stories as passes: true)
+
+**Implementation Summary:**
+All features are complete and functional:
+- HRTY-001: Tab navigation with 5 tabs (Today, Trends, Medications, Export, Settings)
+- HRTY-002: SwiftData models (DailyEntry, SymptomEntry, DiureticDose, Medication, AlertEvent, etc.)
+- HRTY-003: Weight entry with validation and previous day comparison
+- HRTY-004: Symptom logging with 8 symptoms, 1-5 severity scale
+- HRTY-005: Medications management with add/edit/delete
+- HRTY-006: Diuretic logging with extra dose support
+- HRTY-007: Weight alerts (≥2 lbs/24h, ≥5 lbs/7 days)
+- HRTY-008: Symptom severity alerts (level 4 or 5)
+- HRTY-009: Weight trend chart (30 days)
+- HRTY-010: Symptom trends with toggle filters
+- HRTY-011: PDF export with share sheet
+- HRTY-012: Settings (notifications, patient identifier, about, privacy)
+- HRTY-013: HealthKit weight import
+- HRTY-014: HealthKit heart rate import with alerts (<40 or >120 bpm)
+- HRTY-015: Daily reminder notifications
+- HRTY-016: Onboarding flow with HealthKit/notification permissions
+- HRTY-017: Medication photo capture
+- HRTY-018: Dizziness + BP check prompt
+
+**Learnings for future iterations:**
+- Build succeeds with `xcodebuild -scheme HRTY -destination 'platform=iOS Simulator,name=iPhone 17' build`
+- All tests pass
+- The codebase uses a comprehensive design system (HRT* components)
+- Alert messages follow warm, coaching tone guidelines throughout
+- Schema migration is handled gracefully in HRTYApp.swift
+
+---

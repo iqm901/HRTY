@@ -15,7 +15,7 @@
         "Each tab has appropriate SF Symbol icon",
         "Tab selection persists during app session"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "HRTY-002",
@@ -30,7 +30,7 @@
         "Data persists across app launches",
         "Only one DailyEntry per calendar day"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "HRTY-003",
@@ -44,7 +44,7 @@
         "Shows weight change from yesterday (+ or - lbs)",
         "Input validates reasonable weight range (50-500 lbs)"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "HRTY-004",
@@ -58,7 +58,7 @@
         "Clear visual indication of selected severity",
         "Defaults to 1 (none) for new entries"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "HRTY-005",
@@ -73,7 +73,7 @@
         "Delete medication with confirmation",
         "Diuretics visually distinguished in list"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "HRTY-006",
@@ -87,7 +87,7 @@
         "Multiple doses per day supported",
         "Shows doses already logged today"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "HRTY-007",
@@ -101,7 +101,7 @@
         "Alert displayed prominently on Today view",
         "AlertEvent saved to data store"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "HRTY-008",
@@ -114,7 +114,7 @@
         "Alert is non-prescriptive and reassuring",
         "Alert displayed after saving symptoms"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "HRTY-009",
@@ -128,7 +128,7 @@
         "Chart is scrollable/zoomable if needed",
         "Shows current weight and 30-day change summary"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "HRTY-010",
@@ -141,7 +141,7 @@
         "Can toggle individual symptoms on/off",
         "Days with alerts visually marked"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "HRTY-011",
@@ -156,7 +156,7 @@
         "Share sheet opens after generation",
         "PDF is readable and professionally formatted"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "HRTY-012",
@@ -169,7 +169,7 @@
         "About section with version info",
         "Privacy information explaining on-device storage"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "HRTY-013",
@@ -183,7 +183,7 @@
         "User can override with manual entry",
         "Graceful handling if HealthKit unavailable"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "HRTY-014",
@@ -196,7 +196,7 @@
         "Heart rate alert: <40 bpm or >120 bpm persistent",
         "Show HR trend on Trends view"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "HRTY-015",
@@ -209,7 +209,7 @@
         "Tapping notification opens Today view",
         "Can disable notifications in Settings"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "HRTY-016",
@@ -224,7 +224,7 @@
         "Onboarding completes to Today view",
         "Onboarding only shown once"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "HRTY-017",
@@ -237,7 +237,7 @@
         "User manually enters medications after viewing photo",
         "Optional feature - can skip and enter manually"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "HRTY-018",
@@ -250,7 +250,7 @@
         "If unable to check, advises contacting clinician",
         "Orthostatic precautions mentioned in alert"
       ],
-      "passes": false
+      "passes": true
     }
   ]
 }
