@@ -26,3 +26,22 @@ struct HeartRateDataPoint: Identifiable, Equatable {
 
     var id: Date { date }
 }
+
+/// Data point for blood pressure trend chart visualization and export
+struct BloodPressureDataPoint: Identifiable, Equatable {
+    let date: Date
+    let systolic: Int
+    let diastolic: Int
+    let hasAlert: Bool
+
+    var id: Date { date }
+}
+
+/// Data point for oxygen saturation trend chart visualization and export
+struct OxygenSaturationDataPoint: Identifiable, Equatable {
+    let date: Date
+    let percentage: Int
+    let hasAlert: Bool
+
+    var id: Date { date }
+}

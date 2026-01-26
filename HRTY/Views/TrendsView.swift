@@ -17,17 +17,11 @@ struct TrendsView: View {
                             HRTLoadingView("Loading trends...")
                                 .frame(height: 200)
                         } else {
-                            if viewModel.hasWeightData {
-                                weightSection
-                            } else {
-                                emptyWeightStateView
-                            }
-
-                            // Heart rate trends section
-                            heartRateSection
-
-                            // Symptom trends section
+                            // 1. Symptoms section (moved to top)
                             symptomSection
+
+                            // 2. Vitals section (new)
+                            vitalsSection
                         }
                     }
                     .padding(HRTSpacing.md)
@@ -42,34 +36,337 @@ struct TrendsView: View {
         }
     }
 
-    // MARK: - Weight Section
+    // MARK: - Vitals Section
 
-    private var weightSection: some View {
+    private var vitalsSection: some View {
         VStack(alignment: .leading, spacing: HRTSpacing.md) {
             // Section header
             HStack(spacing: HRTSpacing.sm) {
-                Image(systemName: "scalemass.fill")
+                Image(systemName: "chart.line.text.clipboard")
                     .foregroundStyle(Color.hrtPinkFallback)
-                Text("Weight")
+                Text("Vitals")
                     .font(.hrtTitle2)
                     .foregroundStyle(Color.hrtTextFallback)
             }
             .accessibilityAddTraits(.isHeader)
 
-            // Summary card
-            weightSummaryCard
+            // Toggle pills
+            VitalToggleView(selectedVital: $viewModel.selectedVital)
 
-            // Chart
-            WeightChartView(weightEntries: viewModel.weightEntries)
-                .accessibilityLabel(viewModel.accessibilitySummary)
-
-            // Date range
-            Text(viewModel.dateRangeText)
-                .font(.hrtCaption)
-                .foregroundStyle(Color.hrtTextSecondaryFallback)
-                .frame(maxWidth: .infinity, alignment: .center)
+            // Selected content based on toggle
+            switch viewModel.selectedVital {
+            case .overview:
+                VitalsOverviewView(viewModel: viewModel, selectedVital: $viewModel.selectedVital)
+            case .weight:
+                weightContentSection
+            case .bloodPressure:
+                bloodPressureContentSection
+            case .heartRate:
+                heartRateContentSection
+            case .oxygenSaturation:
+                oxygenSaturationContentSection
+            }
         }
     }
+
+    // MARK: - Weight Content Section (for Vitals toggle)
+
+    private var weightContentSection: some View {
+        VStack(alignment: .leading, spacing: HRTSpacing.md) {
+            if viewModel.hasWeightData {
+                // Summary card
+                weightSummaryCard
+
+                // Chart
+                WeightChartView(weightEntries: viewModel.weightEntries)
+                    .accessibilityLabel(viewModel.accessibilitySummary)
+
+                // Date range
+                Text(viewModel.dateRangeText)
+                    .font(.hrtCaption)
+                    .foregroundStyle(Color.hrtTextSecondaryFallback)
+                    .frame(maxWidth: .infinity, alignment: .center)
+            } else {
+                emptyWeightStateView
+            }
+        }
+    }
+
+    // MARK: - Blood Pressure Content Section
+
+    private var bloodPressureContentSection: some View {
+        VStack(alignment: .leading, spacing: HRTSpacing.md) {
+            if viewModel.hasBloodPressureData {
+                // Summary card
+                bloodPressureSummaryCard
+
+                // Alert legend (if there are alert days)
+                if !viewModel.bloodPressureAlertDates.isEmpty {
+                    bloodPressureAlertLegend
+                }
+
+                // Chart
+                BloodPressureTrendChart(
+                    bloodPressureEntries: viewModel.bloodPressureEntries,
+                    alertDates: viewModel.bloodPressureAlertDates
+                )
+                .accessibilityLabel(viewModel.bloodPressureAccessibilitySummary)
+
+                // Date range
+                Text(viewModel.dateRangeText)
+                    .font(.hrtCaption)
+                    .foregroundStyle(Color.hrtTextSecondaryFallback)
+                    .frame(maxWidth: .infinity, alignment: .center)
+            } else {
+                emptyBloodPressureStateView
+            }
+        }
+    }
+
+    private var bloodPressureSummaryCard: some View {
+        HStack(spacing: HRTSpacing.md) {
+            // Current BP
+            VStack(alignment: .leading, spacing: HRTSpacing.xs) {
+                Text("Latest")
+                    .font(.hrtCaption)
+                    .foregroundStyle(Color.hrtTextSecondaryFallback)
+
+                if let bp = viewModel.formattedCurrentBP {
+                    HStack(alignment: .firstTextBaseline, spacing: 4) {
+                        Text(bp)
+                            .font(.hrtTitle)
+                            .foregroundStyle(Color.hrtTextFallback)
+                        Text("mmHg")
+                            .font(.hrtCaption)
+                            .foregroundStyle(Color.hrtTextSecondaryFallback)
+                    }
+                } else {
+                    Text("--")
+                        .font(.hrtTitle)
+                        .foregroundStyle(Color.hrtTextTertiaryFallback)
+                }
+            }
+            .accessibilityElement(children: .combine)
+
+            HRTDivider(direction: .vertical)
+                .frame(height: 44)
+
+            // Average
+            VStack(alignment: .leading, spacing: HRTSpacing.xs) {
+                Text("30-Day Avg")
+                    .font(.hrtCaption)
+                    .foregroundStyle(Color.hrtTextSecondaryFallback)
+
+                if let avg = viewModel.formattedAverageBP {
+                    Text(avg)
+                        .font(.hrtTitle3)
+                        .foregroundStyle(Color.hrtTextFallback)
+                } else {
+                    Text("--")
+                        .font(.hrtTitle3)
+                        .foregroundStyle(Color.hrtTextTertiaryFallback)
+                }
+            }
+            .accessibilityElement(children: .combine)
+
+            Spacer()
+        }
+        .padding(HRTSpacing.md)
+        .background(Color.hrtCardFallback)
+        .clipShape(RoundedRectangle(cornerRadius: HRTRadius.large))
+    }
+
+    private var bloodPressureAlertLegend: some View {
+        HStack(spacing: HRTSpacing.xs) {
+            RoundedRectangle(cornerRadius: 2)
+                .fill(Color.hrtAlertFallback.opacity(0.2))
+                .frame(width: 16, height: 12)
+            Text("Days with blood pressure values that may need attention")
+                .font(.hrtCaption)
+                .foregroundStyle(Color.hrtTextSecondaryFallback)
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Highlighted days show blood pressure values that may need attention")
+    }
+
+    private var emptyBloodPressureStateView: some View {
+        HRTEmptyState(
+            icon: "heart.text.clipboard",
+            title: "No Blood Pressure Data Yet",
+            message: "Log your blood pressure on the Today tab to see your trends here."
+        )
+        .background(Color.hrtCardFallback)
+        .clipShape(RoundedRectangle(cornerRadius: HRTRadius.large))
+        .accessibilityLabel("No blood pressure data yet. Log your blood pressure on the Today tab to see your trends here.")
+    }
+
+    // MARK: - Heart Rate Content Section (for Vitals toggle)
+
+    private var heartRateContentSection: some View {
+        VStack(alignment: .leading, spacing: HRTSpacing.md) {
+            if viewModel.isLoadingHeartRate {
+                HStack(spacing: HRTSpacing.sm) {
+                    ProgressView()
+                        .tint(Color.hrtPinkFallback)
+                        .scaleEffect(0.8)
+                    Text("Loading heart rate data...")
+                        .font(.hrtCallout)
+                        .foregroundStyle(Color.hrtTextSecondaryFallback)
+                }
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding(.vertical, HRTSpacing.sm)
+            } else if viewModel.hasHeartRateData {
+                // Summary card
+                heartRateSummaryCard
+
+                // Alert legend (if there are alert days)
+                if !viewModel.heartRateAlertDates.isEmpty {
+                    heartRateAlertLegend
+                }
+
+                // Chart
+                HeartRateTrendChart(
+                    heartRateEntries: viewModel.heartRateEntries,
+                    alertDates: viewModel.heartRateAlertDates
+                )
+                .accessibilityLabel(viewModel.heartRateAccessibilitySummary)
+
+                // Date range
+                Text(viewModel.dateRangeText)
+                    .font(.hrtCaption)
+                    .foregroundStyle(Color.hrtTextSecondaryFallback)
+                    .frame(maxWidth: .infinity, alignment: .center)
+            } else {
+                emptyHeartRateStateView
+            }
+        }
+    }
+
+    // MARK: - Oxygen Saturation Content Section
+
+    private var oxygenSaturationContentSection: some View {
+        VStack(alignment: .leading, spacing: HRTSpacing.md) {
+            if viewModel.hasOxygenSaturationData {
+                // Summary card
+                oxygenSaturationSummaryCard
+
+                // Alert legend (if there are alert days)
+                if !viewModel.oxygenSaturationAlertDates.isEmpty {
+                    oxygenSaturationAlertLegend
+                }
+
+                // Chart
+                OxygenSaturationTrendChart(
+                    oxygenSaturationEntries: viewModel.oxygenSaturationEntries,
+                    alertDates: viewModel.oxygenSaturationAlertDates
+                )
+                .accessibilityLabel(viewModel.oxygenSaturationAccessibilitySummary)
+
+                // Date range
+                Text(viewModel.dateRangeText)
+                    .font(.hrtCaption)
+                    .foregroundStyle(Color.hrtTextSecondaryFallback)
+                    .frame(maxWidth: .infinity, alignment: .center)
+            } else {
+                emptyOxygenSaturationStateView
+            }
+        }
+    }
+
+    private var oxygenSaturationSummaryCard: some View {
+        HStack(spacing: HRTSpacing.md) {
+            // Current O2
+            VStack(alignment: .leading, spacing: HRTSpacing.xs) {
+                Text("Latest")
+                    .font(.hrtCaption)
+                    .foregroundStyle(Color.hrtTextSecondaryFallback)
+
+                if let o2 = viewModel.formattedCurrentO2 {
+                    Text(o2)
+                        .font(.hrtTitle)
+                        .foregroundStyle(Color.hrtTextFallback)
+                } else {
+                    Text("--")
+                        .font(.hrtTitle)
+                        .foregroundStyle(Color.hrtTextTertiaryFallback)
+                }
+            }
+            .accessibilityElement(children: .combine)
+
+            HRTDivider(direction: .vertical)
+                .frame(height: 44)
+
+            // Average
+            VStack(alignment: .leading, spacing: HRTSpacing.xs) {
+                Text("30-Day Avg")
+                    .font(.hrtCaption)
+                    .foregroundStyle(Color.hrtTextSecondaryFallback)
+
+                if let avg = viewModel.formattedAverageO2 {
+                    Text(avg)
+                        .font(.hrtTitle3)
+                        .foregroundStyle(Color.hrtTextFallback)
+                } else {
+                    Text("--")
+                        .font(.hrtTitle3)
+                        .foregroundStyle(Color.hrtTextTertiaryFallback)
+                }
+            }
+            .accessibilityElement(children: .combine)
+
+            HRTDivider(direction: .vertical)
+                .frame(height: 44)
+
+            // Range
+            VStack(alignment: .leading, spacing: HRTSpacing.xs) {
+                Text("Range")
+                    .font(.hrtCaption)
+                    .foregroundStyle(Color.hrtTextSecondaryFallback)
+
+                if let range = viewModel.formattedO2Range {
+                    Text(range)
+                        .font(.hrtTitle3)
+                        .foregroundStyle(Color.hrtTextFallback)
+                } else {
+                    Text("--")
+                        .font(.hrtTitle3)
+                        .foregroundStyle(Color.hrtTextTertiaryFallback)
+                }
+            }
+            .accessibilityElement(children: .combine)
+
+            Spacer()
+        }
+        .padding(HRTSpacing.md)
+        .background(Color.hrtCardFallback)
+        .clipShape(RoundedRectangle(cornerRadius: HRTRadius.large))
+    }
+
+    private var oxygenSaturationAlertLegend: some View {
+        HStack(spacing: HRTSpacing.xs) {
+            RoundedRectangle(cornerRadius: 2)
+                .fill(Color.hrtAlertFallback.opacity(0.2))
+                .frame(width: 16, height: 12)
+            Text("Days with oxygen saturation values that may need attention")
+                .font(.hrtCaption)
+                .foregroundStyle(Color.hrtTextSecondaryFallback)
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Highlighted days show oxygen saturation values that may need attention")
+    }
+
+    private var emptyOxygenSaturationStateView: some View {
+        HRTEmptyState(
+            icon: "lungs",
+            title: "No Oxygen Saturation Data Yet",
+            message: "Log your oxygen saturation on the Today tab to see your trends here."
+        )
+        .background(Color.hrtCardFallback)
+        .clipShape(RoundedRectangle(cornerRadius: HRTRadius.large))
+        .accessibilityLabel("No oxygen saturation data yet. Log your oxygen saturation on the Today tab to see your trends here.")
+    }
+
+    // MARK: - Weight Summary Card
 
     private var weightSummaryCard: some View {
         HStack(spacing: HRTSpacing.lg) {
@@ -141,61 +438,7 @@ struct TrendsView: View {
         }
     }
 
-    // MARK: - Heart Rate Section
-
-    @ViewBuilder
-    private var heartRateSection: some View {
-        // Only show if HealthKit is available
-        if viewModel.healthKitAvailable {
-            VStack(alignment: .leading, spacing: HRTSpacing.md) {
-                // Section header
-                HStack(spacing: HRTSpacing.sm) {
-                    Image(systemName: "heart.fill")
-                        .foregroundStyle(Color.hrtPinkFallback)
-                    Text("Resting Heart Rate")
-                        .font(.hrtTitle2)
-                        .foregroundStyle(Color.hrtTextFallback)
-                }
-                .accessibilityAddTraits(.isHeader)
-
-                if viewModel.isLoadingHeartRate {
-                    HStack(spacing: HRTSpacing.sm) {
-                        ProgressView()
-                            .tint(Color.hrtPinkFallback)
-                            .scaleEffect(0.8)
-                        Text("Loading heart rate data...")
-                            .font(.hrtCallout)
-                            .foregroundStyle(Color.hrtTextSecondaryFallback)
-                    }
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .padding(.vertical, HRTSpacing.sm)
-                } else if viewModel.hasHeartRateData {
-                    // Summary card
-                    heartRateSummaryCard
-
-                    // Alert legend (if there are alert days)
-                    if !viewModel.heartRateAlertDates.isEmpty {
-                        heartRateAlertLegend
-                    }
-
-                    // Chart
-                    HeartRateTrendChart(
-                        heartRateEntries: viewModel.heartRateEntries,
-                        alertDates: viewModel.heartRateAlertDates
-                    )
-                    .accessibilityLabel(viewModel.heartRateAccessibilitySummary)
-
-                    // Date range
-                    Text(viewModel.dateRangeText)
-                        .font(.hrtCaption)
-                        .foregroundStyle(Color.hrtTextSecondaryFallback)
-                        .frame(maxWidth: .infinity, alignment: .center)
-                } else {
-                    emptyHeartRateStateView
-                }
-            }
-        }
-    }
+    // MARK: - Heart Rate Summary Card
 
     private var heartRateSummaryCard: some View {
         HStack(spacing: HRTSpacing.md) {

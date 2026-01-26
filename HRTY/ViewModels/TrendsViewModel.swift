@@ -2,6 +2,45 @@ import Foundation
 import SwiftData
 import SwiftUI
 
+/// Represents the different vital sign types that can be selected in the Vitals section
+enum VitalType: String, CaseIterable {
+    case overview
+    case weight
+    case bloodPressure
+    case heartRate
+    case oxygenSaturation
+
+    var label: String {
+        switch self {
+        case .overview: return "Overview"
+        case .weight: return "Weight"
+        case .bloodPressure: return "BP"
+        case .heartRate: return "HR"
+        case .oxygenSaturation: return "O₂"
+        }
+    }
+
+    var icon: String {
+        switch self {
+        case .overview: return "chart.line.text.clipboard"
+        case .weight: return "scalemass.fill"
+        case .bloodPressure: return "heart.text.clipboard.fill"
+        case .heartRate: return "heart.fill"
+        case .oxygenSaturation: return "lungs.fill"
+        }
+    }
+
+    var color: Color {
+        switch self {
+        case .overview: return Color.hrtPinkFallback
+        case .weight: return .blue
+        case .bloodPressure: return .purple
+        case .heartRate: return .red
+        case .oxygenSaturation: return .teal
+        }
+    }
+}
+
 @Observable
 final class TrendsViewModel {
     // MARK: - Weight Data
@@ -18,6 +57,17 @@ final class TrendsViewModel {
     var heartRateAlertDates: Set<Date> = []
     var isLoadingHeartRate: Bool = false
     var healthKitAvailable: Bool = false
+
+    // MARK: - Vital Toggle State
+    var selectedVital: VitalType = .overview
+
+    // MARK: - Blood Pressure Data
+    var bloodPressureEntries: [BloodPressureDataPoint] = []
+    var bloodPressureAlertDates: Set<Date> = []
+
+    // MARK: - Oxygen Saturation Data
+    var oxygenSaturationEntries: [OxygenSaturationDataPoint] = []
+    var oxygenSaturationAlertDates: Set<Date> = []
 
     // MARK: - Services
     private let healthKitService: HealthKitServiceProtocol
@@ -419,11 +469,13 @@ final class TrendsViewModel {
         isLoadingHeartRate = false
     }
 
-    /// Load all trend data including heart rate
+    /// Load all trend data including heart rate, blood pressure, and oxygen saturation
     func loadAllTrendDataWithHeartRate(context: ModelContext) async {
         isLoading = true
         loadWeightData(context: context)
         loadSymptomData(context: context)
+        loadBloodPressureData(context: context)
+        loadOxygenSaturationData(context: context)
         await loadHeartRateData()
         isLoading = false
     }
@@ -454,5 +506,247 @@ final class TrendsViewModel {
         }
 
         return summary
+    }
+
+    // MARK: - Blood Pressure Computed Properties
+
+    /// Whether there is blood pressure data to display
+    var hasBloodPressureData: Bool {
+        !bloodPressureEntries.isEmpty
+    }
+
+    /// Number of days with blood pressure data
+    var daysWithBloodPressureData: Int {
+        bloodPressureEntries.count
+    }
+
+    /// The most recent blood pressure entry
+    var currentBloodPressure: (systolic: Int, diastolic: Int)? {
+        guard let last = bloodPressureEntries.last else { return nil }
+        return (last.systolic, last.diastolic)
+    }
+
+    /// Average systolic blood pressure over the period
+    var averageSystolic: Int? {
+        guard !bloodPressureEntries.isEmpty else { return nil }
+        let sum = bloodPressureEntries.reduce(0) { $0 + $1.systolic }
+        return sum / bloodPressureEntries.count
+    }
+
+    /// Average diastolic blood pressure over the period
+    var averageDiastolic: Int? {
+        guard !bloodPressureEntries.isEmpty else { return nil }
+        let sum = bloodPressureEntries.reduce(0) { $0 + $1.diastolic }
+        return sum / bloodPressureEntries.count
+    }
+
+    /// Formatted current blood pressure for display (e.g., "120/80")
+    var formattedCurrentBP: String? {
+        guard let bp = currentBloodPressure else { return nil }
+        return "\(bp.systolic)/\(bp.diastolic)"
+    }
+
+    /// Formatted average blood pressure for display
+    var formattedAverageBP: String? {
+        guard let sys = averageSystolic, let dia = averageDiastolic else { return nil }
+        return "\(sys)/\(dia)"
+    }
+
+    // MARK: - Blood Pressure Data Loading
+
+    /// Load blood pressure data for the past 30 days
+    func loadBloodPressureData(context: ModelContext) {
+        let endDate = Date()
+        guard let startDate = Calendar.current.date(byAdding: .day, value: -29, to: endDate) else {
+            return
+        }
+
+        let entries = DailyEntry.fetchForDateRange(from: startDate, to: endDate, in: context)
+
+        var dataPoints: [BloodPressureDataPoint] = []
+        var alertDateSet: Set<Date> = []
+
+        for entry in entries {
+            guard let vitalSigns = entry.vitalSigns,
+                  let systolic = vitalSigns.systolicBP,
+                  let diastolic = vitalSigns.diastolicBP else {
+                continue
+            }
+
+            let entryDate = Calendar.current.startOfDay(for: entry.date)
+
+            // Check for alerts - low systolic or high values
+            let hasAlert = systolic < AlertConstants.systolicBPLowThreshold ||
+                           systolic >= AlertConstants.systolicBPCriticalHigh ||
+                           diastolic >= AlertConstants.diastolicBPCriticalHigh
+
+            if hasAlert {
+                alertDateSet.insert(entryDate)
+            }
+
+            dataPoints.append(BloodPressureDataPoint(
+                date: entryDate,
+                systolic: systolic,
+                diastolic: diastolic,
+                hasAlert: hasAlert
+            ))
+        }
+
+        bloodPressureEntries = dataPoints.sorted { $0.date < $1.date }
+        bloodPressureAlertDates = alertDateSet
+    }
+
+    // MARK: - Blood Pressure Accessibility
+
+    /// Accessibility summary for blood pressure trends
+    var bloodPressureAccessibilitySummary: String {
+        guard hasBloodPressureData else {
+            return "No blood pressure data recorded in the past 30 days"
+        }
+
+        var summary = "Blood pressure chart showing \(daysWithBloodPressureData) days of data. "
+
+        if let current = formattedCurrentBP {
+            summary += "Most recent: \(current) mmHg. "
+        }
+
+        if let avg = formattedAverageBP {
+            summary += "30-day average: \(avg) mmHg. "
+        }
+
+        let alertCount = bloodPressureAlertDates.count
+        if alertCount > 0 {
+            summary += "\(alertCount) day\(alertCount == 1 ? "" : "s") with blood pressure values that may need attention."
+        } else {
+            summary += "No blood pressure alerts in this period."
+        }
+
+        return summary
+    }
+
+    // MARK: - Oxygen Saturation Computed Properties
+
+    /// Whether there is oxygen saturation data to display
+    var hasOxygenSaturationData: Bool {
+        !oxygenSaturationEntries.isEmpty
+    }
+
+    /// Number of days with oxygen saturation data
+    var daysWithOxygenSaturationData: Int {
+        oxygenSaturationEntries.count
+    }
+
+    /// The most recent oxygen saturation entry
+    var currentOxygenSaturation: Int? {
+        oxygenSaturationEntries.last?.percentage
+    }
+
+    /// Average oxygen saturation over the period
+    var averageOxygenSaturation: Int? {
+        guard !oxygenSaturationEntries.isEmpty else { return nil }
+        let sum = oxygenSaturationEntries.reduce(0) { $0 + $1.percentage }
+        return sum / oxygenSaturationEntries.count
+    }
+
+    /// Oxygen saturation range (min to max) over the period
+    var oxygenSaturationRange: (min: Int, max: Int)? {
+        guard !oxygenSaturationEntries.isEmpty else { return nil }
+        let values = oxygenSaturationEntries.map { $0.percentage }
+        guard let min = values.min(), let max = values.max() else { return nil }
+        return (min, max)
+    }
+
+    /// Formatted current oxygen saturation for display
+    var formattedCurrentO2: String? {
+        guard let o2 = currentOxygenSaturation else { return nil }
+        return "\(o2)%"
+    }
+
+    /// Formatted average oxygen saturation for display
+    var formattedAverageO2: String? {
+        guard let avg = averageOxygenSaturation else { return nil }
+        return "\(avg)%"
+    }
+
+    /// Formatted oxygen saturation range for display
+    var formattedO2Range: String? {
+        guard let range = oxygenSaturationRange else { return nil }
+        return "\(range.min)-\(range.max)%"
+    }
+
+    // MARK: - Oxygen Saturation Data Loading
+
+    /// Load oxygen saturation data for the past 30 days
+    func loadOxygenSaturationData(context: ModelContext) {
+        let endDate = Date()
+        guard let startDate = Calendar.current.date(byAdding: .day, value: -29, to: endDate) else {
+            return
+        }
+
+        let entries = DailyEntry.fetchForDateRange(from: startDate, to: endDate, in: context)
+
+        var dataPoints: [OxygenSaturationDataPoint] = []
+        var alertDateSet: Set<Date> = []
+
+        for entry in entries {
+            guard let vitalSigns = entry.vitalSigns,
+                  let o2 = vitalSigns.oxygenSaturation else {
+                continue
+            }
+
+            let entryDate = Calendar.current.startOfDay(for: entry.date)
+
+            // Check for alerts - low oxygen saturation
+            let hasAlert = o2 < AlertConstants.oxygenSaturationLowThreshold
+
+            if hasAlert {
+                alertDateSet.insert(entryDate)
+            }
+
+            dataPoints.append(OxygenSaturationDataPoint(
+                date: entryDate,
+                percentage: o2,
+                hasAlert: hasAlert
+            ))
+        }
+
+        oxygenSaturationEntries = dataPoints.sorted { $0.date < $1.date }
+        oxygenSaturationAlertDates = alertDateSet
+    }
+
+    // MARK: - Oxygen Saturation Accessibility
+
+    /// Accessibility summary for oxygen saturation trends
+    var oxygenSaturationAccessibilitySummary: String {
+        guard hasOxygenSaturationData else {
+            return "No oxygen saturation data recorded in the past 30 days"
+        }
+
+        var summary = "Oxygen saturation chart showing \(daysWithOxygenSaturationData) days of data. "
+
+        if let current = formattedCurrentO2 {
+            summary += "Most recent: \(current). "
+        }
+
+        if let avg = formattedAverageO2 {
+            summary += "30-day average: \(avg). "
+        }
+
+        let alertCount = oxygenSaturationAlertDates.count
+        if alertCount > 0 {
+            summary += "\(alertCount) day\(alertCount == 1 ? "" : "s") with oxygen levels that may need attention."
+        } else {
+            summary += "No oxygen saturation alerts in this period."
+        }
+
+        return summary
+    }
+
+    // MARK: - Load All Vital Signs Data
+
+    /// Load all vital signs data including blood pressure and oxygen saturation
+    func loadAllVitalSignsData(context: ModelContext) {
+        loadBloodPressureData(context: context)
+        loadOxygenSaturationData(context: context)
     }
 }
