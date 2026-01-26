@@ -24,9 +24,9 @@ struct TodayView: View {
 
                         headerSection
 
-                        symptomCheckInPrompt
-
                         vitalSignsSection
+
+                        symptomCheckInPrompt
                     }
                     .padding(.horizontal, HRTSpacing.md)
                     .padding(.vertical, HRTSpacing.md)

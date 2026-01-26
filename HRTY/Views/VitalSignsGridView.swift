@@ -8,6 +8,7 @@ struct VitalSignsGridView: View {
 
     @State private var expandedTile: VitalSignType?
     @AppStorage(AppStorageKeys.weightUnit) private var weightUnit: String = "lbs"
+    @AppStorage(AppStorageKeys.hasSeenVitalsEducationalMessage) private var hasSeenVitalsEducationalMessage = false
 
     private let gridColumns = [
         GridItem(.flexible(), spacing: HRTSpacing.sm),
@@ -16,6 +17,10 @@ struct VitalSignsGridView: View {
 
     var body: some View {
         VStack(spacing: HRTSpacing.sm) {
+            if !hasSeenVitalsEducationalMessage {
+                educationalMessageCard
+            }
+
             if let expanded = expandedTile {
                 expandedContent(for: expanded)
                     .transition(scaleTransition(for: expanded))
@@ -26,6 +31,37 @@ struct VitalSignsGridView: View {
             }
         }
         .animation(.spring(response: 0.35, dampingFraction: 0.8), value: expandedTile)
+    }
+
+    // MARK: - Educational Message
+
+    private var educationalMessageCard: some View {
+        HStack(alignment: .center, spacing: HRTSpacing.sm) {
+            Text("Checking your vitals is a small change that can make a big difference.")
+                .font(.hrtSubheadline)
+                .foregroundStyle(Color.hrtTextSecondaryFallback)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Spacer()
+
+            Button {
+                withAnimation {
+                    hasSeenVitalsEducationalMessage = true
+                }
+            } label: {
+                Image(systemName: "xmark")
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundStyle(Color.hrtTextTertiaryFallback)
+                    .padding(6)
+                    .background(Color.hrtTextTertiaryFallback.opacity(0.15))
+                    .clipShape(Circle())
+            }
+            .accessibilityLabel("Dismiss message")
+        }
+        .padding(HRTSpacing.md)
+        .background(Color.hrtCardFallback)
+        .clipShape(RoundedRectangle(cornerRadius: HRTRadius.large))
+        .transition(.opacity.combined(with: .move(edge: .top)))
     }
 
     // MARK: - Custom Transition

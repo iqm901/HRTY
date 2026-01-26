@@ -26,4 +26,9 @@ enum AppStorageKeys {
 
     /// Weight unit preference ("lbs" or "kg")
     static let weightUnit = "weightUnit"
+
+    // MARK: - Educational Messages
+
+    /// Whether the user has dismissed the vitals educational message
+    static let hasSeenVitalsEducationalMessage = "hasSeenVitalsEducationalMessage"
 }
