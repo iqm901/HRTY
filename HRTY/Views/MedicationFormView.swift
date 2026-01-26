@@ -173,6 +173,7 @@ struct MedicationFormView: View {
                                         .foregroundStyle(Color.hrtPinkFallback)
                                         .clipShape(Capsule())
                                 }
+                                .contentShape(Rectangle())
                             }
                             .buttonStyle(.plain)
                         }
@@ -202,6 +203,7 @@ struct MedicationFormView: View {
                                         .foregroundStyle(Color.secondary)
                                         .clipShape(Capsule())
                                 }
+                                .contentShape(Rectangle())
                             }
                             .buttonStyle(.plain)
                         }
@@ -280,6 +282,7 @@ struct MedicationFormView: View {
                                     .foregroundStyle(Color.hrtPinkFallback)
                                     .clipShape(Capsule())
                             }
+                            .contentShape(Rectangle())
                         }
                         .buttonStyle(.plain)
                     }
@@ -304,6 +307,7 @@ struct MedicationFormView: View {
                                         .foregroundStyle(Color.secondary)
                                         .clipShape(Capsule())
                                 }
+                                .contentShape(Rectangle())
                             }
                             .buttonStyle(.plain)
                         }

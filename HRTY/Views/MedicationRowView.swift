@@ -28,17 +28,17 @@ struct MedicationRowView: View {
                 }
             }
 
-            Spacer()
+            Spacer(minLength: 0)
 
             Image(systemName: "chevron.right")
                 .font(.hrtCaption)
                 .foregroundStyle(Color.hrtTextTertiaryFallback)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.vertical, HRTSpacing.xs)
         .padding(.horizontal, isInConflict ? HRTSpacing.sm : 0)
         .background(isInConflict ? Color.conflictBackground : Color.clear)
         .clipShape(RoundedRectangle(cornerRadius: isInConflict ? HRTRadius.small : 0))
-        .contentShape(Rectangle())
         .accessibilityElement(children: .combine)
         .accessibilityLabel(accessibilityLabel)
         .accessibilityHint("Double tap to edit this medication")

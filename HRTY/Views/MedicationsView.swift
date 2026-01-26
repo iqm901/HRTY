@@ -267,6 +267,8 @@ struct MedicationsView: View {
                     medication: medication,
                     isInConflict: viewModel.isInConflict(medication)
                 )
+                    .padding(.horizontal, HRTSpacing.md)
+                    .padding(.vertical, HRTSpacing.sm)
                     .contentShape(Rectangle())
                     .onTapGesture {
                         viewModel.prepareForEdit(medication: medication)
@@ -283,8 +285,6 @@ struct MedicationsView: View {
                             Label("Delete", systemImage: "trash")
                         }
                     }
-                    .padding(.horizontal, HRTSpacing.md)
-                    .padding(.vertical, HRTSpacing.sm)
 
                 if medication.id != viewModel.sortedMedications.last?.id {
                     HRTDivider()
