@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HRTY Launch Screen — Final</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Varela+Round&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a1a;
+            padding: 40px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #ffffff;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 20px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #888;
+            margin-bottom: 40px;
+            font-size: 13px;
+        }
+        
+        .phones-container {
+            display: flex;
+            gap: 40px;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .phone-wrapper {
+            text-align: center;
+        }
+        
+        .phone-label {
+            color: #666;
+            font-size: 11px;
+            margin-top: 16px;
+        }
+        
+        .phone-frame {
+            border-radius: 40px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            border: 10px solid #0a0a0a;
+            position: relative;
+            background: #0a0a0a;
+        }
+        
+        .phone-frame::before {
+            content: '';
+            position: absolute;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 24px;
+            background: #0a0a0a;
+            border-radius: 12px;
+            z-index: 10;
+        }
+        
+        .phone-frame.se::before {
+            display: none;
+        }
+        
+        .phone-se {
+            width: 180px;
+            height: 320px;
+            border-radius: 24px;
+        }
+        
+        .phone-14 {
+            width: 220px;
+            height: 476px;
+        }
+        
+        .phone-max {
+            width: 240px;
+            height: 520px;
+        }
+        
+        .screen {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #f26680;
+            padding: 20px;
+        }
+        
+        .icon {
+            margin-bottom: 28px;
+        }
+        
+        .app-name {
+            font-family: 'Varela Round', sans-serif;
+            color: #ffffff;
+            letter-spacing: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .tagline {
+            font-family: 'Varela Round', sans-serif;
+            color: rgba(255,255,255,0.85);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        
+        /* Size variations */
+        .phone-se .icon svg { width: 70px; height: 70px; }
+        .phone-se .app-name { font-size: 28px; letter-spacing: 6px; }
+        .phone-se .tagline { font-size: 7px; letter-spacing: 1.5px; }
+        
+        .phone-14 .icon svg { width: 95px; height: 95px; }
+        .phone-14 .app-name { font-size: 38px; }
+        .phone-14 .tagline { font-size: 10px; }
+        
+        .phone-max .icon svg { width: 105px; height: 105px; }
+        .phone-max .app-name { font-size: 42px; }
+        .phone-max .tagline { font-size: 11px; }
+    </style>
+</head>
+<body>
+    <h1>HRTY Launch Screen — Version H</h1>
+    <p class="subtitle">Varela Round • Bare Icon • Heart Pink • Scales to all iPhone sizes</p>
+    
+    <div class="phones-container">
+        
+        <!-- iPhone SE -->
+        <div class="phone-wrapper">
+            <div class="phone-frame phone-se se">
+                <div class="screen">
+                    <div class="icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="70" height="70">
+                            <path d="M 256 390 C 165 372, 95 295, 95 205 C 95 135, 145 100, 210 100 C 260 100, 295 135, 315 185 C 335 135, 375 105, 430 140 C 480 172, 478 280, 415 340 C 352 400, 300 392, 256 390" fill="none" stroke="#ffffff" stroke-width="36" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <div class="app-name">HRTY</div>
+                    <div class="tagline">YOUR HEART HEALTH COMPANION</div>
+                </div>
+            </div>
+            <div class="phone-label">iPhone SE</div>
+        </div>
+        
+        <!-- iPhone 14 -->
+        <div class="phone-wrapper">
+            <div class="phone-frame phone-14">
+                <div class="screen">
+                    <div class="icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="95" height="95">
+                            <path d="M 256 390 C 165 372, 95 295, 95 205 C 95 135, 145 100, 210 100 C 260 100, 295 135, 315 185 C 335 135, 375 105, 430 140 C 480 172, 478 280, 415 340 C 352 400, 300 392, 256 390" fill="none" stroke="#ffffff" stroke-width="36" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <div class="app-name">HRTY</div>
+                    <div class="tagline">YOUR HEART HEALTH COMPANION</div>
+                </div>
+            </div>
+            <div class="phone-label">iPhone 14</div>
+        </div>
+        
+        <!-- iPhone 14 Pro Max -->
+        <div class="phone-wrapper">
+            <div class="phone-frame phone-max">
+                <div class="screen">
+                    <div class="icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="105" height="105">
+                            <path d="M 256 390 C 165 372, 95 295, 95 205 C 95 135, 145 100, 210 100 C 260 100, 295 135, 315 185 C 335 135, 375 105, 430 140 C 480 172, 478 280, 415 340 C 352 400, 300 392, 256 390" fill="none" stroke="#ffffff" stroke-width="36" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <div class="app-name">HRTY</div>
+                    <div class="tagline">YOUR HEART HEALTH COMPANION</div>
+                </div>
+            </div>
+            <div class="phone-label">iPhone 14 Pro Max</div>
+        </div>
+        
+    </div>
+</body>
+</html>

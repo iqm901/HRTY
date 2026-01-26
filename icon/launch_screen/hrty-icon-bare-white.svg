@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- HRTY Bare Icon (for launch screen) -->
+  <!-- H4 "Warm Embrace" - no background box -->
+  
+  <path d="M 256 390 C 165 372, 95 295, 95 205 C 95 135, 145 100, 210 100 C 260 100, 295 135, 315 185 C 335 135, 375 105, 430 140 C 480 172, 478 280, 415 340 C 352 400, 300 392, 256 390" 
+    fill="none" 
+    stroke="#ffffff" 
+    stroke-width="36" 
+    stroke-linecap="round" 
+    stroke-linejoin="round"/>
+</svg>

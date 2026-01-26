@@ -64,6 +64,7 @@
 		A1000001200000010000000100000001 /* HRTYApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002200000010000000100000001 /* HRTYApp.swift */; };
 		A1000001200000010000000100000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002200000010000000100000002 /* ContentView.swift */; };
 		A1000001200000010000000100000003 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1000002200000010000000100000003 /* Assets.xcassets */; };
+		030000010000000100000001 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 030000020000000100000001 /* LaunchScreen.storyboard */; };
 		A1000001200000010000000100000004 /* TodayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002200000010000000100000004 /* TodayView.swift */; };
 		A1000001200000010000000100000005 /* TrendsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002200000010000000100000005 /* TrendsView.swift */; };
 		A1000001200000010000000100000006 /* MedicationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002200000010000000100000006 /* MedicationsView.swift */; };
@@ -193,6 +194,7 @@
 		A1000002200000010000000100000001 /* HRTYApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HRTYApp.swift; sourceTree = "<group>"; };
 		A1000002200000010000000100000002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		A1000002200000010000000100000003 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		030000020000000100000001 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A1000002200000010000000100000004 /* TodayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayView.swift; sourceTree = "<group>"; };
 		A1000002200000010000000100000005 /* TrendsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendsView.swift; sourceTree = "<group>"; };
 		A1000002200000010000000100000006 /* MedicationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicationsView.swift; sourceTree = "<group>"; };
@@ -320,6 +322,7 @@
 				A1000005200000010000000100000007 /* Services */,
 				019000040000000100000001 /* DesignSystem */,
 				A1000002200000010000000100000003 /* Assets.xcassets */,
+				030000020000000100000001 /* LaunchScreen.storyboard */,
 			);
 			path = HRTY;
 			sourceTree = "<group>";
@@ -562,6 +565,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A1000001200000010000000100000003 /* Assets.xcassets in Resources */,
+				030000010000000100000001 /* LaunchScreen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -846,7 +850,7 @@
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "HRTY reads your weight, heart rate, and blood pressure data from Apple Health to help you track your heart health and share trends with your care team.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -881,7 +885,7 @@
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "HRTY reads your weight, heart rate, and blood pressure data from Apple Health to help you track your heart health and share trends with your care team.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (

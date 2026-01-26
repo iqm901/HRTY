@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 375 812" width="375" height="812">
+  <!-- HRTY Launch Screen - Version H -->
+  <!-- Scalable for all iPhone sizes -->
+  <!-- Varela Round typography, bare icon, pink background -->
+  
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Varela+Round&amp;display=swap');
+      .app-name {
+        font-family: 'Varela Round', sans-serif;
+        font-size: 38px;
+        letter-spacing: 8px;
+        fill: #ffffff;
+      }
+      .tagline {
+        font-family: 'Varela Round', sans-serif;
+        font-size: 10px;
+        letter-spacing: 2px;
+        fill: rgba(255,255,255,0.85);
+        text-transform: uppercase;
+      }
+    </style>
+  </defs>
+  
+  <!-- Background -->
+  <rect x="0" y="0" width="375" height="812" fill="#f26680"/>
+  
+  <!-- Icon (bare, no background box) - centered at y ~350 -->
+  <g transform="translate(137.5, 310)">
+    <svg viewBox="0 0 512 512" width="100" height="100">
+      <path d="M 256 390 C 165 372, 95 295, 95 205 C 95 135, 145 100, 210 100 C 260 100, 295 135, 315 185 C 335 135, 375 105, 430 140 C 480 172, 478 280, 415 340 C 352 400, 300 392, 256 390" fill="none" stroke="#ffffff" stroke-width="36" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </g>
+  
+  <!-- App name - centered -->
+  <text x="187.5" y="448" text-anchor="middle" class="app-name">HRTY</text>
+  
+  <!-- Tagline - centered -->
+  <text x="187.5" y="468" text-anchor="middle" class="tagline">YOUR HEART HEALTH COMPANION</text>
+  
+</svg>
