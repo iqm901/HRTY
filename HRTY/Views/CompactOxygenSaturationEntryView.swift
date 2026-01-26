@@ -50,7 +50,7 @@ struct CompactOxygenSaturationEntryView: View {
     private var header: some View {
         HStack {
             Image(systemName: "lungs.fill")
-                .foregroundStyle(Color(red: 0.45, green: 0.75, blue: 0.85))
+                .foregroundStyle(Color.hrtPinkFallback)
                 .font(.title3)
 
             Text("Oxygen Saturation")
