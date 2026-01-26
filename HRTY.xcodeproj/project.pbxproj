@@ -123,6 +123,8 @@
 		028000010000000100000001 /* MedicationChangeInsight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028000020000000100000001 /* MedicationChangeInsight.swift */; };
 		028000010000000100000002 /* CardiovascularMedication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028000020000000100000002 /* CardiovascularMedication.swift */; };
 		028000010000000100000003 /* MedicationChangeAnalysisService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028000020000000100000003 /* MedicationChangeAnalysisService.swift */; };
+		029000010000000100000001 /* OtherMedication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029000020000000100000001 /* OtherMedication.swift */; };
+		029000010000000100000002 /* OtherMedicationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029000020000000100000002 /* OtherMedicationTests.swift */; };
 		B100000120000001000000020000000C /* CardiovascularMedicationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B100000220000001000000020000000C /* CardiovascularMedicationTests.swift */; };
 		B100000120000001000000020000000D /* MedicationChangeAnalysisServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B100000220000001000000020000000D /* MedicationChangeAnalysisServiceTests.swift */; };
 
@@ -251,6 +253,8 @@
 		028000020000000100000001 /* MedicationChangeInsight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicationChangeInsight.swift; sourceTree = "<group>"; };
 		028000020000000100000002 /* CardiovascularMedication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardiovascularMedication.swift; sourceTree = "<group>"; };
 		028000020000000100000003 /* MedicationChangeAnalysisService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicationChangeAnalysisService.swift; sourceTree = "<group>"; };
+		029000020000000100000001 /* OtherMedication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherMedication.swift; sourceTree = "<group>"; };
+		029000020000000100000002 /* OtherMedicationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherMedicationTests.swift; sourceTree = "<group>"; };
 		B100000220000001000000020000000C /* CardiovascularMedicationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardiovascularMedicationTests.swift; sourceTree = "<group>"; };
 		B100000220000001000000020000000D /* MedicationChangeAnalysisServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicationChangeAnalysisServiceTests.swift; sourceTree = "<group>"; };
 
@@ -420,6 +424,7 @@
 				017000020000000100000002 /* MedicationPhoto.swift */,
 				028000020000000100000001 /* MedicationChangeInsight.swift */,
 				028000020000000100000002 /* CardiovascularMedication.swift */,
+				029000020000000100000001 /* OtherMedication.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -470,6 +475,7 @@
 				B100000220000001000000020000000B /* VitalSignsAlertServiceTests.swift */,
 				B100000220000001000000020000000C /* CardiovascularMedicationTests.swift */,
 				B100000220000001000000020000000D /* MedicationChangeAnalysisServiceTests.swift */,
+				029000020000000100000002 /* OtherMedicationTests.swift */,
 			);
 			path = HRTYTests;
 			sourceTree = "<group>";
@@ -671,6 +677,7 @@
 				028000010000000100000001 /* MedicationChangeInsight.swift in Sources */,
 				028000010000000100000002 /* CardiovascularMedication.swift in Sources */,
 				028000010000000100000003 /* MedicationChangeAnalysisService.swift in Sources */,
+				029000010000000100000001 /* OtherMedication.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -691,6 +698,7 @@
 				B100000120000001000000020000000B /* VitalSignsAlertServiceTests.swift in Sources */,
 				B100000120000001000000020000000C /* CardiovascularMedicationTests.swift in Sources */,
 				B100000120000001000000020000000D /* MedicationChangeAnalysisServiceTests.swift in Sources */,
+				029000010000000100000002 /* OtherMedicationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

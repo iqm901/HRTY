@@ -2,6 +2,13 @@ import Foundation
 import SwiftData
 import UIKit
 
+/// Entry mode for adding medications
+enum MedicationEntryMode: String, CaseIterable {
+    case heartFailure = "Heart Failure Meds"
+    case other = "Other Medications"
+    case custom = "Custom Entry"
+}
+
 @Observable
 final class MedicationsViewModel {
     // MARK: - State
@@ -42,15 +49,69 @@ final class MedicationsViewModel {
     var scheduleInput: String = ""
     var isDiuretic: Bool = false
 
-    // MARK: - Preset Medication Selection
-    var usePresetMedication: Bool = true
+    // MARK: - Entry Mode and Preset Medication Selection
+    var entryMode: MedicationEntryMode = .heartFailure
     var selectedPresetMedication: HeartFailureMedication?
     var selectedDosageOption: String = ""
     var selectedFrequency: String = ""
 
+    // MARK: - Other Medication Selection
+    var selectedOtherMedication: OtherMedication?
+    var otherMedicationSelectedDosageOption: String = ""
+    var otherMedicationSelectedFrequency: String = ""
+
+    // MARK: - Search State
+    var searchText: String = ""
+
+    /// Whether search is active (non-empty search text)
+    var isSearchActive: Bool {
+        !searchText.trimmingCharacters(in: .whitespaces).isEmpty
+    }
+
+    /// Search results from Heart Failure Medications
+    var heartFailureSearchResults: [HeartFailureMedication] {
+        guard isSearchActive else { return [] }
+        let query = searchText.lowercased().trimmingCharacters(in: .whitespaces)
+        return HeartFailureMedication.allMedications.filter { medication in
+            medication.genericName.lowercased().contains(query) ||
+            (medication.brandName?.lowercased().contains(query) ?? false)
+        }.sorted { med1, med2 in
+            // Prioritize medications that start with the query
+            let med1StartsWithQuery = med1.genericName.lowercased().hasPrefix(query) ||
+                                      (med1.brandName?.lowercased().hasPrefix(query) ?? false)
+            let med2StartsWithQuery = med2.genericName.lowercased().hasPrefix(query) ||
+                                      (med2.brandName?.lowercased().hasPrefix(query) ?? false)
+            if med1StartsWithQuery != med2StartsWithQuery {
+                return med1StartsWithQuery
+            }
+            return med1.displayName.localizedCaseInsensitiveCompare(med2.displayName) == .orderedAscending
+        }
+    }
+
+    /// Search results from Other Medications
+    var otherMedicationSearchResults: [OtherMedication] {
+        guard isSearchActive else { return [] }
+        return OtherMedication.search(query: searchText)
+    }
+
+    /// Whether there are any search results
+    var hasSearchResults: Bool {
+        !heartFailureSearchResults.isEmpty || !otherMedicationSearchResults.isEmpty
+    }
+
+    /// Clear search and reset to default state
+    func clearSearch() {
+        searchText = ""
+    }
+
     /// Available dosages for the currently selected preset medication
     var availableDosages: [String] {
         selectedPresetMedication?.availableDosages ?? []
+    }
+
+    /// Available dosages for the currently selected other medication
+    var availableOtherDosages: [String] {
+        selectedOtherMedication?.availableDosages ?? []
     }
 
     /// Select a preset medication and auto-populate form fields
@@ -68,9 +129,30 @@ final class MedicationsViewModel {
         }
     }
 
+    /// Select an Other Medication and auto-populate form fields
+    func selectOtherMedication(_ medication: OtherMedication?) {
+        selectedOtherMedication = medication
+        if let med = medication {
+            nameInput = med.displayName
+            selectedUnit = med.unit
+            isDiuretic = med.isDiuretic
+            otherMedicationSelectedFrequency = med.defaultFrequency
+            scheduleInput = med.defaultFrequency
+            // Reset dosage selection
+            otherMedicationSelectedDosageOption = ""
+            dosageInput = ""
+        }
+    }
+
     /// Select a dosage from the preset options
     func selectDosage(_ dosage: String) {
         selectedDosageOption = dosage
+        dosageInput = dosage
+    }
+
+    /// Select a dosage from the other medication options
+    func selectOtherMedicationDosage(_ dosage: String) {
+        otherMedicationSelectedDosageOption = dosage
         dosageInput = dosage
     }
 
@@ -183,7 +265,13 @@ final class MedicationsViewModel {
         selectedPresetMedication = nil
         selectedDosageOption = ""
         selectedFrequency = ""
-        usePresetMedication = true
+        // Reset other medication fields
+        selectedOtherMedication = nil
+        otherMedicationSelectedDosageOption = ""
+        otherMedicationSelectedFrequency = ""
+        // Reset entry mode and search
+        entryMode = .heartFailure
+        searchText = ""
         // Don't clear medicationSavedMessage here - let it show briefly
     }
 
@@ -242,9 +330,14 @@ final class MedicationsViewModel {
         let trimmedDosage = dosageInput.trimmingCharacters(in: .whitespaces)
 
         // Auto-detect if medication is a diuretic
-        // Use preset's isDiuretic if available, otherwise detect from name
+        // Use preset's isDiuretic if available, then other medication's, otherwise detect from name
         let detectedDiuretic = selectedPresetMedication?.isDiuretic
+            ?? selectedOtherMedication?.isDiuretic
             ?? HeartFailureMedication.isDiuretic(medicationName: trimmedName)
+            || OtherMedication.knownDiureticNames.contains(trimmedName.lowercased())
+
+        // Get category from HF medication (Other medications don't have HF categories)
+        let categoryRawValue = selectedPresetMedication?.category.rawValue
 
         let medication = Medication(
             name: trimmedName,
@@ -252,7 +345,7 @@ final class MedicationsViewModel {
             unit: selectedUnit,
             schedule: trimmedSchedule,
             isDiuretic: detectedDiuretic,
-            categoryRawValue: selectedPresetMedication?.category.rawValue
+            categoryRawValue: categoryRawValue
         )
 
         // Create initial period for tracking history
@@ -499,7 +592,8 @@ final class MedicationsViewModel {
 
         let trimmedDosage = dosageInput.trimmingCharacters(in: .whitespaces)
 
-        // Only check conflicts for preset medications with a known category
+        // Only check conflicts for preset HF medications with a known category
+        // Other medications don't have HF-specific category conflicts
         if let category = selectedPresetMedication?.category {
             let conflicts = conflictService.checkConflicts(
                 newCategory: category,
@@ -513,7 +607,9 @@ final class MedicationsViewModel {
 
                 // Auto-detect if medication is a diuretic
                 let detectedDiuretic = selectedPresetMedication?.isDiuretic
+                    ?? selectedOtherMedication?.isDiuretic
                     ?? HeartFailureMedication.isDiuretic(medicationName: trimmedName)
+                    || OtherMedication.knownDiureticNames.contains(trimmedName.lowercased())
 
                 pendingConflictMedication = Medication(
                     name: trimmedName,
