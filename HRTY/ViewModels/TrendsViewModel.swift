@@ -420,27 +420,39 @@ final class TrendsViewModel {
 
     // MARK: - Heart Rate Data Loading
 
-    /// Load heart rate data for the past 30 days from HealthKit
-    func loadHeartRateData() async {
-        guard healthKitAvailable else { return }
-
+    /// Load heart rate data for the past 30 days from Core Data and HealthKit
+    func loadHeartRateData(context: ModelContext) async {
         isLoadingHeartRate = true
-
-        // Request authorization
-        let authorized = await healthKitService.requestAuthorization()
-        guard authorized else {
-            isLoadingHeartRate = false
-            return
-        }
-
-        // Fetch heart rate history
-        let readings = await healthKitService.fetchHeartRateHistory(days: 30)
 
         // Group by day and get daily averages (one reading per day for the chart)
         var dailyReadings: [Date: [HeartRateReading]] = [:]
-        for reading in readings {
-            let day = Calendar.current.startOfDay(for: reading.date)
-            dailyReadings[day, default: []].append(reading)
+
+        // Fetch from HealthKit if available
+        if healthKitAvailable {
+            let authorized = await healthKitService.requestAuthorization()
+            if authorized {
+                let readings = await healthKitService.fetchHeartRateHistory(days: 30)
+                for reading in readings {
+                    let day = Calendar.current.startOfDay(for: reading.date)
+                    dailyReadings[day, default: []].append(reading)
+                }
+            }
+        }
+
+        // Fetch from Core Data (user-entered readings) - takes precedence over HealthKit
+        let endDate = Date()
+        if let startDate = Calendar.current.date(byAdding: .day, value: -29, to: endDate) {
+            let entries = DailyEntry.fetchForDateRange(from: startDate, to: endDate, in: context)
+
+            for entry in entries {
+                guard let vitalSigns = entry.vitalSigns,
+                      let heartRate = vitalSigns.heartRate else {
+                    continue
+                }
+                let day = Calendar.current.startOfDay(for: entry.date)
+                // Core Data entry overwrites HealthKit for that day
+                dailyReadings[day] = [HeartRateReading(heartRate: heartRate, date: day)]
+            }
         }
 
         // Convert to HeartRateDataPoints with daily averages
@@ -476,7 +488,7 @@ final class TrendsViewModel {
         loadSymptomData(context: context)
         loadBloodPressureData(context: context)
         loadOxygenSaturationData(context: context)
-        await loadHeartRateData()
+        await loadHeartRateData(context: context)
         isLoading = false
     }
 

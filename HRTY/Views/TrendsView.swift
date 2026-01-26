@@ -526,11 +526,11 @@ struct TrendsView: View {
         HRTEmptyState(
             icon: "heart.slash",
             title: "No Heart Rate Data Yet",
-            message: "Heart rate data from Apple Health will appear here when available."
+            message: "Enter your heart rate on the Today tab or sync from Apple Health."
         )
         .background(Color.hrtCardFallback)
         .clipShape(RoundedRectangle(cornerRadius: HRTRadius.large))
-        .accessibilityLabel("No heart rate data yet. Heart rate data from Apple Health will appear here when available.")
+        .accessibilityLabel("No heart rate data yet. Enter your heart rate on the Today tab or sync from Apple Health.")
     }
 
     // MARK: - Symptom Section
