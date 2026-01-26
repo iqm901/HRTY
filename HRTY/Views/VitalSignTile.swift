@@ -237,8 +237,7 @@ struct VitalSignTile: View {
             if let value = lastValue, isCompleted {
                 HStack {
                     Text(value)
-                        .font(.hrtMetricSmallLight)
-                        .fontWeight(vitalSignStatus.fontWeight)
+                        .font(.system(size: 24, weight: vitalSignStatus.fontWeight, design: .rounded))
                         .foregroundStyle(vitalSignStatus.color)
                     Text(type.unit)
                         .font(.hrtCaption)
