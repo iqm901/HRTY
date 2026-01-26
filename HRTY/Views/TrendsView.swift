@@ -17,11 +17,11 @@ struct TrendsView: View {
                             HRTLoadingView("Loading trends...")
                                 .frame(height: 200)
                         } else {
-                            // 1. Symptoms section (moved to top)
-                            symptomSection
-
-                            // 2. Vitals section (new)
+                            // 1. Vitals section (top)
                             vitalsSection
+
+                            // 2. Symptoms section
+                            symptomSection
                         }
                     }
                     .padding(HRTSpacing.md)

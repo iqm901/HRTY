@@ -3,85 +3,88 @@ import SwiftUI
 struct SymptomToggleView: View {
     @Binding var toggleStates: [SymptomType: Bool]
     let onToggle: (SymptomType) -> Void
+    @State private var isExpanded = false
+
+    private var selectedCount: Int {
+        toggleStates.values.filter { $0 }.count
+    }
 
     var body: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 8) {
-                ForEach(SymptomType.allCases, id: \.self) { symptomType in
-                    SymptomToggleChip(
-                        symptomType: symptomType,
-                        isSelected: toggleStates[symptomType] ?? true,
-                        onTap: { onToggle(symptomType) }
-                    )
+        VStack(spacing: 0) {
+            // Header row (tappable)
+            Button {
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    isExpanded.toggle()
                 }
+            } label: {
+                HStack {
+                    Text("Select symptoms")
+                        .font(.hrtBody)
+                        .foregroundStyle(Color.hrtTextFallback)
+                    Spacer()
+                    Text("\(selectedCount) of 8")
+                        .font(.hrtCaption)
+                        .foregroundStyle(Color.hrtTextSecondaryFallback)
+                    Image(systemName: "chevron.down")
+                        .rotationEffect(.degrees(isExpanded ? 180 : 0))
+                        .foregroundStyle(Color.hrtTextSecondaryFallback)
+                }
+                .padding(HRTSpacing.md)
+                .background(Color.hrtCardFallback)
+                .clipShape(RoundedRectangle(cornerRadius: HRTRadius.medium))
             }
-            .padding(.horizontal, 4)
+            .buttonStyle(.plain)
+            .accessibilityLabel("Select symptoms")
+            .accessibilityValue("\(selectedCount) of 8 selected")
+            .accessibilityHint("Double tap to \(isExpanded ? "collapse" : "expand") symptom list")
+
+            // Expandable list
+            if isExpanded {
+                VStack(spacing: 0) {
+                    ForEach(SymptomType.allCases, id: \.self) { symptomType in
+                        SymptomToggleRow(
+                            symptomType: symptomType,
+                            isSelected: toggleStates[symptomType] ?? true,
+                            onTap: { onToggle(symptomType) }
+                        )
+                        if symptomType != SymptomType.allCases.last {
+                            Divider().padding(.leading, HRTSpacing.md)
+                        }
+                    }
+                }
+                .background(Color.hrtCardFallback)
+                .clipShape(RoundedRectangle(cornerRadius: HRTRadius.medium))
+                .padding(.top, HRTSpacing.xs)
+            }
         }
         .accessibilityElement(children: .contain)
-        .accessibilityLabel("Symptom filters")
-        .accessibilityHint("Toggle symptoms to show or hide them on the chart")
     }
 }
 
-struct SymptomToggleChip: View {
+struct SymptomToggleRow: View {
     let symptomType: SymptomType
     let isSelected: Bool
     let onTap: () -> Void
 
-    private var shortName: String {
-        switch symptomType {
-        case .dyspneaAtRest:
-            return "Breath at rest"
-        case .dyspneaOnExertion:
-            return "Breath on activity"
-        case .orthopnea:
-            return "Lying flat"
-        case .pnd:
-            return "Night breathing"
-        case .chestPain:
-            return "Chest"
-        case .dizziness:
-            return "Dizzy"
-        case .syncope:
-            return "Fainting"
-        case .reducedUrineOutput:
-            return "Urine"
-        }
-    }
-
     var body: some View {
         Button(action: onTap) {
-            HStack(spacing: 4) {
+            HStack {
                 Circle()
                     .fill(TrendsViewModel.color(for: symptomType))
-                    .frame(width: 8, height: 8)
-
-                Text(shortName)
-                    .font(.caption)
-                    .fontWeight(isSelected ? .medium : .regular)
+                    .frame(width: 10, height: 10)
+                Text(symptomType.displayName)
+                    .font(.hrtBody)
+                    .foregroundStyle(Color.hrtTextFallback)
+                Spacer()
+                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+                    .foregroundStyle(isSelected ? Color.hrtPinkFallback : Color.hrtTextTertiaryFallback)
             }
-            .padding(.horizontal, 10)
-            .padding(.vertical, 6)
-            .background(
-                Capsule()
-                    .fill(isSelected
-                          ? TrendsViewModel.color(for: symptomType).opacity(0.15)
-                          : Color(.secondarySystemBackground))
-            )
-            .overlay(
-                Capsule()
-                    .strokeBorder(
-                        isSelected
-                        ? TrendsViewModel.color(for: symptomType).opacity(0.5)
-                        : Color.clear,
-                        lineWidth: 1
-                    )
-            )
+            .padding(HRTSpacing.md)
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .foregroundStyle(isSelected ? .primary : .secondary)
-        .accessibilityLabel("\(symptomType.displayName)")
-        .accessibilityValue(isSelected ? "showing" : "hidden")
+        .accessibilityLabel(symptomType.displayName)
+        .accessibilityValue(isSelected ? "selected" : "not selected")
         .accessibilityHint("Double tap to \(isSelected ? "hide" : "show") this symptom on the chart")
         .accessibilityAddTraits(isSelected ? [.isSelected] : [])
     }
@@ -108,6 +111,7 @@ struct SymptomToggleChip: View {
                 )
             }
             .padding()
+            .background(Color.hrtBackgroundFallback)
         }
     }
 
