@@ -1,5 +1,104 @@
 import SwiftUI
 
+/// Represents the status of a vital sign value for display styling
+enum VitalSignStatus {
+    case normal
+    case caution
+    case critical
+
+    var color: Color {
+        switch self {
+        case .normal:
+            return Color.hrtTextFallback
+        case .caution:
+            return Color.hrtCautionFallback
+        case .critical:
+            return Color.hrtAlertFallback
+        }
+    }
+
+    var fontWeight: Font.Weight {
+        switch self {
+        case .normal, .caution:
+            return .regular
+        case .critical:
+            return .bold
+        }
+    }
+
+    // MARK: - Static Methods for Determining Status
+
+    /// Determine oxygen saturation status
+    static func forOxygenSaturation(_ value: Int) -> VitalSignStatus {
+        if value > AlertConstants.oxygenSaturationNormalThreshold {
+            return .normal
+        } else if value >= AlertConstants.oxygenSaturationCriticalThreshold {
+            return .caution
+        } else {
+            return .critical
+        }
+    }
+
+    /// Determine heart rate status
+    static func forHeartRate(_ value: Int) -> VitalSignStatus {
+        if value >= AlertConstants.heartRateNormalLow && value <= AlertConstants.heartRateNormalHigh {
+            return .normal
+        } else if value < AlertConstants.heartRateCriticalLow || value > AlertConstants.heartRateCriticalHigh {
+            return .critical
+        } else {
+            return .caution
+        }
+    }
+
+    /// Determine systolic blood pressure status
+    static func forSystolicBP(_ value: Int) -> VitalSignStatus {
+        if value >= AlertConstants.systolicBPNormalLow && value <= AlertConstants.systolicBPNormalHigh {
+            return .normal
+        } else if value < AlertConstants.systolicBPCriticalLow || value >= AlertConstants.systolicBPCriticalHigh {
+            return .critical
+        } else {
+            return .caution
+        }
+    }
+
+    /// Determine diastolic blood pressure status
+    static func forDiastolicBP(_ value: Int) -> VitalSignStatus {
+        if value >= AlertConstants.diastolicBPNormalLow && value <= AlertConstants.diastolicBPNormalHigh {
+            return .normal
+        } else if value < AlertConstants.diastolicBPCriticalLow || value >= AlertConstants.diastolicBPCriticalHigh {
+            return .critical
+        } else {
+            return .caution
+        }
+    }
+
+    /// Determine combined blood pressure status (worst of systolic and diastolic)
+    static func forBloodPressure(systolic: Int, diastolic: Int) -> VitalSignStatus {
+        let systolicStatus = forSystolicBP(systolic)
+        let diastolicStatus = forDiastolicBP(diastolic)
+
+        // Return the more severe status
+        if systolicStatus == .critical || diastolicStatus == .critical {
+            return .critical
+        } else if systolicStatus == .caution || diastolicStatus == .caution {
+            return .caution
+        } else {
+            return .normal
+        }
+    }
+
+    /// Determine weight gain status
+    static func forWeightGain(_ gain: Double) -> VitalSignStatus {
+        if gain < AlertConstants.weightGain24hThreshold {
+            return .normal
+        } else if gain < AlertConstants.weightGain7dThreshold {
+            return .caution
+        } else {
+            return .critical
+        }
+    }
+}
+
 /// Represents the types of vital signs that can be tracked
 enum VitalSignType: String, CaseIterable, Identifiable {
     case weight
@@ -60,7 +159,7 @@ enum VitalSignType: String, CaseIterable, Identifiable {
         case .weight: return Color.hrtPinkFallback
         case .bloodPressure: return Color.hrtRoseFallback
         case .heartRate: return Color.hrtPinkFallback
-        case .oxygenSaturation: return Color(red: 0.45, green: 0.75, blue: 0.85)
+        case .oxygenSaturation: return Color.hrtPinkFallback
         }
     }
 }
@@ -73,6 +172,31 @@ struct VitalSignTile: View {
     let isExpanded: Bool
     let isCollapsed: Bool // When another tile is expanded
     let onTap: () -> Void
+
+    // Optional raw values for status calculation
+    var weightGain: Double?
+    var heartRateValue: Int?
+    var systolicBP: Int?
+    var diastolicBP: Int?
+    var oxygenSaturationValue: Int?
+
+    /// Computed vital sign status based on raw values
+    private var vitalSignStatus: VitalSignStatus {
+        switch type {
+        case .weight:
+            guard let gain = weightGain, gain > 0 else { return .normal }
+            return VitalSignStatus.forWeightGain(gain)
+        case .heartRate:
+            guard let hr = heartRateValue else { return .normal }
+            return VitalSignStatus.forHeartRate(hr)
+        case .bloodPressure:
+            guard let sys = systolicBP, let dia = diastolicBP else { return .normal }
+            return VitalSignStatus.forBloodPressure(systolic: sys, diastolic: dia)
+        case .oxygenSaturation:
+            guard let spo2 = oxygenSaturationValue else { return .normal }
+            return VitalSignStatus.forOxygenSaturation(spo2)
+        }
+    }
 
     var body: some View {
         Button(action: onTap) {
@@ -114,7 +238,8 @@ struct VitalSignTile: View {
                 HStack {
                     Text(value)
                         .font(.hrtMetricSmallLight)
-                        .foregroundStyle(Color.hrtTextFallback)
+                        .fontWeight(vitalSignStatus.fontWeight)
+                        .foregroundStyle(vitalSignStatus.color)
                     Text(type.unit)
                         .font(.hrtCaption)
                         .foregroundStyle(Color.hrtTextSecondaryFallback)
@@ -192,7 +317,7 @@ struct VitalSignTileButtonStyle: ButtonStyle {
 
 // MARK: - Previews
 
-#Preview("Grid State") {
+#Preview("Grid State - Normal") {
     LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: HRTSpacing.sm) {
         VitalSignTile(
             type: .weight,
@@ -200,16 +325,19 @@ struct VitalSignTileButtonStyle: ButtonStyle {
             lastValue: "165.2",
             isExpanded: false,
             isCollapsed: false,
-            onTap: {}
+            onTap: {},
+            weightGain: 0.5 // Normal - less than 2 lbs
         )
 
         VitalSignTile(
             type: .bloodPressure,
-            isCompleted: false,
-            lastValue: nil,
+            isCompleted: true,
+            lastValue: "120/80",
             isExpanded: false,
             isCollapsed: false,
-            onTap: {}
+            onTap: {},
+            systolicBP: 120,
+            diastolicBP: 80 // Normal
         )
 
         VitalSignTile(
@@ -218,16 +346,112 @@ struct VitalSignTileButtonStyle: ButtonStyle {
             lastValue: "72",
             isExpanded: false,
             isCollapsed: false,
-            onTap: {}
+            onTap: {},
+            heartRateValue: 72 // Normal
         )
 
         VitalSignTile(
             type: .oxygenSaturation,
-            isCompleted: false,
-            lastValue: nil,
+            isCompleted: true,
+            lastValue: "97",
             isExpanded: false,
             isCollapsed: false,
-            onTap: {}
+            onTap: {},
+            oxygenSaturationValue: 97 // Normal
+        )
+    }
+    .padding()
+    .background(Color.hrtBackgroundFallback)
+}
+
+#Preview("Grid State - Caution") {
+    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: HRTSpacing.sm) {
+        VitalSignTile(
+            type: .weight,
+            isCompleted: true,
+            lastValue: "168.5",
+            isExpanded: false,
+            isCollapsed: false,
+            onTap: {},
+            weightGain: 3.0 // Caution - 2-4.9 lbs gain
+        )
+
+        VitalSignTile(
+            type: .bloodPressure,
+            isCompleted: true,
+            lastValue: "145/92",
+            isExpanded: false,
+            isCollapsed: false,
+            onTap: {},
+            systolicBP: 145,
+            diastolicBP: 92 // Caution
+        )
+
+        VitalSignTile(
+            type: .heartRate,
+            isCompleted: true,
+            lastValue: "55",
+            isExpanded: false,
+            isCollapsed: false,
+            onTap: {},
+            heartRateValue: 55 // Caution - bradycardia
+        )
+
+        VitalSignTile(
+            type: .oxygenSaturation,
+            isCompleted: true,
+            lastValue: "90",
+            isExpanded: false,
+            isCollapsed: false,
+            onTap: {},
+            oxygenSaturationValue: 90 // Caution
+        )
+    }
+    .padding()
+    .background(Color.hrtBackgroundFallback)
+}
+
+#Preview("Grid State - Critical") {
+    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: HRTSpacing.sm) {
+        VitalSignTile(
+            type: .weight,
+            isCompleted: true,
+            lastValue: "172.0",
+            isExpanded: false,
+            isCollapsed: false,
+            onTap: {},
+            weightGain: 6.0 // Critical - 5+ lbs gain
+        )
+
+        VitalSignTile(
+            type: .bloodPressure,
+            isCompleted: true,
+            lastValue: "165/105",
+            isExpanded: false,
+            isCollapsed: false,
+            onTap: {},
+            systolicBP: 165,
+            diastolicBP: 105 // Critical
+        )
+
+        VitalSignTile(
+            type: .heartRate,
+            isCompleted: true,
+            lastValue: "135",
+            isExpanded: false,
+            isCollapsed: false,
+            onTap: {},
+            heartRateValue: 135 // Critical - severe tachycardia
+        )
+
+        VitalSignTile(
+            type: .oxygenSaturation,
+            isCompleted: true,
+            lastValue: "85",
+            isExpanded: false,
+            isCollapsed: false,
+            onTap: {},
+            oxygenSaturationValue: 85 // Critical
         )
     }
     .padding()
@@ -251,7 +475,8 @@ struct VitalSignTileButtonStyle: ButtonStyle {
             lastValue: "72",
             isExpanded: false,
             isCollapsed: true,
-            onTap: {}
+            onTap: {},
+            heartRateValue: 72
         )
 
         VitalSignTile(

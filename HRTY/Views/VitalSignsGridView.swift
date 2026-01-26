@@ -50,7 +50,12 @@ struct VitalSignsGridView: View {
                         withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
                             expandedTile = type
                         }
-                    }
+                    },
+                    weightGain: weightGain,
+                    heartRateValue: heartRateValue,
+                    systolicBP: systolicBP,
+                    diastolicBP: diastolicBP,
+                    oxygenSaturationValue: oxygenSaturationValue
                 )
             }
         }
@@ -183,7 +188,12 @@ struct VitalSignsGridView: View {
                         withAnimation {
                             expandedTile = type
                         }
-                    }
+                    },
+                    weightGain: weightGain,
+                    heartRateValue: heartRateValue,
+                    systolicBP: systolicBP,
+                    diastolicBP: diastolicBP,
+                    oxygenSaturationValue: oxygenSaturationValue
                 )
             }
         }
@@ -222,6 +232,32 @@ struct VitalSignsGridView: View {
         case .oxygenSaturation:
             return viewModel.todaySpO2Value
         }
+    }
+
+    // MARK: - Raw Values for Status Indicators
+
+    private var weightGain: Double? {
+        guard let current = viewModel.todayEntry?.weight,
+              let previous = viewModel.previousWeight else {
+            return nil
+        }
+        return current - previous
+    }
+
+    private var systolicBP: Int? {
+        viewModel.todayEntry?.vitalSigns?.systolicBP
+    }
+
+    private var diastolicBP: Int? {
+        viewModel.todayEntry?.vitalSigns?.diastolicBP
+    }
+
+    private var heartRateValue: Int? {
+        viewModel.todayEntry?.vitalSigns?.heartRate
+    }
+
+    private var oxygenSaturationValue: Int? {
+        viewModel.todayEntry?.vitalSigns?.oxygenSaturation
     }
 }
 

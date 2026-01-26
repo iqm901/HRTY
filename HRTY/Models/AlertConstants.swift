@@ -55,6 +55,48 @@ enum AlertConstants {
     /// Changes smaller than this are treated as normal daily fluctuation
     static let weightStabilityThreshold: Double = 0.05
 
+    // MARK: - Display Thresholds (for visual indicators)
+    // These define when values should show caution (yellow) or critical (red) styling
+
+    // Oxygen Saturation Display Thresholds
+    /// SpO2 above this is normal (no styling change)
+    static let oxygenSaturationNormalThreshold: Int = 92
+    /// SpO2 below this is critical (red + bold); between this and normal is caution
+    static let oxygenSaturationCriticalThreshold: Int = 88
+
+    // Heart Rate Display Thresholds
+    /// Heart rate at or above this is normal (no styling change)
+    static let heartRateNormalLow: Int = 60
+    /// Heart rate at or below this is normal (no styling change)
+    static let heartRateNormalHigh: Int = 100
+    /// Heart rate below this is critical (red + bold); between this and normalLow is caution
+    static let heartRateCriticalLow: Int = 40
+    /// Heart rate above this is critical (red + bold); between normalHigh and this is caution
+    static let heartRateCriticalHigh: Int = 120
+
+    // Systolic Blood Pressure Display Thresholds
+    /// Systolic at or above this is normal (no styling change)
+    static let systolicBPNormalLow: Int = 90
+    /// Systolic at or below this is normal (no styling change)
+    static let systolicBPNormalHigh: Int = 139
+    /// Systolic below this is critical (red + bold); between this and normalLow is caution
+    static let systolicBPCriticalLow: Int = 80
+    /// Systolic at or above this is critical (red + bold); between normalHigh and this is caution
+    static let systolicBPCriticalHigh: Int = 160
+
+    // Diastolic Blood Pressure Display Thresholds
+    /// Diastolic at or above this is normal (no styling change)
+    static let diastolicBPNormalLow: Int = 60
+    /// Diastolic at or below this is normal (no styling change)
+    static let diastolicBPNormalHigh: Int = 89
+    /// Diastolic below this is critical (red + bold); between this and normalLow is caution
+    static let diastolicBPCriticalLow: Int = 50
+    /// Diastolic at or above this is critical (red + bold); between normalHigh and this is caution
+    static let diastolicBPCriticalHigh: Int = 100
+
+    // Weight Gain Display Thresholds (uses existing weightGain24hThreshold and weightGain7dThreshold)
+    // 2-4.9 lbs gain = caution, ≥5 lbs gain = critical
+
     // MARK: - Vital Signs Alert Thresholds
 
     /// Oxygen saturation below this value triggers low SpO2 alert (%)
