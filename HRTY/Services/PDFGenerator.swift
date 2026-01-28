@@ -56,6 +56,18 @@ final class PDFGenerator {
             currentY = drawHeader(at: currentY, data: data, in: context.cgContext)
             currentY += 30
 
+            // Clinical profile section (if data exists)
+            if let clinicalProfile = data.clinicalProfile, clinicalProfile.hasAnyData {
+                currentY = drawClinicalProfileSection(at: currentY, profile: clinicalProfile, in: context.cgContext)
+
+                if currentY > pageHeight - 250 {
+                    context.beginPage()
+                    currentY = margin
+                } else {
+                    currentY += 20
+                }
+            }
+
             currentY = drawWeightSection(at: currentY, data: data, in: context.cgContext)
 
             // Continue on same page or start new page for symptoms
@@ -910,6 +922,143 @@ final class PDFGenerator {
 
             currentY += 18
             eventsShown += 1
+        }
+
+        return currentY
+    }
+
+    // MARK: - Clinical Profile Section
+
+    private func drawClinicalProfileSection(at y: CGFloat, profile: ClinicalProfileData, in context: CGContext) -> CGFloat {
+        var currentY = y
+
+        currentY = drawSectionHeading("Clinical Profile", at: currentY)
+
+        let rowAttributes: [NSAttributedString.Key: Any] = [
+            .font: bodyFont,
+            .foregroundColor: primaryColor
+        ]
+        let labelAttributes: [NSAttributedString.Key: Any] = [
+            .font: subheadingFont,
+            .foregroundColor: secondaryColor
+        ]
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .medium
+        dateFormatter.timeStyle = .none
+
+        // Ejection Fraction
+        if let ef = profile.ejectionFraction {
+            "Ejection Fraction:".draw(at: CGPoint(x: margin, y: currentY), withAttributes: labelAttributes)
+            var efText = "\(ef)%"
+            if let category = profile.efCategory {
+                efText += " (\(category))"
+            }
+            efText.draw(at: CGPoint(x: margin + 140, y: currentY), withAttributes: rowAttributes)
+            currentY += 18
+
+            if let efDate = profile.ejectionFractionDate {
+                let dateText = "Measured: \(dateFormatter.string(from: efDate))"
+                let dateAttrs: [NSAttributedString.Key: Any] = [
+                    .font: captionFont,
+                    .foregroundColor: secondaryColor
+                ]
+                dateText.draw(at: CGPoint(x: margin + 140, y: currentY), withAttributes: dateAttrs)
+                currentY += 16
+            }
+        }
+
+        // NYHA Class
+        if let nyha = profile.nyhaClass {
+            "NYHA Class:".draw(at: CGPoint(x: margin, y: currentY), withAttributes: labelAttributes)
+            "\(nyha.displayName) - \(nyha.shortDescription)".draw(at: CGPoint(x: margin + 140, y: currentY), withAttributes: rowAttributes)
+            currentY += 18
+
+            if let nyhaDate = profile.nyhaClassDate {
+                let dateText = "Assessed: \(dateFormatter.string(from: nyhaDate))"
+                let dateAttrs: [NSAttributedString.Key: Any] = [
+                    .font: captionFont,
+                    .foregroundColor: secondaryColor
+                ]
+                dateText.draw(at: CGPoint(x: margin + 140, y: currentY), withAttributes: dateAttrs)
+                currentY += 16
+            }
+        }
+
+        // BP Target
+        if let systolic = profile.targetSystolicBP, let diastolic = profile.targetDiastolicBP {
+            "BP Target:".draw(at: CGPoint(x: margin, y: currentY), withAttributes: labelAttributes)
+            "\(systolic)/\(diastolic) mmHg".draw(at: CGPoint(x: margin + 140, y: currentY), withAttributes: rowAttributes)
+            currentY += 18
+        }
+
+        // Coronary Arteries
+        if !profile.coronaryArteries.isEmpty {
+            currentY += 8
+            "Coronary Arteries:".draw(at: CGPoint(x: margin, y: currentY), withAttributes: labelAttributes)
+            currentY += 18
+
+            for artery in profile.coronaryArteries {
+                var arteryText = artery.arteryName
+
+                var details: [String] = []
+                if artery.hasBlockage {
+                    if let severity = artery.blockageSeverity {
+                        details.append("\(severity) blockage")
+                    } else {
+                        details.append("Blockage present")
+                    }
+                } else {
+                    details.append("No significant blockage")
+                }
+                if artery.hasStent {
+                    if let stentDate = artery.stentDate {
+                        details.append("Stent (\(dateFormatter.string(from: stentDate)))")
+                    } else {
+                        details.append("Stent placed")
+                    }
+                }
+
+                arteryText += " — " + details.joined(separator: ", ")
+                arteryText.draw(at: CGPoint(x: margin + 10, y: currentY), withAttributes: rowAttributes)
+                currentY += 16
+            }
+        }
+
+        // Heart Valves
+        if !profile.heartValves.isEmpty {
+            currentY += 8
+            "Heart Valves:".draw(at: CGPoint(x: margin, y: currentY), withAttributes: labelAttributes)
+            currentY += 18
+
+            for valve in profile.heartValves {
+                var valveText = valve.valveName
+
+                var details: [String] = []
+                if let problem = valve.problemType {
+                    if let severity = valve.severity {
+                        details.append("\(severity) \(problem.lowercased())")
+                    } else {
+                        details.append(problem)
+                    }
+                } else {
+                    details.append("Normal")
+                }
+                if valve.hasIntervention {
+                    if let interventionType = valve.interventionType {
+                        if let interventionDate = valve.interventionDate {
+                            details.append("\(interventionType) (\(dateFormatter.string(from: interventionDate)))")
+                        } else {
+                            details.append(interventionType)
+                        }
+                    } else {
+                        details.append("Intervention performed")
+                    }
+                }
+
+                valveText += " — " + details.joined(separator: ", ")
+                valveText.draw(at: CGPoint(x: margin + 10, y: currentY), withAttributes: rowAttributes)
+                currentY += 16
+            }
         }
 
         return currentY

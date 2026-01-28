@@ -10,10 +10,51 @@ enum PDFGenerationState: Equatable {
     case error(String)
 }
 
+/// Clinical profile data for export
+struct ClinicalProfileData {
+    let ejectionFraction: Int?
+    let ejectionFractionDate: Date?
+    let efCategory: String?
+    let nyhaClass: NYHAClass?
+    let nyhaClassDate: Date?
+    let targetSystolicBP: Int?
+    let targetDiastolicBP: Int?
+    let coronaryArteries: [CoronaryArteryExportData]
+    let heartValves: [HeartValveExportData]
+
+    var hasAnyData: Bool {
+        ejectionFraction != nil ||
+        nyhaClass != nil ||
+        targetSystolicBP != nil ||
+        !coronaryArteries.isEmpty ||
+        !heartValves.isEmpty
+    }
+}
+
+/// Coronary artery data for export
+struct CoronaryArteryExportData {
+    let arteryName: String
+    let hasBlockage: Bool
+    let blockageSeverity: String?
+    let hasStent: Bool
+    let stentDate: Date?
+}
+
+/// Heart valve data for export
+struct HeartValveExportData {
+    let valveName: String
+    let problemType: String?
+    let severity: String?
+    let hasIntervention: Bool
+    let interventionType: String?
+    let interventionDate: Date?
+}
+
 /// Data structure containing all export data for PDF generation
 struct ExportData {
     let dateRange: (start: Date, end: Date)
     let patientIdentifier: String?
+    let clinicalProfile: ClinicalProfileData?
     let weightEntries: [WeightDataPoint]
     let symptomEntries: [SymptomDataPoint]
     let diureticDoses: [DiureticDoseData]
@@ -145,7 +186,11 @@ final class ExportViewModel {
 
     // MARK: - Private Methods
 
+    @MainActor
     private func gatherExportData(context: ModelContext) -> ExportData {
+        // Gather clinical profile data
+        let clinicalProfile = gatherClinicalProfileData(context: context)
+
         let entries = DailyEntry.fetchForDateRange(from: startDate, to: endDate, in: context)
 
         // Weight entries
@@ -227,6 +272,7 @@ final class ExportViewModel {
         return ExportData(
             dateRange: (startDate, endDate),
             patientIdentifier: patientIdentifierForExport,
+            clinicalProfile: clinicalProfile,
             weightEntries: weightEntries,
             symptomEntries: symptomEntries,
             diureticDoses: diureticDoses,
@@ -236,6 +282,48 @@ final class ExportViewModel {
             endRegimen: endRegimen,
             medicationTimeline: medicationTimeline,
             medicationComparisons: medicationComparisons
+        )
+    }
+
+    @MainActor
+    private func gatherClinicalProfileData(context: ModelContext) -> ClinicalProfileData? {
+        let profile = ClinicalProfile.getOrCreate(in: context)
+
+        guard profile.hasAnyData else { return nil }
+
+        // Convert coronary arteries
+        let coronaryArteries = (profile.coronaryArteries ?? []).map { artery in
+            CoronaryArteryExportData(
+                arteryName: artery.arteryType.displayName,
+                hasBlockage: artery.hasBlockage,
+                blockageSeverity: artery.blockageSeverity?.displayName,
+                hasStent: artery.hasStent,
+                stentDate: artery.stentDate
+            )
+        }
+
+        // Convert heart valves
+        let heartValves = (profile.heartValves ?? []).map { valve in
+            HeartValveExportData(
+                valveName: valve.valveType.displayName,
+                problemType: valve.problemType?.displayName,
+                severity: valve.severity?.displayName,
+                hasIntervention: valve.hasIntervention,
+                interventionType: valve.interventionType?.displayName,
+                interventionDate: valve.interventionDate
+            )
+        }
+
+        return ClinicalProfileData(
+            ejectionFraction: profile.ejectionFraction,
+            ejectionFractionDate: profile.ejectionFractionDate,
+            efCategory: profile.efCategory,
+            nyhaClass: profile.nyhaClass,
+            nyhaClassDate: profile.nyhaClassDate,
+            targetSystolicBP: profile.targetSystolicBP,
+            targetDiastolicBP: profile.targetDiastolicBP,
+            coronaryArteries: coronaryArteries,
+            heartValves: heartValves
         )
     }
 }

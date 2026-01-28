@@ -4,11 +4,13 @@ import XCTest
 final class TabTests: XCTestCase {
 
     func testTabCasesExist() {
-        // Verify all five tabs are defined using CaseIterable
-        XCTAssertEqual(Tab.allCases.count, 5, "Should have exactly 5 tabs")
+        // Verify all seven tabs are defined using CaseIterable
+        XCTAssertEqual(Tab.allCases.count, 7, "Should have exactly 7 tabs")
         XCTAssertTrue(Tab.allCases.contains(.today))
         XCTAssertTrue(Tab.allCases.contains(.trends))
         XCTAssertTrue(Tab.allCases.contains(.medications))
+        XCTAssertTrue(Tab.allCases.contains(.myHeart))
+        XCTAssertTrue(Tab.allCases.contains(.learn))
         XCTAssertTrue(Tab.allCases.contains(.export))
         XCTAssertTrue(Tab.allCases.contains(.settings))
     }
@@ -35,10 +37,13 @@ final class TabTests: XCTestCase {
         tabNames[.today] = "Today"
         tabNames[.trends] = "Trends"
         tabNames[.medications] = "Medications"
+        tabNames[.myHeart] = "My Heart"
+        tabNames[.learn] = "Learn"
         tabNames[.export] = "Export"
         tabNames[.settings] = "Settings"
 
         XCTAssertEqual(tabNames[.today], "Today")
+        XCTAssertEqual(tabNames[.myHeart], "My Heart")
         XCTAssertEqual(tabNames[.settings], "Settings")
     }
 }

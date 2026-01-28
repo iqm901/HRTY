@@ -135,6 +135,18 @@
 		031000010000000100000001 /* LearnView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031000020000000100000001 /* LearnView.swift */; };
 		031000010000000100000002 /* EducationPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031000020000000100000002 /* EducationPageView.swift */; };
 
+		MYH001000000000000000002 /* ClinicalProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = MYH001000000000000000001 /* ClinicalProfile.swift */; };
+		MYH002000000000000000002 /* CoronaryArtery.swift in Sources */ = {isa = PBXBuildFile; fileRef = MYH002000000000000000001 /* CoronaryArtery.swift */; };
+		MYH003000000000000000002 /* HeartValveCondition.swift in Sources */ = {isa = PBXBuildFile; fileRef = MYH003000000000000000001 /* HeartValveCondition.swift */; };
+		MYH004000000000000000002 /* MyHeartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = MYH004000000000000000001 /* MyHeartViewModel.swift */; };
+		MYH010000000000000000002 /* MyHeartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = MYH010000000000000000001 /* MyHeartView.swift */; };
+		MYH011000000000000000002 /* EjectionFractionEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = MYH011000000000000000001 /* EjectionFractionEditView.swift */; };
+		MYH012000000000000000002 /* NYHAClassEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = MYH012000000000000000001 /* NYHAClassEditView.swift */; };
+		MYH013000000000000000002 /* BPTargetEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = MYH013000000000000000001 /* BPTargetEditView.swift */; };
+		MYH014000000000000000002 /* CoronaryArteriesDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = MYH014000000000000000001 /* CoronaryArteriesDetailView.swift */; };
+		MYH015000000000000000002 /* CoronaryArteryEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = MYH015000000000000000001 /* CoronaryArteryEditView.swift */; };
+		MYH016000000000000000002 /* HeartValvesDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = MYH016000000000000000001 /* HeartValvesDetailView.swift */; };
+		MYH017000000000000000002 /* HeartValveEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = MYH017000000000000000001 /* HeartValveEditView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -272,6 +284,28 @@
 		031000020000000100000001 /* LearnView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LearnView.swift; sourceTree = "<group>"; };
 		031000020000000100000002 /* EducationPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = EducationPageView.swift; path = HRTY/Views/Onboarding/EducationPageView.swift; sourceTree = SOURCE_ROOT; };
 
+		MYH001000000000000000001 /* ClinicalProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClinicalProfile.swift; sourceTree = "<group>"; };
+		MYH002000000000000000001 /* CoronaryArtery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoronaryArtery.swift; sourceTree = "<group>"; };
+		MYH003000000000000000001 /* HeartValveCondition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartValveCondition.swift; sourceTree = "<group>"; };
+		MYH004000000000000000001 /* MyHeartViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyHeartViewModel.swift; sourceTree = "<group>"; };
+		MYH010000000000000000001 /* MyHeartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyHeartView.swift; sourceTree = "<group>"; };
+		MYH011000000000000000001 /* EjectionFractionEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EjectionFractionEditView.swift; sourceTree = "<group>"; };
+		MYH012000000000000000001 /* NYHAClassEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYHAClassEditView.swift; sourceTree = "<group>"; };
+		MYH013000000000000000001 /* BPTargetEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BPTargetEditView.swift; sourceTree = "<group>"; };
+		MYH014000000000000000001 /* CoronaryArteriesDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoronaryArteriesDetailView.swift; sourceTree = "<group>"; };
+		MYH015000000000000000001 /* CoronaryArteryEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoronaryArteryEditView.swift; sourceTree = "<group>"; };
+		MYH016000000000000000001 /* HeartValvesDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartValvesDetailView.swift; sourceTree = "<group>"; };
+		MYH017000000000000000001 /* HeartValveEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartValveEditView.swift; sourceTree = "<group>"; };
+		MYH005000000000000000001 /* MyHeart */ = {isa = PBXGroup; children = (
+				MYH010000000000000000001 /* MyHeartView.swift */,
+				MYH011000000000000000001 /* EjectionFractionEditView.swift */,
+				MYH012000000000000000001 /* NYHAClassEditView.swift */,
+				MYH013000000000000000001 /* BPTargetEditView.swift */,
+				MYH014000000000000000001 /* CoronaryArteriesDetailView.swift */,
+				MYH015000000000000000001 /* CoronaryArteryEditView.swift */,
+				MYH016000000000000000001 /* HeartValvesDetailView.swift */,
+				MYH017000000000000000001 /* HeartValveEditView.swift */,
+			); name = MyHeart; path = MyHeart; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -416,7 +450,8 @@
 				017000020000000100000005 /* MedicationPhotoViewerView.swift */,
 				030000020000000100000011 /* MedicationHistoryView.swift */,
 				030000020000000100000012 /* MedicationTimelineRow.swift */,
-			);
+			
+				MYH005000000000000000001 /* MyHeart */,);
 			path = Views;
 			sourceTree = "<group>";
 		};
@@ -445,7 +480,10 @@
 				028000020000000100000001 /* MedicationChangeInsight.swift */,
 				028000020000000100000002 /* CardiovascularMedication.swift */,
 				029000020000000100000001 /* OtherMedication.swift */,
-			);
+			
+				MYH001000000000000000001 /* ClinicalProfile.swift */,
+				MYH002000000000000000001 /* CoronaryArtery.swift */,
+				MYH003000000000000000001 /* HeartValveCondition.swift */,);
 			path = Models;
 			sourceTree = "<group>";
 		};
@@ -458,7 +496,8 @@
 				A1000002200000010000000100000023 /* TrendsViewModel.swift */,
 				A1000002200000010000000100000028 /* ExportViewModel.swift */,
 				A100000220000001000000010000002B /* SettingsViewModel.swift */,
-			);
+			
+				MYH004000000000000000001 /* MyHeartViewModel.swift */,);
 			path = ViewModels;
 			sourceTree = "<group>";
 		};
@@ -706,7 +745,19 @@
 				030000010000000100000012 /* MedicationTimelineRow.swift in Sources */,
 				031000010000000100000001 /* LearnView.swift in Sources */,
 				031000010000000100000002 /* EducationPageView.swift in Sources */,
-			);
+			
+				MYH001000000000000000002 /* ClinicalProfile.swift in Sources */,
+				MYH002000000000000000002 /* CoronaryArtery.swift in Sources */,
+				MYH003000000000000000002 /* HeartValveCondition.swift in Sources */,
+				MYH004000000000000000002 /* MyHeartViewModel.swift in Sources */,
+				MYH010000000000000000002 /* MyHeartView.swift in Sources */,
+				MYH011000000000000000002 /* EjectionFractionEditView.swift in Sources */,
+				MYH012000000000000000002 /* NYHAClassEditView.swift in Sources */,
+				MYH013000000000000000002 /* BPTargetEditView.swift in Sources */,
+				MYH014000000000000000002 /* CoronaryArteriesDetailView.swift in Sources */,
+				MYH015000000000000000002 /* CoronaryArteryEditView.swift in Sources */,
+				MYH016000000000000000002 /* HeartValvesDetailView.swift in Sources */,
+				MYH017000000000000000002 /* HeartValveEditView.swift in Sources */,);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		B1000009200000010000000200000001 /* Sources */ = {

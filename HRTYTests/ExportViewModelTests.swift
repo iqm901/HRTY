@@ -430,6 +430,7 @@ final class ExportDataTests: XCTestCase {
         let exportData = ExportData(
             dateRange: (startDate, endDate),
             patientIdentifier: "Test Patient",
+            clinicalProfile: nil,
             weightEntries: weightEntries,
             symptomEntries: symptomEntries,
             diureticDoses: diureticDoses,
@@ -462,6 +463,7 @@ final class ExportDataTests: XCTestCase {
         let exportData = ExportData(
             dateRange: (startDate, endDate),
             patientIdentifier: nil,
+            clinicalProfile: nil,
             weightEntries: [],
             symptomEntries: [],
             diureticDoses: [],
@@ -487,6 +489,7 @@ final class ExportDataTests: XCTestCase {
         let exportData = ExportData(
             dateRange: (startDate, endDate),
             patientIdentifier: nil,
+            clinicalProfile: nil,
             weightEntries: [],
             symptomEntries: [],
             diureticDoses: [],

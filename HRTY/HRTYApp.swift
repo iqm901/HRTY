@@ -29,7 +29,10 @@ struct HRTYApp: App {
             MedicationPeriod.self,
             AlertEvent.self,
             VitalSignsEntry.self,
-            SymptomCheckInProgress.self
+            SymptomCheckInProgress.self,
+            ClinicalProfile.self,
+            CoronaryArtery.self,
+            HeartValveCondition.self
         ])
         let modelConfiguration = ModelConfiguration(
             schema: schema,

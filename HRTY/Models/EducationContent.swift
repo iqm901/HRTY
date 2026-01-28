@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 /// Centralized repository of educational content for heart failure self-management.
 /// All content is sourced from authoritative clinical guidelines.
@@ -627,6 +628,141 @@ extension EducationContent {
         planningAhead
     ]
 
+    // MARK: - Questions for Your Doctor
+
+    static let questionsForYourDoctor = LearnSection(
+        title: "Questions for Your Doctor",
+        icon: "questionmark.bubble.fill",
+        topics: [
+            LearnTopic(
+                title: "What is my ejection fraction?",
+                content: """
+                    Ejection fraction (EF) measures the percentage of blood pumped out each time your heart beats. \
+                    This number helps your doctor understand how well your heart is pumping.
+
+                    **Normal:** 50-65%
+                    Your heart pumps out more than half of the blood in the main pumping chamber.
+
+                    **Reduced (HFrEF):** Below 40%
+                    Called "heart failure with reduced ejection fraction." The heart muscle is weakened.
+
+                    **Preserved (HFpEF):** 50% or higher
+                    Called "heart failure with preserved ejection fraction." The heart pumps normally \
+                    but is stiff and doesn't fill well.
+
+                    Your doctor measures this with an echocardiogram (ultrasound of the heart). \
+                    Knowing your ejection fraction helps you understand your treatment plan.
+                    """,
+                source: "Heart Failure Society of America",
+                heroIcon: "percent",
+                heroColor: .coral
+            ),
+            LearnTopic(
+                title: "What is my NYHA class?",
+                content: """
+                    The New York Heart Association (NYHA) classification describes how heart failure affects your daily activities. \
+                    Your class can change over time with treatment.
+
+                    **Class I - No limitation**
+                    Ordinary physical activity doesn't cause symptoms. You can do normal activities without fatigue, \
+                    shortness of breath, or palpitations.
+
+                    **Class II - Slight limitation**
+                    Comfortable at rest. Ordinary activity causes some fatigue, shortness of breath, or palpitations.
+
+                    **Class III - Marked limitation**
+                    Comfortable only at rest. Less than ordinary activity causes symptoms.
+
+                    **Class IV - Severe limitation**
+                    Unable to carry on any physical activity without discomfort. Symptoms may occur even at rest.
+
+                    Knowing your NYHA class helps you understand what activities are safe and what to expect.
+                    """,
+                source: "Heart Failure Society of America",
+                heroIcon: "chart.bar.fill",
+                heroColor: .coral
+            ),
+            LearnTopic(
+                title: "Are my coronary arteries blocked?",
+                content: """
+                    Coronary artery disease is one of the most common causes of heart failure. \
+                    When arteries that supply blood to your heart become narrowed or blocked, \
+                    the heart muscle doesn't get enough oxygen and can become damaged.
+
+                    **Why this matters:**
+                    • Blocked arteries can cause heart attacks, which damage heart muscle
+                    • Treatment options depend on whether blockages are present
+                    • Some blockages can be treated with stents or bypass surgery
+                    • Medications can help prevent further blockage
+
+                    **Tests your doctor may use:**
+                    • Coronary angiogram (cardiac catheterization)
+                    • CT coronary angiography
+                    • Stress tests
+
+                    If you have blockages, your doctor will discuss treatment options to improve blood flow to your heart.
+                    """,
+                source: "Heart Failure Society of America",
+                heroIcon: "arrow.triangle.branch",
+                heroColor: .coral
+            ),
+            LearnTopic(
+                title: "Is my blood pressure controlled?",
+                content: """
+                    High blood pressure makes your heart work harder than it should. Over time, \
+                    this extra work can weaken the heart muscle and worsen heart failure.
+
+                    **Target blood pressure:**
+                    Your doctor will set a target based on your specific situation. \
+                    Many heart failure patients aim for less than 130/80 mmHg.
+
+                    **Why control matters:**
+                    • Reduces strain on your heart
+                    • Many heart failure medications also lower blood pressure
+                    • Uncontrolled high blood pressure can damage your heart, kidneys, and blood vessels
+
+                    **What you can do:**
+                    • Take blood pressure medications as prescribed
+                    • Monitor your blood pressure at home
+                    • Follow a low-sodium diet
+                    • Stay physically active as recommended
+
+                    Note: Low blood pressure without symptoms is usually not concerning. \
+                    Only report low readings if you feel dizzy, lightheaded, or faint.
+                    """,
+                source: "Heart Failure Society of America",
+                heroIcon: "gauge.with.dots.needle.33percent",
+                heroColor: .coral
+            ),
+            LearnTopic(
+                title: "Are my heart valves damaged?",
+                content: """
+                    Your heart has four valves that keep blood flowing in the right direction. \
+                    When valves don't work properly, it can strain your heart and contribute to heart failure.
+
+                    **Types of valve problems:**
+                    • **Stenosis:** Valve doesn't open fully, restricting blood flow
+                    • **Regurgitation:** Valve doesn't close completely, allowing blood to leak backward
+
+                    **Why this matters:**
+                    • Valve problems can be a cause of heart failure
+                    • They can also develop as a result of heart failure
+                    • Some valve problems can be repaired or replaced
+                    • Treatment depends on which valve is affected and how severe the problem is
+
+                    **How valves are checked:**
+                    Your doctor can evaluate your heart valves with an echocardiogram (ultrasound of the heart). \
+                    This painless test shows how well your valves are opening and closing.
+
+                    If you have valve problems, your doctor will monitor them and discuss treatment options if needed.
+                    """,
+                source: "Heart Failure Society of America",
+                heroIcon: "arrow.up.arrow.down.circle.fill",
+                heroColor: .coral
+            )
+        ]
+    )
+
     // MARK: - Understanding Heart Failure
 
     static let understandingHeartFailure = LearnSection(
@@ -647,7 +783,9 @@ extension EducationContent {
                     Heart failure is also called congestive heart failure. While it's a serious condition, \
                     it's manageable with proper care, medications, and lifestyle changes.
                     """,
-                source: "Heart Failure Society of America"
+                source: "Heart Failure Society of America",
+                heroIcon: "heart.fill",
+                heroColor: .coral
             ),
             LearnTopic(
                 title: "Common Causes",
@@ -664,7 +802,9 @@ extension EducationContent {
                     Sometimes the cause is unknown (idiopathic dilated cardiomyopathy). Knowing your cause \
                     helps your care team choose the best treatments for you.
                     """,
-                source: "Heart Failure Society of America"
+                source: "Heart Failure Society of America",
+                heroIcon: "heart.text.square.fill",
+                heroColor: .coral
             ),
             LearnTopic(
                 title: "Ejection Fraction Explained",
@@ -684,7 +824,9 @@ extension EducationContent {
                     Your doctor measures this with an echocardiogram (ultrasound of the heart). \
                     Ask your doctor: "What is my ejection fraction?"
                     """,
-                source: "Heart Failure Society of America"
+                source: "Heart Failure Society of America",
+                heroIcon: "percent",
+                heroColor: .coral
             )
         ]
     )
@@ -717,7 +859,9 @@ extension EducationContent {
                     **When to call your care team:**
                     If your weight goes up 2 pounds in one day OR 5 pounds in one week.
                     """,
-                source: "American Association of Heart Failure Nurses"
+                source: "American Association of Heart Failure Nurses",
+                heroIcon: "scalemass.fill",
+                heroColor: .teal
             ),
             LearnTopic(
                 title: "Recognizing Warning Signs",
@@ -743,7 +887,9 @@ extension EducationContent {
                     • Loss of consciousness
                     • Coughing up pink foamy mucus
                     """,
-                source: "Heart Failure Society of America"
+                source: "Heart Failure Society of America",
+                heroIcon: "exclamationmark.triangle.fill",
+                heroColor: .teal
             ),
             LearnTopic(
                 title: "The Zone System",
@@ -776,7 +922,9 @@ extension EducationContent {
 
                     Action: CALL 911 immediately. Do not drive yourself.
                     """,
-                source: "HSAG Zone Tools"
+                source: "HSAG Zone Tools",
+                heroIcon: "circle.inset.filled",
+                heroColor: .teal
             )
         ]
     )
@@ -804,7 +952,9 @@ extension EducationContent {
 
                     For reference: One teaspoon of salt = approximately 2,300 mg sodium.
                     """,
-                source: "Heart Failure Society of America"
+                source: "Heart Failure Society of America",
+                heroIcon: "leaf.fill",
+                heroColor: .green
             ),
             LearnTopic(
                 title: "Reading Food Labels",
@@ -826,7 +976,9 @@ extension EducationContent {
 
                     **Note:** Some medicines are also high in sodium—always read warnings before taking OTC medications.
                     """,
-                source: "American Heart Association"
+                source: "American Heart Association",
+                heroIcon: "doc.text.magnifyingglass",
+                heroColor: .green
             ),
             LearnTopic(
                 title: "Seasoning Alternatives",
@@ -845,7 +997,9 @@ extension EducationContent {
                     • Most ketchups and taco seasonings
                     • Bouillon cubes
                     """,
-                source: "Heart Failure Society of America"
+                source: "Heart Failure Society of America",
+                heroIcon: "flame.fill",
+                heroColor: .green
             ),
             LearnTopic(
                 title: "Restaurant Tips",
@@ -866,7 +1020,9 @@ extension EducationContent {
                     • Choose grilled or baked over fried
                     • Ask how dishes are prepared
                     """,
-                source: "Heart Failure Society of America"
+                source: "Heart Failure Society of America",
+                heroIcon: "fork.knife",
+                heroColor: .green
             )
         ]
     )
@@ -894,7 +1050,9 @@ extension EducationContent {
                     • Can be split into shorter sessions (e.g., three 10-minute blocks)
                     • Exercise at levels producing mild-to-moderate breathlessness when possible
                     """,
-                source: "Heart Failure Society of America"
+                source: "Heart Failure Society of America",
+                heroIcon: "figure.walk",
+                heroColor: .blue
             ),
             LearnTopic(
                 title: "Warm-Up and Cool-Down",
@@ -916,7 +1074,9 @@ extension EducationContent {
                     • Wait one hour after light meals before exercising
                     • Avoid outdoor activity when temperatures below 40°F or above 80°F
                     """,
-                source: "Heart Failure Society of America"
+                source: "Heart Failure Society of America",
+                heroIcon: "figure.cooldown",
+                heroColor: .blue
             ),
             LearnTopic(
                 title: "When to Stop",
@@ -937,7 +1097,9 @@ extension EducationContent {
 
                     Listen to your body. Some days you'll have more energy than others, and that's okay.
                     """,
-                source: "Heart Failure Society of America"
+                source: "Heart Failure Society of America",
+                heroIcon: "hand.raised.fill",
+                heroColor: .blue
             )
         ]
     )
@@ -968,7 +1130,9 @@ extension EducationContent {
 
                     Each medication works differently. Together, they give your heart the best chance to heal.
                     """,
-                source: "Heart Failure Society of America"
+                source: "Heart Failure Society of America",
+                heroIcon: "pills.fill",
+                heroColor: .purple
             ),
             LearnTopic(
                 title: "Common Side Effects",
@@ -990,7 +1154,9 @@ extension EducationContent {
 
                     **Never stop medications without talking to your doctor first.**
                     """,
-                source: "Heart Failure Society of America"
+                source: "Heart Failure Society of America",
+                heroIcon: "exclamationmark.bubble.fill",
+                heroColor: .purple
             ),
             LearnTopic(
                 title: "Medications to Avoid",
@@ -1012,7 +1178,9 @@ extension EducationContent {
                     Diltiazem, verapamil, and nifedipine can worsen heart failure. \
                     If needed, amlodipine and felodipine are safer options.
                     """,
-                source: "Heart Failure Society of America"
+                source: "Heart Failure Society of America",
+                heroIcon: "xmark.circle.fill",
+                heroColor: .purple
             )
         ]
     )
@@ -1044,7 +1212,9 @@ extension EducationContent {
                     • Spend daily time outdoors for mental clarity
                     • Learn about self-care—knowledge helps you feel more in control
                     """,
-                source: "Heart Failure Society of America"
+                source: "Heart Failure Society of America",
+                heroIcon: "brain.head.profile",
+                heroColor: .indigo
             ),
             LearnTopic(
                 title: "Signs of Depression or Anxiety",
@@ -1068,7 +1238,9 @@ extension EducationContent {
 
                     If you notice these signs, talk to your care team. Effective treatments are available.
                     """,
-                source: "Heart Failure Society of America"
+                source: "Heart Failure Society of America",
+                heroIcon: "waveform.path.ecg",
+                heroColor: .indigo
             ),
             LearnTopic(
                 title: "Sleep Tips",
@@ -1089,7 +1261,9 @@ extension EducationContent {
 
                     If you need extra pillows to breathe comfortably at night, track how many—this helps your care team.
                     """,
-                source: "European Society of Cardiology"
+                source: "European Society of Cardiology",
+                heroIcon: "moon.zzz.fill",
+                heroColor: .indigo
             )
         ]
     )
@@ -1118,7 +1292,9 @@ extension EducationContent {
                     • Invite participation in social events
                     • Discuss feelings of depression or anxiety openly
                     """,
-                source: "Heart Failure Society of America"
+                source: "Heart Failure Society of America",
+                heroIcon: "person.2.fill",
+                heroColor: .orange
             ),
             LearnTopic(
                 title: "Warning Signs to Watch",
@@ -1140,7 +1316,9 @@ extension EducationContent {
                     • Fainting or loss of consciousness
                     • Coughing up pink, foamy mucus
                     """,
-                source: "Heart Failure Society of America"
+                source: "Heart Failure Society of America",
+                heroIcon: "eye.fill",
+                heroColor: .orange
             ),
             LearnTopic(
                 title: "Caregiver Self-Care",
@@ -1162,7 +1340,9 @@ extension EducationContent {
                     • "What can we do to make you feel better?"
                     • "We want to make you as comfortable as possible—what should we focus on?"
                     """,
-                source: "European Society of Cardiology"
+                source: "European Society of Cardiology",
+                heroIcon: "heart.circle.fill",
+                heroColor: .orange
             )
         ]
     )
@@ -1193,7 +1373,9 @@ extension EducationContent {
 
                     Your class can change over time with treatment. Ask your doctor: "What is my NYHA class?"
                     """,
-                source: "Heart Failure Society of America"
+                source: "Heart Failure Society of America",
+                heroIcon: "chart.bar.fill",
+                heroColor: .slate
             ),
             LearnTopic(
                 title: "Advance Care Planning",
@@ -1216,7 +1398,9 @@ extension EducationContent {
                     • **Palliative care** - Focuses on comfort at any disease stage
                     • **Hospice care** - For patients with approximately 6 months or less expected lifespan
                     """,
-                source: "Heart Failure Society of America"
+                source: "Heart Failure Society of America",
+                heroIcon: "doc.text.fill",
+                heroColor: .slate
             )
         ]
     )
@@ -1233,11 +1417,63 @@ struct LearnSection: Identifiable {
 }
 
 /// A topic within a Learn section
-struct LearnTopic: Identifiable {
+struct LearnTopic: Identifiable, Hashable {
     let id = UUID()
     let title: String
     let content: String
     let source: String
+    let heroIcon: String
+    let heroColor: HeroColor
+
+    /// Simplified initializer that uses section defaults
+    init(title: String, content: String, source: String, heroIcon: String = "heart.fill", heroColor: HeroColor = .coral) {
+        self.title = title
+        self.content = content
+        self.source = source
+        self.heroIcon = heroIcon
+        self.heroColor = heroColor
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+
+    static func == (lhs: LearnTopic, rhs: LearnTopic) -> Bool {
+        lhs.id == rhs.id
+    }
+}
+
+/// Color theme for topic hero images
+enum HeroColor {
+    case coral       // Heart/understanding topics
+    case teal        // Self-care topics
+    case green       // Diet/nutrition topics
+    case blue        // Exercise topics
+    case purple      // Medication topics
+    case indigo      // Emotional health topics
+    case orange      // Family/caregiver topics
+    case slate       // Planning topics
+
+    var gradient: [Color] {
+        switch self {
+        case .coral:
+            return [Color(red: 0.95, green: 0.4, blue: 0.4), Color(red: 0.85, green: 0.25, blue: 0.35)]
+        case .teal:
+            return [Color(red: 0.2, green: 0.7, blue: 0.7), Color(red: 0.15, green: 0.55, blue: 0.6)]
+        case .green:
+            return [Color(red: 0.3, green: 0.75, blue: 0.45), Color(red: 0.2, green: 0.6, blue: 0.35)]
+        case .blue:
+            return [Color(red: 0.3, green: 0.55, blue: 0.9), Color(red: 0.2, green: 0.4, blue: 0.8)]
+        case .purple:
+            return [Color(red: 0.6, green: 0.4, blue: 0.8), Color(red: 0.45, green: 0.3, blue: 0.7)]
+        case .indigo:
+            return [Color(red: 0.4, green: 0.35, blue: 0.8), Color(red: 0.3, green: 0.25, blue: 0.65)]
+        case .orange:
+            return [Color(red: 0.95, green: 0.6, blue: 0.3), Color(red: 0.9, green: 0.45, blue: 0.2)]
+        case .slate:
+            return [Color(red: 0.45, green: 0.5, blue: 0.55), Color(red: 0.35, green: 0.4, blue: 0.45)]
+        }
+    }
 }
 
 // MARK: - Onboarding Education Content

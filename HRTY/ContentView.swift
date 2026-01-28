@@ -4,6 +4,7 @@ enum Tab: Hashable, CaseIterable {
     case today
     case trends
     case medications
+    case myHeart
     case learn
     case export
     case settings
@@ -34,6 +35,13 @@ struct ContentView: View {
                 }
                 .tag(Tab.medications)
                 .accessibilityIdentifier("medicationsTab")
+
+            MyHeartView()
+                .tabItem {
+                    Label("My Heart", systemImage: "heart.circle")
+                }
+                .tag(Tab.myHeart)
+                .accessibilityIdentifier("myHeartTab")
 
             LearnView()
                 .tabItem {
