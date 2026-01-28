@@ -426,6 +426,7 @@ final class ExportDataTests: XCTestCase {
         let medicationChangeInsights: [MedicationChangeInsight] = []
 
         // When: creating ExportData
+        let emptyRegimen = MedicationHistoryService.RegimenSnapshot(date: startDate, medications: [])
         let exportData = ExportData(
             dateRange: (startDate, endDate),
             patientIdentifier: "Test Patient",
@@ -433,7 +434,11 @@ final class ExportDataTests: XCTestCase {
             symptomEntries: symptomEntries,
             diureticDoses: diureticDoses,
             alertEvents: alertEvents,
-            medicationChangeInsights: medicationChangeInsights
+            medicationChangeInsights: medicationChangeInsights,
+            startRegimen: emptyRegimen,
+            endRegimen: emptyRegimen,
+            medicationTimeline: [],
+            medicationComparisons: []
         )
 
         // Then: values should be set correctly
@@ -451,6 +456,7 @@ final class ExportDataTests: XCTestCase {
         // Given: export data without patient identifier
         let startDate = Date()
         let endDate = Date()
+        let emptyRegimen = MedicationHistoryService.RegimenSnapshot(date: startDate, medications: [])
 
         // When: creating ExportData with nil identifier
         let exportData = ExportData(
@@ -460,7 +466,11 @@ final class ExportDataTests: XCTestCase {
             symptomEntries: [],
             diureticDoses: [],
             alertEvents: [],
-            medicationChangeInsights: []
+            medicationChangeInsights: [],
+            startRegimen: emptyRegimen,
+            endRegimen: emptyRegimen,
+            medicationTimeline: [],
+            medicationComparisons: []
         )
 
         // Then: patient identifier should be nil
@@ -471,6 +481,7 @@ final class ExportDataTests: XCTestCase {
         // Given: export data with empty collections
         let startDate = Date()
         let endDate = Date()
+        let emptyRegimen = MedicationHistoryService.RegimenSnapshot(date: startDate, medications: [])
 
         // When: creating ExportData
         let exportData = ExportData(
@@ -480,7 +491,11 @@ final class ExportDataTests: XCTestCase {
             symptomEntries: [],
             diureticDoses: [],
             alertEvents: [],
-            medicationChangeInsights: []
+            medicationChangeInsights: [],
+            startRegimen: emptyRegimen,
+            endRegimen: emptyRegimen,
+            medicationTimeline: [],
+            medicationComparisons: []
         )
 
         // Then: all collections should be empty
