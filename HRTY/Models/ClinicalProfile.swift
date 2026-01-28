@@ -100,6 +100,9 @@ final class ClinicalProfile {
     @Relationship(deleteRule: .cascade, inverse: \HeartValveCondition.profile)
     var heartValves: [HeartValveCondition]?
 
+    @Relationship(deleteRule: .cascade, inverse: \CoronaryProcedure.profile)
+    var coronaryProcedures: [CoronaryProcedure]?
+
     // MARK: - Initialization
 
     init() {
@@ -118,13 +121,47 @@ final class ClinicalProfile {
         (heartValves ?? []).sorted { $0.valveType.sortOrder < $1.valveType.sortOrder }
     }
 
+    /// Returns coronary procedures sorted by date (most recent first)
+    var sortedCoronaryProcedures: [CoronaryProcedure] {
+        (coronaryProcedures ?? []).sorted { proc1, proc2 in
+            // Unknown dates go to the end
+            if proc1.dateIsUnknown && !proc2.dateIsUnknown { return false }
+            if !proc1.dateIsUnknown && proc2.dateIsUnknown { return true }
+            // Both unknown - sort by creation date
+            if proc1.dateIsUnknown && proc2.dateIsUnknown {
+                return proc1.createdAt > proc2.createdAt
+            }
+            // Both have dates - sort by procedure date
+            guard let date1 = proc1.procedureDate, let date2 = proc2.procedureDate else {
+                return proc1.createdAt > proc2.createdAt
+            }
+            return date1 > date2
+        }
+    }
+
+    /// Returns all stent procedures
+    var stentProcedures: [CoronaryProcedure] {
+        (coronaryProcedures ?? []).filter { $0.procedureType == .stent }
+    }
+
+    /// Returns all CABG procedures
+    var cabgProcedures: [CoronaryProcedure] {
+        (coronaryProcedures ?? []).filter { $0.procedureType == .cabg }
+    }
+
+    /// Whether any stent was placed within the last 12 months
+    var hasRecentStent: Bool {
+        stentProcedures.contains { $0.isWithinTwelveMonths }
+    }
+
     /// Whether the profile has any clinical data entered
     var hasAnyData: Bool {
         ejectionFraction != nil ||
         nyhaClassRawValue != nil ||
         targetSystolicBP != nil ||
         !(coronaryArteries ?? []).isEmpty ||
-        !(heartValves ?? []).isEmpty
+        !(heartValves ?? []).isEmpty ||
+        !(coronaryProcedures ?? []).isEmpty
     }
 
     /// EF category description based on value

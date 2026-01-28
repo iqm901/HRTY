@@ -17,6 +17,7 @@
 		024000010000000100000001 /* PriorMedicationDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024000020000000100000001 /* PriorMedicationDetailView.swift */; };
 		020000010000000100000001 /* DiureticDoseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020000020000000100000001 /* DiureticDoseService.swift */; };
 		021000010000000100000002 /* MedicationConflictService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021000020000000100000002 /* MedicationConflictService.swift */; };
+		021000010000000100000003 /* MedicationAvoidService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021000020000000100000003 /* MedicationAvoidService.swift */; };
 		63E3FE18315940D08A81709F /* VitalSignsEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDA8FBDCC544B2EA822AD07 /* VitalSignsEntry.swift */; };
 		54874CD30FA847BCACFFA400 /* BloodPressureEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 329B16C46A9C4E7A833D8CFB /* BloodPressureEntryView.swift */; };
 		21C27926255C42DBA75CB169 /* OxygenSaturationEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B20E79AD6E94FD7B00EB8C6 /* OxygenSaturationEntryView.swift */; };
@@ -105,6 +106,7 @@
 		B1000001200000010000000200000001 /* TabTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000002200000010000000200000001 /* TabTests.swift */; };
 		B1000001200000010000000200000002 /* SymptomTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000002200000010000000200000002 /* SymptomTests.swift */; };
 		B1000001200000010000000200000003 /* MedicationsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000002200000010000000200000003 /* MedicationsViewModelTests.swift */; };
+		B1000001200000010000000200000004 /* MedicationAvoidServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000002200000010000000200000004 /* MedicationAvoidServiceTests.swift */; };
 		B1000001200000010000000200000004 /* WeightAlertTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000002200000010000000200000004 /* WeightAlertTests.swift */; };
 		B1000001200000010000000200000005 /* SymptomAlertServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000002200000010000000200000005 /* SymptomAlertServiceTests.swift */; };
 		B1000001200000010000000200000006 /* TrendsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000002200000010000000200000006 /* TrendsViewModelTests.swift */; };
@@ -147,6 +149,11 @@
 		MYH015000000000000000002 /* CoronaryArteryEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = MYH015000000000000000001 /* CoronaryArteryEditView.swift */; };
 		MYH016000000000000000002 /* HeartValvesDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = MYH016000000000000000001 /* HeartValvesDetailView.swift */; };
 		MYH017000000000000000002 /* HeartValveEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = MYH017000000000000000001 /* HeartValveEditView.swift */; };
+		MYH018000000000000000002 /* CoronaryProcedure.swift in Sources */ = {isa = PBXBuildFile; fileRef = MYH018000000000000000001 /* CoronaryProcedure.swift */; };
+		MYH019000000000000000002 /* AntiplateletRecommendationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = MYH019000000000000000001 /* AntiplateletRecommendationService.swift */; };
+		MYH020000000000000000002 /* AntiplateletWarningBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = MYH020000000000000000001 /* AntiplateletWarningBanner.swift */; };
+		MYH021000000000000000002 /* CoronaryProcedureEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = MYH021000000000000000001 /* CoronaryProcedureEditView.swift */; };
+		MYH022000000000000000002 /* CoronaryProceduresDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = MYH022000000000000000001 /* CoronaryProceduresDetailView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -170,6 +177,7 @@
 		024000020000000100000001 /* PriorMedicationDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriorMedicationDetailView.swift; sourceTree = "<group>"; };
 		020000020000000100000001 /* DiureticDoseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiureticDoseService.swift; sourceTree = "<group>"; };
 		021000020000000100000002 /* MedicationConflictService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicationConflictService.swift; sourceTree = "<group>"; };
+		021000020000000100000003 /* MedicationAvoidService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicationAvoidService.swift; sourceTree = "<group>"; };
 		EEDA8FBDCC544B2EA822AD07 /* VitalSignsEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VitalSignsEntry.swift; sourceTree = "<group>"; };
 		329B16C46A9C4E7A833D8CFB /* BloodPressureEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BloodPressureEntryView.swift; sourceTree = "<group>"; };
 		8B20E79AD6E94FD7B00EB8C6 /* OxygenSaturationEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OxygenSaturationEntryView.swift; sourceTree = "<group>"; };
@@ -255,6 +263,7 @@
 		B1000002200000010000000200000001 /* TabTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabTests.swift; sourceTree = "<group>"; };
 		B1000002200000010000000200000002 /* SymptomTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymptomTests.swift; sourceTree = "<group>"; };
 		B1000002200000010000000200000003 /* MedicationsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicationsViewModelTests.swift; sourceTree = "<group>"; };
+		B1000002200000010000000200000004 /* MedicationAvoidServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicationAvoidServiceTests.swift; sourceTree = "<group>"; };
 		B1000002200000010000000200000004 /* WeightAlertTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightAlertTests.swift; sourceTree = "<group>"; };
 		B1000002200000010000000200000005 /* SymptomAlertServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymptomAlertServiceTests.swift; sourceTree = "<group>"; };
 		B1000002200000010000000200000006 /* TrendsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendsViewModelTests.swift; sourceTree = "<group>"; };
@@ -296,6 +305,11 @@
 		MYH015000000000000000001 /* CoronaryArteryEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoronaryArteryEditView.swift; sourceTree = "<group>"; };
 		MYH016000000000000000001 /* HeartValvesDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartValvesDetailView.swift; sourceTree = "<group>"; };
 		MYH017000000000000000001 /* HeartValveEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartValveEditView.swift; sourceTree = "<group>"; };
+		MYH018000000000000000001 /* CoronaryProcedure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoronaryProcedure.swift; sourceTree = "<group>"; };
+		MYH019000000000000000001 /* AntiplateletRecommendationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AntiplateletRecommendationService.swift; sourceTree = "<group>"; };
+		MYH020000000000000000001 /* AntiplateletWarningBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AntiplateletWarningBanner.swift; sourceTree = "<group>"; };
+		MYH021000000000000000001 /* CoronaryProcedureEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoronaryProcedureEditView.swift; sourceTree = "<group>"; };
+		MYH022000000000000000001 /* CoronaryProceduresDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoronaryProceduresDetailView.swift; sourceTree = "<group>"; };
 		MYH005000000000000000001 /* MyHeart */ = {isa = PBXGroup; children = (
 				MYH010000000000000000001 /* MyHeartView.swift */,
 				MYH011000000000000000001 /* EjectionFractionEditView.swift */,
@@ -305,6 +319,8 @@
 				MYH015000000000000000001 /* CoronaryArteryEditView.swift */,
 				MYH016000000000000000001 /* HeartValvesDetailView.swift */,
 				MYH017000000000000000001 /* HeartValveEditView.swift */,
+				MYH021000000000000000001 /* CoronaryProcedureEditView.swift */,
+				MYH022000000000000000001 /* CoronaryProceduresDetailView.swift */,
 			); name = MyHeart; path = MyHeart; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -450,7 +466,8 @@
 				017000020000000100000005 /* MedicationPhotoViewerView.swift */,
 				030000020000000100000011 /* MedicationHistoryView.swift */,
 				030000020000000100000012 /* MedicationTimelineRow.swift */,
-			
+				MYH020000000000000000001 /* AntiplateletWarningBanner.swift */,
+
 				MYH005000000000000000001 /* MyHeart */,);
 			path = Views;
 			sourceTree = "<group>";
@@ -483,7 +500,8 @@
 			
 				MYH001000000000000000001 /* ClinicalProfile.swift */,
 				MYH002000000000000000001 /* CoronaryArtery.swift */,
-				MYH003000000000000000001 /* HeartValveCondition.swift */,);
+				MYH003000000000000000001 /* HeartValveCondition.swift */,
+				MYH018000000000000000001 /* CoronaryProcedure.swift */,);
 			path = Models;
 			sourceTree = "<group>";
 		};
@@ -506,6 +524,7 @@
 			children = (
 				020000020000000100000001 /* DiureticDoseService.swift */,
 				021000020000000100000002 /* MedicationConflictService.swift */,
+				021000020000000100000003 /* MedicationAvoidService.swift */,
 				62B091BAE36042B9A749B8CE /* VitalSignsAlertService.swift */,
 				A1000002200000010000000100000021 /* WeightAlertService.swift */,
 				A1000002200000010000000100000022 /* SymptomAlertService.swift */,
@@ -515,6 +534,7 @@
 				017000020000000100000001 /* PhotoService.swift */,
 				028000020000000100000003 /* MedicationChangeAnalysisService.swift */,
 				030000020000000100000010 /* MedicationHistoryService.swift */,
+				MYH019000000000000000001 /* AntiplateletRecommendationService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -525,6 +545,7 @@
 				B1000002200000010000000200000001 /* TabTests.swift */,
 				B1000002200000010000000200000002 /* SymptomTests.swift */,
 				B1000002200000010000000200000003 /* MedicationsViewModelTests.swift */,
+				B1000002200000010000000200000004 /* MedicationAvoidServiceTests.swift */,
 				B1000002200000010000000200000004 /* WeightAlertTests.swift */,
 				B1000002200000010000000200000005 /* SymptomAlertServiceTests.swift */,
 				B1000002200000010000000200000006 /* TrendsViewModelTests.swift */,
@@ -650,6 +671,7 @@
 				024000010000000100000001 /* PriorMedicationDetailView.swift in Sources */,
 				020000010000000100000001 /* DiureticDoseService.swift in Sources */,
 				021000010000000100000002 /* MedicationConflictService.swift in Sources */,
+				021000010000000100000003 /* MedicationAvoidService.swift in Sources */,
 				63E3FE18315940D08A81709F /* VitalSignsEntry.swift in Sources */,
 				54874CD30FA847BCACFFA400 /* BloodPressureEntryView.swift in Sources */,
 				21C27926255C42DBA75CB169 /* OxygenSaturationEntryView.swift in Sources */,
@@ -757,7 +779,12 @@
 				MYH014000000000000000002 /* CoronaryArteriesDetailView.swift in Sources */,
 				MYH015000000000000000002 /* CoronaryArteryEditView.swift in Sources */,
 				MYH016000000000000000002 /* HeartValvesDetailView.swift in Sources */,
-				MYH017000000000000000002 /* HeartValveEditView.swift in Sources */,);
+				MYH017000000000000000002 /* HeartValveEditView.swift in Sources */,
+				MYH018000000000000000002 /* CoronaryProcedure.swift in Sources */,
+				MYH019000000000000000002 /* AntiplateletRecommendationService.swift in Sources */,
+				MYH020000000000000000002 /* AntiplateletWarningBanner.swift in Sources */,
+				MYH021000000000000000002 /* CoronaryProcedureEditView.swift in Sources */,
+				MYH022000000000000000002 /* CoronaryProceduresDetailView.swift in Sources */,);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		B1000009200000010000000200000001 /* Sources */ = {
@@ -767,6 +794,7 @@
 				B1000001200000010000000200000001 /* TabTests.swift in Sources */,
 				B1000001200000010000000200000002 /* SymptomTests.swift in Sources */,
 				B1000001200000010000000200000003 /* MedicationsViewModelTests.swift in Sources */,
+				B1000001200000010000000200000004 /* MedicationAvoidServiceTests.swift in Sources */,
 				B1000001200000010000000200000004 /* WeightAlertTests.swift in Sources */,
 				B1000001200000010000000200000005 /* SymptomAlertServiceTests.swift in Sources */,
 				B1000001200000010000000200000006 /* TrendsViewModelTests.swift in Sources */,

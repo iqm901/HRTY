@@ -53,6 +53,25 @@ final class MyHeartViewModel {
     var interventionDate: Date = Date()
     var valveNotes: String = ""
 
+    // MARK: - Coronary Procedure Form
+
+    var showingCoronaryProceduresDetail = false
+    var showingCoronaryProcedureEdit = false
+    var selectedCoronaryProcedure: CoronaryProcedure?
+    var procedureTypeSelection: CoronaryProcedureType = .stent
+    var procedureDate: Date = Date()
+    var procedureDateIsUnknown = false
+    var procedureVesselsSelection: Set<CoronaryArteryType> = []
+    var procedureVesselsUnknown = false
+    var procedureGraftTypesSelection: Set<CABGGraftType> = []
+    var procedureGraftTypesUnknown = false
+    var procedureNotes: String = ""
+
+    // MARK: - Antiplatelet Recommendation
+
+    var antiplateletRecommendation: AntiplateletRecommendation = .none
+    var medications: [Medication] = []
+
     // MARK: - Validation
 
     var validationError: String?
@@ -457,5 +476,150 @@ final class MyHeartViewModel {
         formatter.dateStyle = .medium
         formatter.timeStyle = .none
         return "Assessed: \(formatter.string(from: date))"
+    }
+
+    // MARK: - Coronary Procedure Properties
+
+    var coronaryProcedures: [CoronaryProcedure] {
+        profile?.sortedCoronaryProcedures ?? []
+    }
+
+    var hasCoronaryProcedures: Bool {
+        !coronaryProcedures.isEmpty
+    }
+
+    /// Summary text for coronary procedures in main view
+    var coronaryProceduresSummary: String {
+        let procedures = coronaryProcedures
+        if procedures.isEmpty {
+            return "No procedures recorded"
+        }
+
+        let stents = procedures.filter { $0.procedureType == .stent }
+        let cabgs = procedures.filter { $0.procedureType == .cabg }
+
+        var parts: [String] = []
+        if !stents.isEmpty {
+            parts.append("\(stents.count) stent\(stents.count == 1 ? "" : "s")")
+        }
+        if !cabgs.isEmpty {
+            parts.append("\(cabgs.count) bypass")
+        }
+
+        return parts.joined(separator: " • ")
+    }
+
+    // MARK: - Coronary Procedure Methods
+
+    func prepareCoronaryProceduresDetail() {
+        showingCoronaryProceduresDetail = true
+    }
+
+    func prepareAddCoronaryProcedure() {
+        selectedCoronaryProcedure = nil
+        procedureTypeSelection = .stent
+        procedureDate = Date()
+        procedureDateIsUnknown = false
+        procedureVesselsSelection = []
+        procedureVesselsUnknown = false
+        procedureGraftTypesSelection = []
+        procedureGraftTypesUnknown = false
+        procedureNotes = ""
+        validationError = nil
+        showingCoronaryProcedureEdit = true
+    }
+
+    func prepareEditCoronaryProcedure(_ procedure: CoronaryProcedure) {
+        selectedCoronaryProcedure = procedure
+        procedureTypeSelection = procedure.procedureType
+        procedureDate = procedure.procedureDate ?? Date()
+        procedureDateIsUnknown = procedure.dateIsUnknown
+        procedureVesselsSelection = Set(procedure.vesselsInvolved)
+        procedureVesselsUnknown = procedure.vesselsInvolved.isEmpty && procedure.vesselsInvolvedRawValues == nil
+        procedureGraftTypesSelection = Set(procedure.graftTypes)
+        procedureGraftTypesUnknown = procedure.graftTypes.isEmpty && procedure.graftTypesRawValues == nil
+        procedureNotes = procedure.notes ?? ""
+        validationError = nil
+        showingCoronaryProcedureEdit = true
+    }
+
+    func saveCoronaryProcedure(context: ModelContext) {
+        if let existing = selectedCoronaryProcedure {
+            // Update existing
+            existing.procedureType = procedureTypeSelection
+            existing.procedureDate = procedureDateIsUnknown ? nil : procedureDate
+            existing.dateIsUnknown = procedureDateIsUnknown
+            existing.vesselsInvolved = procedureVesselsUnknown ? [] : Array(procedureVesselsSelection)
+            if procedureTypeSelection == .cabg {
+                existing.graftTypes = procedureGraftTypesUnknown ? [] : Array(procedureGraftTypesSelection)
+            } else {
+                existing.graftTypes = []
+            }
+            existing.notes = procedureNotes.isEmpty ? nil : procedureNotes
+        } else {
+            // Create new
+            let procedure = CoronaryProcedure(
+                procedureType: procedureTypeSelection,
+                procedureDate: procedureDateIsUnknown ? nil : procedureDate,
+                dateIsUnknown: procedureDateIsUnknown,
+                vesselsInvolved: procedureVesselsUnknown ? [] : Array(procedureVesselsSelection),
+                graftTypes: procedureTypeSelection == .cabg && !procedureGraftTypesUnknown ? Array(procedureGraftTypesSelection) : [],
+                notes: procedureNotes.isEmpty ? nil : procedureNotes
+            )
+            procedure.profile = profile
+            context.insert(procedure)
+
+            if profile?.coronaryProcedures == nil {
+                profile?.coronaryProcedures = []
+            }
+            profile?.coronaryProcedures?.append(procedure)
+        }
+
+        do {
+            try context.save()
+            showingCoronaryProcedureEdit = false
+            validationError = nil
+            // Refresh antiplatelet recommendation
+            updateAntiplateletRecommendation()
+        } catch {
+            validationError = "Could not save. Please try again."
+        }
+    }
+
+    func deleteCoronaryProcedure(_ procedure: CoronaryProcedure, context: ModelContext) {
+        profile?.coronaryProcedures?.removeAll { $0.persistentModelID == procedure.persistentModelID }
+        context.delete(procedure)
+
+        do {
+            try context.save()
+            // Refresh antiplatelet recommendation
+            updateAntiplateletRecommendation()
+        } catch {
+            validationError = "Could not delete. Please try again."
+        }
+    }
+
+    // MARK: - Antiplatelet Recommendation Methods
+
+    @MainActor
+    func loadMedications(context: ModelContext) {
+        let descriptor = FetchDescriptor<Medication>(
+            predicate: #Predicate { $0.isActive == true }
+        )
+
+        medications = (try? context.fetch(descriptor)) ?? []
+        updateAntiplateletRecommendation()
+    }
+
+    func updateAntiplateletRecommendation() {
+        antiplateletRecommendation = AntiplateletRecommendationService.evaluate(
+            procedures: coronaryProcedures,
+            medications: medications
+        )
+    }
+
+    /// Whether to show the antiplatelet warning banner
+    var shouldShowAntiplateletWarning: Bool {
+        antiplateletRecommendation.shouldShowWarning
     }
 }

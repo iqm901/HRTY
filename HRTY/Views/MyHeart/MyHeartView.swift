@@ -19,6 +19,8 @@ struct MyHeartView: View {
 
                         bpTargetCard
 
+                        coronaryProceduresCard
+
                         coronaryArteriesCard
 
                         heartValvesCard
@@ -31,6 +33,7 @@ struct MyHeartView: View {
             .navigationTitle("My Heart")
             .onAppear {
                 viewModel.loadProfile(context: modelContext)
+                viewModel.loadMedications(context: modelContext)
             }
             .sheet(isPresented: $viewModel.showingEjectionFractionEdit) {
                 EjectionFractionEditView(viewModel: viewModel)
@@ -47,8 +50,18 @@ struct MyHeartView: View {
             .navigationDestination(isPresented: $viewModel.showingHeartValvesDetail) {
                 HeartValvesDetailView(viewModel: viewModel)
             }
+            .navigationDestination(isPresented: $viewModel.showingCoronaryProceduresDetail) {
+                CoronaryProceduresDetailView(viewModel: viewModel)
+            }
+            .sheet(isPresented: $viewModel.showingCoronaryProcedureEdit) {
+                CoronaryProcedureEditView(viewModel: viewModel)
+            }
         }
     }
+
+    // MARK: - State for Add Medication Navigation
+
+    @State private var showingAddMedication = false
 
     // MARK: - Ejection Fraction Card
 
@@ -148,6 +161,72 @@ struct MyHeartView: View {
         .accessibilityLabel("NYHA Class")
         .accessibilityValue(viewModel.nyhaClassDisplay ?? "Not recorded")
         .accessibilityHint("Tap to edit")
+    }
+
+    // MARK: - Coronary Procedures Card
+
+    private var coronaryProceduresCard: some View {
+        VStack(alignment: .leading, spacing: HRTSpacing.sm) {
+            // Card header
+            VStack(alignment: .leading, spacing: HRTSpacing.sm) {
+                HStack {
+                    Image(systemName: "heart.text.square")
+                        .foregroundStyle(Color.hrtPinkFallback)
+                        .font(.title2)
+                    Text("Coronary Procedures")
+                        .font(.headline)
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .foregroundStyle(Color.hrtTextTertiaryFallback)
+                        .font(.caption)
+                }
+
+                Text(viewModel.coronaryProceduresSummary)
+                    .font(.subheadline)
+                    .foregroundStyle(viewModel.hasCoronaryProcedures ? Color.hrtTextFallback : Color.hrtTextSecondaryFallback)
+
+                if !viewModel.hasCoronaryProcedures {
+                    Text("Track your stents and bypass surgery to help monitor medication needs.")
+                        .font(.caption)
+                        .foregroundStyle(Color.hrtTextTertiaryFallback)
+                }
+            }
+            .contentShape(Rectangle())
+            .onTapGesture {
+                viewModel.prepareCoronaryProceduresDetail()
+            }
+
+            // Antiplatelet warning banner (if applicable)
+            if viewModel.shouldShowAntiplateletWarning {
+                AntiplateletWarningBanner(
+                    recommendation: viewModel.antiplateletRecommendation,
+                    onAddMedication: {
+                        showingAddMedication = true
+                    }
+                )
+                .padding(.top, HRTSpacing.xs)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .hrtCardPadding()
+        .background(Color.hrtCardFallback)
+        .clipShape(RoundedRectangle(cornerRadius: HRTRadius.medium))
+        .hrtCardShadow()
+        .hrtPagePadding()
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Coronary Procedures")
+        .accessibilityValue(viewModel.coronaryProceduresSummary)
+        .accessibilityHint("Tap to view details")
+        .sheet(isPresented: $showingAddMedication) {
+            MedicationFormView(
+                viewModel: MedicationsViewModel(),
+                isEditing: false
+            )
+            .onDisappear {
+                // Refresh medications to update the recommendation
+                viewModel.loadMedications(context: modelContext)
+            }
+        }
     }
 
     // MARK: - BP Target Card
@@ -281,5 +360,5 @@ struct MyHeartView: View {
 
 #Preview {
     MyHeartView()
-        .modelContainer(for: [ClinicalProfile.self, CoronaryArtery.self, HeartValveCondition.self])
+        .modelContainer(for: [ClinicalProfile.self, CoronaryArtery.self, HeartValveCondition.self, CoronaryProcedure.self])
 }
