@@ -72,6 +72,7 @@
 		A1000001200000010000000100000008 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002200000010000000100000008 /* SettingsView.swift */; };
 		A1000001200000010000000100000009 /* SymptomType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002200000010000000100000009 /* SymptomType.swift */; };
 		A100000120000001000000010000000A /* AlertType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000220000001000000010000000A /* AlertType.swift */; };
+		A1000001200000010000000100000030 /* EducationContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002200000010000000100000030 /* EducationContent.swift */; };
 		A100000120000001000000010000000B /* DailyEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000220000001000000010000000B /* DailyEntry.swift */; };
 		A100000120000001000000010000000C /* SymptomEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000220000001000000010000000C /* SymptomEntry.swift */; };
 		A100000120000001000000010000000D /* DiureticDose.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000220000001000000010000000D /* DiureticDose.swift */; };
@@ -131,6 +132,8 @@
 		030000010000000100000010 /* MedicationHistoryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 030000020000000100000010 /* MedicationHistoryService.swift */; };
 		030000010000000100000011 /* MedicationHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 030000020000000100000011 /* MedicationHistoryView.swift */; };
 		030000010000000100000012 /* MedicationTimelineRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 030000020000000100000012 /* MedicationTimelineRow.swift */; };
+		031000010000000100000001 /* LearnView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031000020000000100000001 /* LearnView.swift */; };
+		031000010000000100000002 /* EducationPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031000020000000100000002 /* EducationPageView.swift */; };
 
 /* End PBXBuildFile section */
 
@@ -205,6 +208,7 @@
 		A1000002200000010000000100000008 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		A1000002200000010000000100000009 /* SymptomType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymptomType.swift; sourceTree = "<group>"; };
 		A100000220000001000000010000000A /* AlertType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertType.swift; sourceTree = "<group>"; };
+		A1000002200000010000000100000030 /* EducationContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EducationContent.swift; sourceTree = "<group>"; };
 		A100000220000001000000010000000B /* DailyEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyEntry.swift; sourceTree = "<group>"; };
 		A100000220000001000000010000000C /* SymptomEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymptomEntry.swift; sourceTree = "<group>"; };
 		A100000220000001000000010000000D /* DiureticDose.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiureticDose.swift; sourceTree = "<group>"; };
@@ -265,6 +269,8 @@
 		030000020000000100000010 /* MedicationHistoryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicationHistoryService.swift; sourceTree = "<group>"; };
 		030000020000000100000011 /* MedicationHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicationHistoryView.swift; sourceTree = "<group>"; };
 		030000020000000100000012 /* MedicationTimelineRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicationTimelineRow.swift; sourceTree = "<group>"; };
+		031000020000000100000001 /* LearnView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LearnView.swift; sourceTree = "<group>"; };
+		031000020000000100000002 /* EducationPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = EducationPageView.swift; path = HRTY/Views/Onboarding/EducationPageView.swift; sourceTree = SOURCE_ROOT; };
 
 /* End PBXFileReference section */
 
@@ -314,6 +320,7 @@
 				016000020000000100000004 /* NotificationPermissionPageView.swift */,
 				016000020000000100000005 /* MedicationSetupPageView.swift */,
 				016000020000000100000006 /* OnboardingViewModel.swift */,
+				031000020000000100000002 /* EducationPageView.swift */,
 			);
 			sourceTree = "<group>";
 		};
@@ -370,6 +377,7 @@
 			isa = PBXGroup;
 			children = (
 				368EF31B795D1697A97F251F /* SymptomCheckIn */,
+				031000020000000100000001 /* LearnView.swift */,
 				E998E324A4914EC7BE3057D4 /* SymptomManagementTabView.swift */,
 				E6BC209E01C14DABB5F0CD1B /* VitalSignsTabView.swift */,
 				8B20E79AD6E94FD7B00EB8C6 /* OxygenSaturationEntryView.swift */,
@@ -422,6 +430,7 @@
 				018000020000000100000001 /* HeartFailureMedication.swift */,
 				A1000002200000010000000100000009 /* SymptomType.swift */,
 				A100000220000001000000010000000A /* AlertType.swift */,
+				A1000002200000010000000100000030 /* EducationContent.swift */,
 				A100000220000001000000010000000B /* DailyEntry.swift */,
 				A100000220000001000000010000000C /* SymptomEntry.swift */,
 				A100000220000001000000010000000D /* DiureticDose.swift */,
@@ -624,6 +633,7 @@
 				A1000001200000010000000100000008 /* SettingsView.swift in Sources */,
 				A1000001200000010000000100000009 /* SymptomType.swift in Sources */,
 				A100000120000001000000010000000A /* AlertType.swift in Sources */,
+				A1000001200000010000000100000030 /* EducationContent.swift in Sources */,
 				A100000120000001000000010000000B /* DailyEntry.swift in Sources */,
 				A100000120000001000000010000000C /* SymptomEntry.swift in Sources */,
 				A100000120000001000000010000000D /* DiureticDose.swift in Sources */,
@@ -694,6 +704,8 @@
 				030000010000000100000010 /* MedicationHistoryService.swift in Sources */,
 				030000010000000100000011 /* MedicationHistoryView.swift in Sources */,
 				030000010000000100000012 /* MedicationTimelineRow.swift in Sources */,
+				031000010000000100000001 /* LearnView.swift in Sources */,
+				031000010000000100000002 /* EducationPageView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

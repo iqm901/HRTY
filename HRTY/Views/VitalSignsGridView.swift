@@ -29,8 +29,24 @@ struct VitalSignsGridView: View {
             } else {
                 gridContent
             }
+
+            // Educational tip for weight monitoring
+            if expandedTile == .weight || expandedTile == nil {
+                weightTipFooter
+            }
         }
         .animation(.spring(response: 0.35, dampingFraction: 0.8), value: expandedTile)
+    }
+
+    // MARK: - Educational Footer
+
+    private var weightTipFooter: some View {
+        Text(EducationContent.Weight.techniqueTip)
+            .font(.hrtFootnote)
+            .foregroundStyle(Color.hrtTextTertiaryFallback)
+            .multilineTextAlignment(.center)
+            .padding(.horizontal, HRTSpacing.md)
+            .padding(.top, HRTSpacing.xs)
     }
 
     // MARK: - Streak Message Card

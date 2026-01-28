@@ -21,6 +21,11 @@ struct DiureticSectionView: View {
             if viewModel.showDeleteError {
                 deleteErrorView
             }
+
+            // Educational tip for diuretic timing
+            if !viewModel.diureticMedications.isEmpty {
+                diureticTipFooter
+            }
         }
         .padding()
         .background(Color(.systemBackground))
@@ -125,6 +130,17 @@ struct DiureticSectionView: View {
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel("Error: Could not delete dose")
+    }
+
+    // MARK: - Educational Footer
+
+    private var diureticTipFooter: some View {
+        Text(EducationContent.Diuretics.timingTip)
+            .font(.caption)
+            .foregroundStyle(.secondary)
+            .multilineTextAlignment(.center)
+            .frame(maxWidth: .infinity)
+            .padding(.top, 4)
     }
 }
 

@@ -3,6 +3,17 @@ import SwiftUI
 struct MedicationRowView: View {
     let medication: Medication
     var isInConflict: Bool = false
+    @State private var showingEducationSheet = false
+
+    /// The detected medication class for this medication
+    private var medicationClass: EducationContent.MedicationClass {
+        EducationContent.MedicationClass.detect(from: medication.name)
+    }
+
+    /// Whether we have educational content for this medication
+    private var hasEducation: Bool {
+        medicationClass != .unknown
+    }
 
     var body: some View {
         HStack(alignment: .center, spacing: HRTSpacing.sm) {
@@ -14,6 +25,10 @@ struct MedicationRowView: View {
 
                     if isInConflict {
                         reviewBadge
+                    }
+
+                    if hasEducation {
+                        medicationClassBadge
                     }
                 }
 
@@ -30,6 +45,19 @@ struct MedicationRowView: View {
 
             Spacer(minLength: 0)
 
+            if hasEducation {
+                Button {
+                    showingEducationSheet = true
+                } label: {
+                    Image(systemName: "info.circle")
+                        .font(.body)
+                        .foregroundStyle(Color.hrtPinkFallback)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Learn about \(medicationClass.rawValue)")
+                .accessibilityHint("Opens educational information about this medication type")
+            }
+
             Image(systemName: "chevron.right")
                 .font(.hrtCaption)
                 .foregroundStyle(Color.hrtTextTertiaryFallback)
@@ -42,6 +70,11 @@ struct MedicationRowView: View {
         .accessibilityElement(children: .combine)
         .accessibilityLabel(accessibilityLabel)
         .accessibilityHint("Double tap to edit this medication")
+        .sheet(isPresented: $showingEducationSheet) {
+            if let education = EducationContent.Medications.education(for: medicationClass) {
+                MedicationEducationSheet(education: education)
+            }
+        }
     }
 
     // MARK: - Subviews
@@ -56,6 +89,18 @@ struct MedicationRowView: View {
             .foregroundStyle(Color.hrtPinkFallback)
             .clipShape(Capsule())
             .accessibilityLabel("This is a diuretic medication")
+    }
+
+    private var medicationClassBadge: some View {
+        Text(medicationClass.rawValue)
+            .font(.hrtSmall)
+            .fontWeight(.medium)
+            .padding(.horizontal, HRTSpacing.sm)
+            .padding(.vertical, 2)
+            .background(Color.hrtPinkLightFallback.opacity(0.5))
+            .foregroundStyle(Color.hrtPinkFallback.opacity(0.8))
+            .clipShape(Capsule())
+            .accessibilityLabel("This is a \(medicationClass.rawValue) medication")
     }
 
     private var reviewBadge: some View {
@@ -88,6 +133,97 @@ struct MedicationRowView: View {
             label += ", taken \(medication.schedule)"
         }
         return label
+    }
+}
+
+// MARK: - Medication Education Sheet
+
+/// Sheet displaying educational content about a medication class
+struct MedicationEducationSheet: View {
+    let education: MedicationEducation
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: HRTSpacing.lg) {
+                    // Header
+                    VStack(alignment: .leading, spacing: HRTSpacing.xs) {
+                        Label(education.className, systemImage: "pills.fill")
+                            .font(.hrtTitle2)
+                            .foregroundStyle(Color.hrtPinkFallback)
+                    }
+
+                    // How it helps
+                    educationSection(
+                        title: "How It Helps",
+                        icon: "heart.fill",
+                        content: education.howItHelps
+                    )
+
+                    // Common side effects
+                    educationSection(
+                        title: "Common Side Effects",
+                        icon: "exclamationmark.triangle.fill",
+                        content: education.commonSideEffects
+                    )
+
+                    // Important notes
+                    VStack(alignment: .leading, spacing: HRTSpacing.sm) {
+                        Label("Important", systemImage: "info.circle.fill")
+                            .font(.hrtHeadline)
+                            .foregroundStyle(Color.hrtCautionFallback)
+
+                        Text(education.importantNotes)
+                            .font(.hrtBody)
+                            .foregroundStyle(Color.hrtTextFallback)
+                    }
+                    .padding(HRTSpacing.md)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(Color.hrtCautionFallback.opacity(0.1))
+                    .clipShape(RoundedRectangle(cornerRadius: HRTRadius.medium))
+
+                    // Source
+                    HStack {
+                        Image(systemName: "book.closed.fill")
+                            .font(.caption)
+                        Text("Source: \(education.source)")
+                            .font(.hrtCaption)
+                    }
+                    .foregroundStyle(Color.hrtTextSecondaryFallback)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(.top, HRTSpacing.sm)
+                }
+                .padding(HRTSpacing.lg)
+            }
+            .background(Color.hrtBackgroundFallback)
+            .navigationTitle("About This Medication")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") {
+                        dismiss()
+                    }
+                }
+            }
+        }
+    }
+
+    private func educationSection(title: String, icon: String, content: String) -> some View {
+        VStack(alignment: .leading, spacing: HRTSpacing.sm) {
+            Label(title, systemImage: icon)
+                .font(.hrtHeadline)
+                .foregroundStyle(Color.hrtTextFallback)
+
+            Text(content)
+                .font(.hrtBody)
+                .foregroundStyle(Color.hrtTextSecondaryFallback)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(HRTSpacing.md)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color.hrtCardFallback)
+        .clipShape(RoundedRectangle(cornerRadius: HRTRadius.medium))
     }
 }
 

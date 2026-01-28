@@ -9,10 +9,16 @@ final class OnboardingViewModel {
 
     enum Page: Int, CaseIterable {
         case welcome = 0
-        case healthKit = 1
-        case notifications = 2
-        case medications = 3
+        case educationTracking = 1
+        case educationZones = 2
+        case educationControl = 3
+        case healthKit = 4
+        case notifications = 5
+        case medications = 6
     }
+
+    /// The education pages in order
+    static let educationPages: [Page] = [.educationTracking, .educationZones, .educationControl]
 
     // MARK: - Properties
 
@@ -67,6 +73,11 @@ final class OnboardingViewModel {
 
     func skip() {
         nextPage()
+    }
+
+    /// Skip remaining education pages and go directly to HealthKit permission
+    func skipEducation() {
+        currentPage = .healthKit
     }
 
     // MARK: - Permission Requests

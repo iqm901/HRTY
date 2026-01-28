@@ -4,6 +4,8 @@ import SwiftData
 struct MedicationsView: View {
     @Environment(\.modelContext) private var modelContext
     @State private var viewModel = MedicationsViewModel()
+    @State private var isMedicationsToAvoidExpanded = false
+    @State private var isAdherenceTipsExpanded = false
 
     var body: some View {
         NavigationStack {
@@ -250,6 +252,12 @@ struct MedicationsView: View {
 
             // Medication History Section
             medicationHistorySection
+
+            // Medications to Avoid Section
+            medicationsToAvoidSection
+
+            // Adherence Tips Section
+            adherenceTipsSection
         }
     }
 
@@ -484,6 +492,234 @@ struct MedicationsView: View {
                 .padding(.horizontal, HRTSpacing.md)
             }
         }
+    }
+
+    // MARK: - Medications to Avoid Section
+
+    private var medicationsToAvoidSection: some View {
+        VStack(alignment: .leading, spacing: HRTSpacing.sm) {
+            // Collapsible header
+            Button {
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    isMedicationsToAvoidExpanded.toggle()
+                }
+            } label: {
+                HStack {
+                    HStack(spacing: HRTSpacing.sm) {
+                        Image(systemName: "exclamationmark.triangle")
+                            .foregroundStyle(Color.hrtCautionFallback)
+                        Text("Medications to Avoid")
+                            .font(.hrtHeadline)
+                            .foregroundStyle(Color.hrtTextSecondaryFallback)
+                    }
+
+                    Spacer()
+
+                    Image(systemName: isMedicationsToAvoidExpanded ? "chevron.up" : "chevron.down")
+                        .font(.caption)
+                        .foregroundStyle(Color.hrtTextSecondaryFallback)
+                }
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .padding(.horizontal, HRTSpacing.md)
+            .padding(.top, HRTSpacing.md)
+
+            if isMedicationsToAvoidExpanded {
+                medicationsToAvoidContent
+            }
+        }
+    }
+
+    private var medicationsToAvoidContent: some View {
+        VStack(alignment: .leading, spacing: HRTSpacing.sm) {
+            Text(EducationContent.Medications.medicationsToAvoid)
+                .font(.hrtCallout)
+                .foregroundStyle(Color.hrtTextSecondaryFallback)
+                .padding(.horizontal, HRTSpacing.md)
+
+            // Warning cards
+            VStack(spacing: HRTSpacing.sm) {
+                ForEach(EducationContent.Medications.allWarnings) { warning in
+                    MedicationWarningCard(warning: warning)
+                }
+            }
+            .padding(.horizontal, HRTSpacing.md)
+        }
+    }
+
+    // MARK: - Adherence Tips Section
+
+    private var adherenceTipsSection: some View {
+        VStack(alignment: .leading, spacing: HRTSpacing.sm) {
+            // Collapsible header
+            Button {
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    isAdherenceTipsExpanded.toggle()
+                }
+            } label: {
+                HStack {
+                    HStack(spacing: HRTSpacing.sm) {
+                        Image(systemName: "lightbulb")
+                            .foregroundStyle(Color.hrtGoodFallback)
+                        Text("Adherence Tips")
+                            .font(.hrtHeadline)
+                            .foregroundStyle(Color.hrtTextSecondaryFallback)
+                    }
+
+                    Spacer()
+
+                    Image(systemName: isAdherenceTipsExpanded ? "chevron.up" : "chevron.down")
+                        .font(.caption)
+                        .foregroundStyle(Color.hrtTextSecondaryFallback)
+                }
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .padding(.horizontal, HRTSpacing.md)
+            .padding(.top, HRTSpacing.md)
+
+            if isAdherenceTipsExpanded {
+                adherenceTipsContent
+            }
+        }
+    }
+
+    private var adherenceTipsContent: some View {
+        VStack(alignment: .leading, spacing: HRTSpacing.sm) {
+            // Tips grid
+            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: HRTSpacing.sm) {
+                ForEach(EducationContent.Medications.adherenceTips) { tip in
+                    AdherenceTipCard(tip: tip)
+                }
+            }
+            .padding(.horizontal, HRTSpacing.md)
+
+            // Source
+            HStack {
+                Image(systemName: "book.closed.fill")
+                    .font(.caption)
+                Text("Source: \(EducationContent.Medications.adherenceSource)")
+                    .font(.hrtCaption)
+            }
+            .foregroundStyle(Color.hrtTextTertiaryFallback)
+            .frame(maxWidth: .infinity, alignment: .center)
+            .padding(.top, HRTSpacing.xs)
+            .padding(.horizontal, HRTSpacing.md)
+        }
+    }
+}
+
+// MARK: - Medication Warning Card
+
+/// Card displaying a medication warning with expandable details
+struct MedicationWarningCard: View {
+    let warning: MedicationWarning
+    @State private var isExpanded = false
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: HRTSpacing.sm) {
+            // Header (always visible)
+            Button {
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    isExpanded.toggle()
+                }
+            } label: {
+                HStack {
+                    VStack(alignment: .leading, spacing: HRTSpacing.xs) {
+                        Text(warning.category)
+                            .font(.hrtBodySemibold)
+                            .foregroundStyle(Color.hrtTextFallback)
+
+                        Text(warning.examples)
+                            .font(.hrtCaption)
+                            .foregroundStyle(Color.hrtTextSecondaryFallback)
+                            .lineLimit(isExpanded ? nil : 1)
+                    }
+
+                    Spacer()
+
+                    Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
+                        .font(.caption)
+                        .foregroundStyle(Color.hrtTextSecondaryFallback)
+                }
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+
+            // Expanded content
+            if isExpanded {
+                VStack(alignment: .leading, spacing: HRTSpacing.sm) {
+                    // Risk
+                    VStack(alignment: .leading, spacing: HRTSpacing.xs) {
+                        Text("Why to Avoid")
+                            .font(.hrtCaption)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(Color.hrtCautionFallback)
+
+                        Text(warning.risk)
+                            .font(.hrtCallout)
+                            .foregroundStyle(Color.hrtTextFallback)
+                    }
+
+                    // Alternative
+                    VStack(alignment: .leading, spacing: HRTSpacing.xs) {
+                        Text("Safer Alternative")
+                            .font(.hrtCaption)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(Color.hrtGoodFallback)
+
+                        Text(warning.alternative)
+                            .font(.hrtCallout)
+                            .foregroundStyle(Color.hrtTextFallback)
+                    }
+
+                    // Source
+                    Text("Source: \(warning.source)")
+                        .font(.hrtSmall)
+                        .foregroundStyle(Color.hrtTextTertiaryFallback)
+                }
+            }
+        }
+        .padding(HRTSpacing.md)
+        .background(Color.hrtCautionFallback.opacity(0.08))
+        .clipShape(RoundedRectangle(cornerRadius: HRTRadius.medium))
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(warning.category): \(warning.examples)")
+        .accessibilityHint(isExpanded ? "Double tap to collapse" : "Double tap for more information")
+    }
+}
+
+// MARK: - Adherence Tip Card
+
+/// Card displaying an adherence tip
+struct AdherenceTipCard: View {
+    let tip: AdherenceTip
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: HRTSpacing.sm) {
+            Image(systemName: tip.icon)
+                .font(.title2)
+                .foregroundStyle(Color.hrtPinkFallback)
+
+            Text(tip.title)
+                .font(.hrtBodySemibold)
+                .foregroundStyle(Color.hrtTextFallback)
+                .lineLimit(2)
+                .minimumScaleFactor(0.9)
+
+            Text(tip.description)
+                .font(.hrtCaption)
+                .foregroundStyle(Color.hrtTextSecondaryFallback)
+                .lineLimit(3)
+                .minimumScaleFactor(0.9)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(HRTSpacing.md)
+        .background(Color.hrtCardFallback)
+        .clipShape(RoundedRectangle(cornerRadius: HRTRadius.medium))
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(tip.title): \(tip.description)")
     }
 }
 

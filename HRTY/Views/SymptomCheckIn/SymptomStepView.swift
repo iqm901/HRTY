@@ -6,6 +6,8 @@ struct SymptomStepView: View {
     let selectedSeverity: Int?
     let onSeveritySelected: (Int) -> Void
 
+    @State private var showSymptomInfo = false
+
     var body: some View {
         VStack(spacing: HRTSpacing.xl) {
             Spacer()
@@ -33,11 +35,75 @@ struct SymptomStepView: View {
                 .foregroundStyle(Color.hrtPinkFallback)
                 .accessibilityHidden(true)
 
-            Text(symptom.displayName)
-                .font(.hrtTitle2)
-                .foregroundStyle(Color.hrtTextFallback)
-                .multilineTextAlignment(.center)
+            HStack(spacing: HRTSpacing.xs) {
+                Text(symptom.displayName)
+                    .font(.hrtTitle2)
+                    .foregroundStyle(Color.hrtTextFallback)
+                    .multilineTextAlignment(.center)
+
+                Button {
+                    showSymptomInfo = true
+                } label: {
+                    Image(systemName: "info.circle")
+                        .font(.system(size: 18))
+                        .foregroundStyle(Color.hrtPinkFallback.opacity(0.7))
+                }
+                .accessibilityLabel("Learn more about \(symptom.displayName)")
+            }
         }
+        .sheet(isPresented: $showSymptomInfo) {
+            symptomInfoSheet
+        }
+    }
+
+    // MARK: - Symptom Info Sheet
+
+    private var symptomInfoSheet: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: HRTSpacing.lg) {
+                    // Icon and title
+                    HStack(spacing: HRTSpacing.md) {
+                        Image(systemName: symptom.iconName)
+                            .font(.system(size: 32))
+                            .foregroundStyle(Color.hrtPinkFallback)
+
+                        Text(symptom.displayName)
+                            .font(.hrtTitle2)
+                            .foregroundStyle(Color.hrtTextFallback)
+                    }
+                    .padding(.top, HRTSpacing.md)
+
+                    // Educational content
+                    Text(EducationContent.Symptoms.description(for: symptom))
+                        .font(.hrtBody)
+                        .foregroundStyle(Color.hrtTextSecondaryFallback)
+                        .fixedSize(horizontal: false, vertical: true)
+
+                    // Source citation
+                    Text("Source: \(EducationContent.Symptoms.source)")
+                        .font(.hrtCaption)
+                        .foregroundStyle(Color.hrtTextTertiaryFallback)
+                        .padding(.top, HRTSpacing.sm)
+
+                    Spacer()
+                }
+                .padding(.horizontal, HRTSpacing.lg)
+            }
+            .background(Color.hrtBackgroundFallback)
+            .navigationTitle("About This Symptom")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Done") {
+                        showSymptomInfo = false
+                    }
+                    .foregroundStyle(Color.hrtPinkFallback)
+                }
+            }
+        }
+        .presentationDetents([.medium])
+        .presentationDragIndicator(.visible)
     }
 
     // MARK: - Question

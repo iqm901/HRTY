@@ -25,6 +25,34 @@ struct OnboardingContainerView: View {
                 WelcomePageView(onContinue: viewModel.nextPage)
                     .tag(OnboardingViewModel.Page.welcome)
 
+                // Education pages
+                EducationPageView(
+                    education: EducationContent.Onboarding.whyTrackingMatters,
+                    pageNumber: 0,
+                    totalEducationPages: OnboardingViewModel.educationPages.count,
+                    onContinue: viewModel.nextPage,
+                    onSkip: viewModel.skipEducation
+                )
+                .tag(OnboardingViewModel.Page.educationTracking)
+
+                EducationPageView(
+                    education: EducationContent.Onboarding.knowYourZones,
+                    pageNumber: 1,
+                    totalEducationPages: OnboardingViewModel.educationPages.count,
+                    onContinue: viewModel.nextPage,
+                    onSkip: viewModel.skipEducation
+                )
+                .tag(OnboardingViewModel.Page.educationZones)
+
+                EducationPageView(
+                    education: EducationContent.Onboarding.youAreInControl,
+                    pageNumber: 2,
+                    totalEducationPages: OnboardingViewModel.educationPages.count,
+                    onContinue: viewModel.nextPage,
+                    onSkip: viewModel.skipEducation
+                )
+                .tag(OnboardingViewModel.Page.educationControl)
+
                 HealthKitPermissionPageView(
                     isAvailable: viewModel.isHealthKitAvailable,
                     isRequesting: viewModel.isRequestingPermission,

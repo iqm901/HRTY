@@ -4,6 +4,11 @@ import SwiftData
 struct TrendsView: View {
     @Environment(\.modelContext) private var modelContext
     @State private var viewModel = TrendsViewModel()
+    @State private var showingWeightInfo = false
+    @State private var showingHeartRateInfo = false
+    @State private var showingBloodPressureInfo = false
+    @State private var showingOxygenSaturationInfo = false
+    @State private var showingSymptomsInfo = false
 
     var body: some View {
         NavigationStack {
@@ -73,6 +78,24 @@ struct TrendsView: View {
 
     private var weightContentSection: some View {
         VStack(alignment: .leading, spacing: HRTSpacing.md) {
+            // Section header with info button
+            HStack {
+                Text("Weight")
+                    .font(.hrtHeadline)
+                    .foregroundStyle(Color.hrtTextFallback)
+
+                Spacer()
+
+                Button {
+                    showingWeightInfo = true
+                } label: {
+                    Image(systemName: "info.circle")
+                        .font(.body)
+                        .foregroundStyle(Color.hrtPinkFallback)
+                }
+                .accessibilityLabel("Learn about weight tracking")
+            }
+
             if viewModel.hasWeightData {
                 // Summary card
                 weightSummaryCard
@@ -90,12 +113,33 @@ struct TrendsView: View {
                 emptyWeightStateView
             }
         }
+        .sheet(isPresented: $showingWeightInfo) {
+            TrendEducationSheet(education: EducationContent.Trends.weightEducation)
+        }
     }
 
     // MARK: - Blood Pressure Content Section
 
     private var bloodPressureContentSection: some View {
         VStack(alignment: .leading, spacing: HRTSpacing.md) {
+            // Section header with info button
+            HStack {
+                Text("Blood Pressure")
+                    .font(.hrtHeadline)
+                    .foregroundStyle(Color.hrtTextFallback)
+
+                Spacer()
+
+                Button {
+                    showingBloodPressureInfo = true
+                } label: {
+                    Image(systemName: "info.circle")
+                        .font(.body)
+                        .foregroundStyle(Color.hrtPinkFallback)
+                }
+                .accessibilityLabel("Learn about blood pressure tracking")
+            }
+
             if viewModel.hasBloodPressureData {
                 // Summary card
                 bloodPressureSummaryCard
@@ -120,6 +164,9 @@ struct TrendsView: View {
             } else {
                 emptyBloodPressureStateView
             }
+        }
+        .sheet(isPresented: $showingBloodPressureInfo) {
+            TrendEducationSheet(education: EducationContent.Trends.bloodPressureEducation)
         }
     }
 
@@ -204,6 +251,24 @@ struct TrendsView: View {
 
     private var heartRateContentSection: some View {
         VStack(alignment: .leading, spacing: HRTSpacing.md) {
+            // Section header with info button
+            HStack {
+                Text("Heart Rate")
+                    .font(.hrtHeadline)
+                    .foregroundStyle(Color.hrtTextFallback)
+
+                Spacer()
+
+                Button {
+                    showingHeartRateInfo = true
+                } label: {
+                    Image(systemName: "info.circle")
+                        .font(.body)
+                        .foregroundStyle(Color.hrtPinkFallback)
+                }
+                .accessibilityLabel("Learn about heart rate tracking")
+            }
+
             if viewModel.isLoadingHeartRate {
                 HStack(spacing: HRTSpacing.sm) {
                     ProgressView()
@@ -240,12 +305,33 @@ struct TrendsView: View {
                 emptyHeartRateStateView
             }
         }
+        .sheet(isPresented: $showingHeartRateInfo) {
+            TrendEducationSheet(education: EducationContent.Trends.heartRateEducation)
+        }
     }
 
     // MARK: - Oxygen Saturation Content Section
 
     private var oxygenSaturationContentSection: some View {
         VStack(alignment: .leading, spacing: HRTSpacing.md) {
+            // Section header with info button
+            HStack {
+                Text("Oxygen Saturation")
+                    .font(.hrtHeadline)
+                    .foregroundStyle(Color.hrtTextFallback)
+
+                Spacer()
+
+                Button {
+                    showingOxygenSaturationInfo = true
+                } label: {
+                    Image(systemName: "info.circle")
+                        .font(.body)
+                        .foregroundStyle(Color.hrtPinkFallback)
+                }
+                .accessibilityLabel("Learn about oxygen saturation tracking")
+            }
+
             if viewModel.hasOxygenSaturationData {
                 // Summary card
                 oxygenSaturationSummaryCard
@@ -270,6 +356,9 @@ struct TrendsView: View {
             } else {
                 emptyOxygenSaturationStateView
             }
+        }
+        .sheet(isPresented: $showingOxygenSaturationInfo) {
+            TrendEducationSheet(education: EducationContent.Trends.oxygenSaturationEducation)
         }
     }
 
@@ -537,13 +626,26 @@ struct TrendsView: View {
 
     private var symptomSection: some View {
         VStack(alignment: .leading, spacing: HRTSpacing.md) {
-            // Section header
-            HStack(spacing: HRTSpacing.sm) {
-                Image(systemName: "heart.text.square.fill")
-                    .foregroundStyle(Color.hrtPinkFallback)
-                Text("Symptoms")
-                    .font(.hrtTitle2)
-                    .foregroundStyle(Color.hrtTextFallback)
+            // Section header with info button
+            HStack {
+                HStack(spacing: HRTSpacing.sm) {
+                    Image(systemName: "heart.text.square.fill")
+                        .foregroundStyle(Color.hrtPinkFallback)
+                    Text("Symptoms")
+                        .font(.hrtTitle2)
+                        .foregroundStyle(Color.hrtTextFallback)
+                }
+
+                Spacer()
+
+                Button {
+                    showingSymptomsInfo = true
+                } label: {
+                    Image(systemName: "info.circle")
+                        .font(.body)
+                        .foregroundStyle(Color.hrtPinkFallback)
+                }
+                .accessibilityLabel("Learn about symptom tracking")
             }
             .accessibilityAddTraits(.isHeader)
 
@@ -582,6 +684,9 @@ struct TrendsView: View {
                 emptySymptomStateView
             }
         }
+        .sheet(isPresented: $showingSymptomsInfo) {
+            TrendEducationSheet(education: EducationContent.Trends.symptomsEducation)
+        }
     }
 
     private var alertLegend: some View {
@@ -619,6 +724,93 @@ struct TrendsView: View {
         .background(Color.hrtCardFallback)
         .clipShape(RoundedRectangle(cornerRadius: HRTRadius.large))
         .accessibilityLabel("No symptom data yet. Log how you're feeling on the Today tab to track your symptoms over time.")
+    }
+}
+
+// MARK: - Trend Education Sheet
+
+/// Sheet displaying educational content about a trend metric
+struct TrendEducationSheet: View {
+    let education: TrendEducation
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: HRTSpacing.lg) {
+                    // What it means section
+                    educationSection(
+                        title: "What It Means",
+                        icon: "info.circle.fill",
+                        content: education.whatItMeans,
+                        accentColor: Color.hrtPinkFallback
+                    )
+
+                    // Patterns to watch section
+                    educationSection(
+                        title: "Patterns to Watch",
+                        icon: "eye.fill",
+                        content: education.patternsToWatch,
+                        accentColor: Color.hrtCautionFallback
+                    )
+
+                    // Normal range section
+                    VStack(alignment: .leading, spacing: HRTSpacing.sm) {
+                        Label("Normal Range", systemImage: "checkmark.circle.fill")
+                            .font(.hrtHeadline)
+                            .foregroundStyle(Color.hrtGoodFallback)
+
+                        Text(education.normalRange)
+                            .font(.hrtBody)
+                            .foregroundStyle(Color.hrtTextSecondaryFallback)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    .padding(HRTSpacing.md)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(Color.hrtGoodFallback.opacity(0.1))
+                    .clipShape(RoundedRectangle(cornerRadius: HRTRadius.medium))
+
+                    // Source
+                    HStack {
+                        Image(systemName: "book.closed.fill")
+                            .font(.caption)
+                        Text("Source: \(education.source)")
+                            .font(.hrtCaption)
+                    }
+                    .foregroundStyle(Color.hrtTextSecondaryFallback)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(.top, HRTSpacing.sm)
+                }
+                .padding(HRTSpacing.lg)
+            }
+            .background(Color.hrtBackgroundFallback)
+            .navigationTitle(education.title)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") {
+                        dismiss()
+                    }
+                }
+            }
+        }
+    }
+
+    private func educationSection(title: String, icon: String, content: String, accentColor: Color) -> some View {
+        VStack(alignment: .leading, spacing: HRTSpacing.sm) {
+            Label(title, systemImage: icon)
+                .font(.hrtHeadline)
+                .foregroundStyle(accentColor)
+
+            Text(content)
+                .font(.hrtBody)
+                .foregroundStyle(Color.hrtTextSecondaryFallback)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(HRTSpacing.md)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color.hrtCardFallback)
+        .clipShape(RoundedRectangle(cornerRadius: HRTRadius.medium))
     }
 }
 
