@@ -145,9 +145,13 @@ struct MedicationsView: View {
                     PriorMedicationDetailView(viewModel: viewModel, medication: medication)
                 }
             }
+            .sheet(isPresented: $viewModel.showingHistoryView) {
+                MedicationHistoryView()
+            }
             .onAppear {
                 viewModel.loadMedications(context: modelContext)
                 viewModel.loadPhotos()
+                viewModel.loadTimeline(context: modelContext)
             }
             .overlay(alignment: .bottom) {
                 if let message = viewModel.photoSavedMessage {
@@ -243,6 +247,9 @@ struct MedicationsView: View {
             if viewModel.hasPriorMedications {
                 priorMedicationsSection
             }
+
+            // Medication History Section
+            medicationHistorySection
         }
     }
 
@@ -370,6 +377,113 @@ struct MedicationsView: View {
         .background(Color.hrtCardFallback.opacity(0.6))
         .clipShape(RoundedRectangle(cornerRadius: HRTRadius.large))
         .padding(.horizontal, HRTSpacing.md)
+    }
+
+    private var medicationHistorySection: some View {
+        VStack(alignment: .leading, spacing: HRTSpacing.sm) {
+            // Collapsible header
+            Button {
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    viewModel.toggleHistorySection()
+                }
+            } label: {
+                HStack {
+                    HStack(spacing: HRTSpacing.sm) {
+                        Image(systemName: "clock.arrow.circlepath")
+                            .foregroundStyle(Color.hrtTextSecondaryFallback)
+                        Text("Medication History")
+                            .font(.hrtHeadline)
+                            .foregroundStyle(Color.hrtTextSecondaryFallback)
+
+                        if viewModel.hasTimelineEvents {
+                            Text("(\(viewModel.timelineEventsCount))")
+                                .font(.hrtCallout)
+                                .foregroundStyle(Color.hrtTextSecondaryFallback)
+                        }
+                    }
+
+                    Spacer()
+
+                    Image(systemName: viewModel.isHistorySectionExpanded ? "chevron.up" : "chevron.down")
+                        .font(.caption)
+                        .foregroundStyle(Color.hrtTextSecondaryFallback)
+                }
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .padding(.horizontal, HRTSpacing.md)
+            .padding(.top, HRTSpacing.md)
+
+            if viewModel.isHistorySectionExpanded {
+                historyContent
+            }
+        }
+    }
+
+    private var historyContent: some View {
+        VStack(spacing: HRTSpacing.sm) {
+            // View full history button
+            Button {
+                viewModel.prepareForHistoryView()
+            } label: {
+                HStack {
+                    Image(systemName: "calendar")
+                        .foregroundStyle(Color.hrtPinkFallback)
+
+                    Text("View regimen on any date")
+                        .font(.hrtBody)
+                        .foregroundStyle(Color.hrtTextFallback)
+
+                    Spacer()
+
+                    Image(systemName: "chevron.right")
+                        .font(.caption)
+                        .foregroundStyle(Color.hrtTextSecondaryFallback)
+                }
+                .padding(.horizontal, HRTSpacing.md)
+                .padding(.vertical, HRTSpacing.sm)
+                .background(Color.hrtCardFallback)
+                .clipShape(RoundedRectangle(cornerRadius: HRTRadius.medium))
+            }
+            .buttonStyle(.plain)
+            .padding(.horizontal, HRTSpacing.md)
+
+            // Recent timeline
+            if viewModel.hasTimelineEvents {
+                VStack(alignment: .leading, spacing: HRTSpacing.xs) {
+                    Text("Recent Changes")
+                        .font(.hrtSubheadline)
+                        .foregroundStyle(Color.hrtTextSecondaryFallback)
+                        .padding(.horizontal, HRTSpacing.md)
+                        .padding(.top, HRTSpacing.xs)
+
+                    MedicationTimelineView(events: viewModel.timelineEvents, maxEventsToShow: 5)
+                        .padding(.horizontal, HRTSpacing.md)
+                }
+                .padding(.vertical, HRTSpacing.sm)
+                .background(Color.hrtCardFallback.opacity(0.6))
+                .clipShape(RoundedRectangle(cornerRadius: HRTRadius.large))
+                .padding(.horizontal, HRTSpacing.md)
+            } else {
+                HStack {
+                    Spacer()
+                    VStack(spacing: HRTSpacing.sm) {
+                        Image(systemName: "clock.arrow.circlepath")
+                            .font(.title2)
+                            .foregroundStyle(Color.hrtTextSecondaryFallback)
+
+                        Text("No medication changes recorded yet")
+                            .font(.hrtCallout)
+                            .foregroundStyle(Color.hrtTextSecondaryFallback)
+                    }
+                    .padding(.vertical, HRTSpacing.lg)
+                    Spacer()
+                }
+                .background(Color.hrtCardFallback.opacity(0.6))
+                .clipShape(RoundedRectangle(cornerRadius: HRTRadius.large))
+                .padding(.horizontal, HRTSpacing.md)
+            }
+        }
     }
 }
 

@@ -19,6 +19,12 @@ struct ExportData {
     let diureticDoses: [DiureticDoseData]
     let alertEvents: [AlertEventData]
     let medicationChangeInsights: [MedicationChangeInsight]
+
+    // Medication regimen data
+    let startRegimen: MedicationHistoryService.RegimenSnapshot
+    let endRegimen: MedicationHistoryService.RegimenSnapshot
+    let medicationTimeline: [MedicationHistoryService.TimelineEvent]
+    let medicationComparisons: [MedicationComparison]
 }
 
 /// Simplified diuretic dose data for export
@@ -204,6 +210,20 @@ final class ExportViewModel {
             context: context
         )
 
+        // Medication regimen data
+        let historyService = MedicationHistoryService()
+        let startRegimen = historyService.getMedicationRegimen(asOf: startDate, context: context)
+        let endRegimen = historyService.getMedicationRegimen(asOf: endDate, context: context)
+        let medicationTimeline = historyService.getMedicationTimeline(
+            from: startDate,
+            to: endDate,
+            context: context
+        )
+        let medicationComparisons = historyService.compareRegimens(
+            start: startRegimen,
+            end: endRegimen
+        )
+
         return ExportData(
             dateRange: (startDate, endDate),
             patientIdentifier: patientIdentifierForExport,
@@ -211,7 +231,11 @@ final class ExportViewModel {
             symptomEntries: symptomEntries,
             diureticDoses: diureticDoses,
             alertEvents: alertEvents,
-            medicationChangeInsights: medicationChangeInsights
+            medicationChangeInsights: medicationChangeInsights,
+            startRegimen: startRegimen,
+            endRegimen: endRegimen,
+            medicationTimeline: medicationTimeline,
+            medicationComparisons: medicationComparisons
         )
     }
 }

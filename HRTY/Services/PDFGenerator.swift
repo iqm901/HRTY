@@ -68,6 +68,16 @@ final class PDFGenerator {
 
             currentY = drawSymptomSection(at: currentY, data: data, in: context.cgContext)
 
+            // Medication regimen section - may need new page
+            if currentY > pageHeight - 200 {
+                context.beginPage()
+                currentY = margin
+            } else {
+                currentY += 20
+            }
+
+            currentY = drawMedicationRegimenSection(at: currentY, data: data, in: context.cgContext)
+
             // Medication changes section - may need new page
             if currentY > pageHeight - 200 {
                 context.beginPage()
@@ -708,6 +718,201 @@ final class PDFGenerator {
         let generatedSize = generatedText.size(withAttributes: generatedAttributes)
         generatedText.draw(at: CGPoint(x: pageWidth - margin - generatedSize.width, y: footerY + boundingRect.height + 12),
                           withAttributes: generatedAttributes)
+    }
+
+    private func drawMedicationRegimenSection(at y: CGFloat, data: ExportData, in context: CGContext) -> CGFloat {
+        var currentY = y
+
+        currentY = drawSectionHeading("Medication Regimen", at: currentY)
+
+        // Check if there are any medications to compare
+        if data.medicationComparisons.isEmpty && data.medicationTimeline.isEmpty {
+            currentY = drawEmptyState("No medication data recorded", at: currentY)
+            return currentY
+        }
+
+        // Draw comparison table if there are any comparisons
+        if !data.medicationComparisons.isEmpty {
+            currentY = drawRegimenComparisonTable(at: currentY, comparisons: data.medicationComparisons, data: data, in: context)
+            currentY += 16
+        }
+
+        // Draw timeline of changes within the period
+        if !data.medicationTimeline.isEmpty {
+            currentY = drawMedicationTimelineSection(at: currentY, events: data.medicationTimeline, in: context)
+        }
+
+        return currentY
+    }
+
+    private func drawRegimenComparisonTable(
+        at y: CGFloat,
+        comparisons: [MedicationComparison],
+        data: ExportData,
+        in context: CGContext
+    ) -> CGFloat {
+        var currentY = y
+
+        // Table description
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .medium
+        let startDateStr = dateFormatter.string(from: data.dateRange.start)
+        let endDateStr = dateFormatter.string(from: data.dateRange.end)
+
+        let descText = "Comparing regimen from \(startDateStr) to \(endDateStr)"
+        let descAttributes: [NSAttributedString.Key: Any] = [
+            .font: captionFont,
+            .foregroundColor: secondaryColor
+        ]
+        descText.draw(at: CGPoint(x: margin, y: currentY), withAttributes: descAttributes)
+        currentY += 16
+
+        // Table header
+        let headerAttributes: [NSAttributedString.Key: Any] = [
+            .font: subheadingFont,
+            .foregroundColor: primaryColor
+        ]
+
+        let col1Width: CGFloat = 180  // Medication name
+        let col2Width: CGFloat = 100  // Start dosage
+        let col3Width: CGFloat = 100  // End dosage
+        let col4Width: CGFloat = 80   // Change
+
+        "Medication".draw(at: CGPoint(x: margin, y: currentY), withAttributes: headerAttributes)
+        "Start of Period".draw(at: CGPoint(x: margin + col1Width, y: currentY), withAttributes: headerAttributes)
+        "End of Period".draw(at: CGPoint(x: margin + col1Width + col2Width, y: currentY), withAttributes: headerAttributes)
+        "Change".draw(at: CGPoint(x: margin + col1Width + col2Width + col3Width, y: currentY), withAttributes: headerAttributes)
+        currentY += 18
+
+        // Separator line
+        context.setStrokeColor(UIColor.separator.cgColor)
+        context.setLineWidth(0.5)
+        context.move(to: CGPoint(x: margin, y: currentY))
+        context.addLine(to: CGPoint(x: pageWidth - margin, y: currentY))
+        context.strokePath()
+        currentY += 6
+
+        // Table rows
+        let rowAttributes: [NSAttributedString.Key: Any] = [
+            .font: bodyFont,
+            .foregroundColor: primaryColor
+        ]
+
+        for comparison in comparisons {
+            // Skip if we're running out of page space
+            if currentY > pageHeight - 100 {
+                break
+            }
+
+            let changeColor: UIColor
+            let changeSymbol: String
+            switch comparison.changeType {
+            case .noChange:
+                changeColor = secondaryColor
+                changeSymbol = "—"
+            case .increased:
+                changeColor = alertColor
+                changeSymbol = "↑ Increased"
+            case .decreased:
+                changeColor = accentColor
+                changeSymbol = "↓ Decreased"
+            case .changed:
+                changeColor = alertColor
+                changeSymbol = "↔ Changed"
+            case .started:
+                changeColor = UIColor.systemGreen
+                changeSymbol = "+ Started"
+            case .discontinued:
+                changeColor = UIColor.systemRed
+                changeSymbol = "− Stopped"
+            }
+
+            let nameAttrs = rowAttributes
+            let changeAttrs: [NSAttributedString.Key: Any] = [
+                .font: bodyFont,
+                .foregroundColor: changeColor
+            ]
+
+            comparison.medicationName.draw(at: CGPoint(x: margin, y: currentY), withAttributes: nameAttrs)
+            comparison.startDosage.draw(at: CGPoint(x: margin + col1Width, y: currentY), withAttributes: rowAttributes)
+            comparison.endDosage.draw(at: CGPoint(x: margin + col1Width + col2Width, y: currentY), withAttributes: rowAttributes)
+            changeSymbol.draw(at: CGPoint(x: margin + col1Width + col2Width + col3Width, y: currentY), withAttributes: changeAttrs)
+
+            currentY += 18
+        }
+
+        return currentY
+    }
+
+    private func drawMedicationTimelineSection(
+        at y: CGFloat,
+        events: [MedicationHistoryService.TimelineEvent],
+        in context: CGContext
+    ) -> CGFloat {
+        var currentY = y
+
+        // Section subheading
+        let subheadingText = "Changes During This Period"
+        let subheadingAttributes: [NSAttributedString.Key: Any] = [
+            .font: subheadingFont,
+            .foregroundColor: primaryColor
+        ]
+        subheadingText.draw(at: CGPoint(x: margin, y: currentY), withAttributes: subheadingAttributes)
+        currentY += 20
+
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MMM d"
+
+        let rowAttributes: [NSAttributedString.Key: Any] = [
+            .font: bodyFont,
+            .foregroundColor: primaryColor
+        ]
+
+        // Group events by date and show up to 10
+        var eventsShown = 0
+        let maxEvents = 10
+
+        for event in events {
+            if eventsShown >= maxEvents {
+                let remainingText = "... and \(events.count - maxEvents) more changes"
+                let remainingAttrs: [NSAttributedString.Key: Any] = [
+                    .font: captionFont,
+                    .foregroundColor: secondaryColor
+                ]
+                remainingText.draw(at: CGPoint(x: margin + 10, y: currentY), withAttributes: remainingAttrs)
+                currentY += 16
+                break
+            }
+
+            if currentY > pageHeight - 100 {
+                break
+            }
+
+            let eventColor: UIColor
+            switch event.eventType {
+            case .started:
+                eventColor = UIColor.systemGreen
+            case .doseChanged:
+                eventColor = alertColor
+            case .discontinued:
+                eventColor = UIColor.systemRed
+            case .reactivated:
+                eventColor = accentColor
+            }
+
+            // Draw colored bullet
+            context.setFillColor(eventColor.cgColor)
+            context.fillEllipse(in: CGRect(x: margin, y: currentY + 4, width: 8, height: 8))
+
+            // Draw event text
+            let eventText = "\(dateFormatter.string(from: event.date)) — \(event.medicationName): \(event.changeDescription)"
+            eventText.draw(at: CGPoint(x: margin + 14, y: currentY), withAttributes: rowAttributes)
+
+            currentY += 18
+            eventsShown += 1
+        }
+
+        return currentY
     }
 
     // MARK: - Helper Methods

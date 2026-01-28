@@ -28,6 +28,13 @@ final class MedicationsViewModel {
     var showingPriorMedicationDetail = false
     var selectedPriorMedication: Medication?
 
+    // MARK: - History State
+    var isHistorySectionExpanded = false
+    var timelineEvents: [MedicationHistoryService.TimelineEvent] = []
+    var selectedSnapshotDate: Date = Date()
+    var snapshotRegimen: MedicationHistoryService.RegimenSnapshot?
+    var showingHistoryView = false
+
     // MARK: - Reactivation Form Fields
     var reactivateDosageInput: String = ""
     var reactivateSelectedUnit: String = "mg"
@@ -171,6 +178,7 @@ final class MedicationsViewModel {
     private let photoService = PhotoService.shared
     private let diureticDoseService: DiureticDoseServiceProtocol
     private let conflictService: MedicationConflictServiceProtocol
+    private let historyService = MedicationHistoryService()
 
     // MARK: - Initialization
     init(
@@ -823,5 +831,38 @@ final class MedicationsViewModel {
 
     var hasDiuretics: Bool {
         !diureticMedications.isEmpty
+    }
+
+    // MARK: - Medication History Methods
+
+    /// Load the complete medication timeline
+    func loadTimeline(context: ModelContext) {
+        timelineEvents = historyService.getMedicationTimeline(context: context)
+    }
+
+    /// Load regimen for the selected snapshot date
+    func loadRegimenForDate(_ date: Date, context: ModelContext) {
+        selectedSnapshotDate = date
+        snapshotRegimen = historyService.getMedicationRegimen(asOf: date, context: context)
+    }
+
+    /// Toggle the history section expansion
+    func toggleHistorySection() {
+        isHistorySectionExpanded.toggle()
+    }
+
+    /// Whether there are any timeline events to show
+    var hasTimelineEvents: Bool {
+        !timelineEvents.isEmpty
+    }
+
+    /// Count of timeline events
+    var timelineEventsCount: Int {
+        timelineEvents.count
+    }
+
+    /// Prepare to show the full history view
+    func prepareForHistoryView() {
+        showingHistoryView = true
     }
 }

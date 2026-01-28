@@ -128,6 +128,9 @@
 		029000010000000100000002 /* OtherMedicationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029000020000000100000002 /* OtherMedicationTests.swift */; };
 		B100000120000001000000020000000C /* CardiovascularMedicationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B100000220000001000000020000000C /* CardiovascularMedicationTests.swift */; };
 		B100000120000001000000020000000D /* MedicationChangeAnalysisServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B100000220000001000000020000000D /* MedicationChangeAnalysisServiceTests.swift */; };
+		030000010000000100000010 /* MedicationHistoryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 030000020000000100000010 /* MedicationHistoryService.swift */; };
+		030000010000000100000011 /* MedicationHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 030000020000000100000011 /* MedicationHistoryView.swift */; };
+		030000010000000100000012 /* MedicationTimelineRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 030000020000000100000012 /* MedicationTimelineRow.swift */; };
 
 /* End PBXBuildFile section */
 
@@ -259,6 +262,9 @@
 		029000020000000100000002 /* OtherMedicationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherMedicationTests.swift; sourceTree = "<group>"; };
 		B100000220000001000000020000000C /* CardiovascularMedicationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardiovascularMedicationTests.swift; sourceTree = "<group>"; };
 		B100000220000001000000020000000D /* MedicationChangeAnalysisServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicationChangeAnalysisServiceTests.swift; sourceTree = "<group>"; };
+		030000020000000100000010 /* MedicationHistoryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicationHistoryService.swift; sourceTree = "<group>"; };
+		030000020000000100000011 /* MedicationHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicationHistoryView.swift; sourceTree = "<group>"; };
+		030000020000000100000012 /* MedicationTimelineRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicationTimelineRow.swift; sourceTree = "<group>"; };
 
 /* End PBXFileReference section */
 
@@ -400,6 +406,8 @@
 				017000020000000100000003 /* MedicationPhotoCaptureView.swift */,
 				017000020000000100000004 /* MedicationPhotoGalleryView.swift */,
 				017000020000000100000005 /* MedicationPhotoViewerView.swift */,
+				030000020000000100000011 /* MedicationHistoryView.swift */,
+				030000020000000100000012 /* MedicationTimelineRow.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -458,6 +466,7 @@
 				A100000220000001000000010000002D /* NotificationService.swift */,
 				017000020000000100000001 /* PhotoService.swift */,
 				028000020000000100000003 /* MedicationChangeAnalysisService.swift */,
+				030000020000000100000010 /* MedicationHistoryService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -682,6 +691,9 @@
 				028000010000000100000002 /* CardiovascularMedication.swift in Sources */,
 				028000010000000100000003 /* MedicationChangeAnalysisService.swift in Sources */,
 				029000010000000100000001 /* OtherMedication.swift in Sources */,
+				030000010000000100000010 /* MedicationHistoryService.swift in Sources */,
+				030000010000000100000011 /* MedicationHistoryView.swift in Sources */,
+				030000010000000100000012 /* MedicationTimelineRow.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
