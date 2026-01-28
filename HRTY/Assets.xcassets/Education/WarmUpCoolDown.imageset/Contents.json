@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "warm_up_cool_down.png",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

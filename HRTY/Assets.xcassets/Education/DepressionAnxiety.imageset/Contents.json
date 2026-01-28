@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "depression_anxiety.png",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

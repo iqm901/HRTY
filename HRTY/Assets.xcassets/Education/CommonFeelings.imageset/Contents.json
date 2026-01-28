@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "common_feelings.png",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "safe_activity_levels.png",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

@@ -785,7 +785,8 @@ extension EducationContent {
                     """,
                 source: "Heart Failure Society of America",
                 heroIcon: "heart.fill",
-                heroColor: .coral
+                heroColor: .coral,
+                heroImage: "Education/DoctorPatient"
             ),
             LearnTopic(
                 title: "Common Causes",
@@ -804,7 +805,8 @@ extension EducationContent {
                     """,
                 source: "Heart Failure Society of America",
                 heroIcon: "heart.text.square.fill",
-                heroColor: .coral
+                heroColor: .coral,
+                heroImage: "Education/CommonCauses"
             ),
             LearnTopic(
                 title: "Ejection Fraction Explained",
@@ -826,7 +828,8 @@ extension EducationContent {
                     """,
                 source: "Heart Failure Society of America",
                 heroIcon: "percent",
-                heroColor: .coral
+                heroColor: .coral,
+                heroImage: "Education/EjectionFraction"
             )
         ]
     )
@@ -861,7 +864,8 @@ extension EducationContent {
                     """,
                 source: "American Association of Heart Failure Nurses",
                 heroIcon: "scalemass.fill",
-                heroColor: .teal
+                heroColor: .teal,
+                heroImage: "Education/WhyWeighDaily"
             ),
             LearnTopic(
                 title: "Recognizing Warning Signs",
@@ -889,7 +893,8 @@ extension EducationContent {
                     """,
                 source: "Heart Failure Society of America",
                 heroIcon: "exclamationmark.triangle.fill",
-                heroColor: .teal
+                heroColor: .teal,
+                heroImage: "Education/WarningSigns"
             ),
             LearnTopic(
                 title: "The Zone System",
@@ -924,7 +929,8 @@ extension EducationContent {
                     """,
                 source: "HSAG Zone Tools",
                 heroIcon: "circle.inset.filled",
-                heroColor: .teal
+                heroColor: .teal,
+                heroImage: "Education/ZoneSystem"
             )
         ]
     )
@@ -954,7 +960,8 @@ extension EducationContent {
                     """,
                 source: "Heart Failure Society of America",
                 heroIcon: "leaf.fill",
-                heroColor: .green
+                heroColor: .green,
+                heroImage: "Education/SodiumMatters"
             ),
             LearnTopic(
                 title: "Reading Food Labels",
@@ -978,7 +985,8 @@ extension EducationContent {
                     """,
                 source: "American Heart Association",
                 heroIcon: "doc.text.magnifyingglass",
-                heroColor: .green
+                heroColor: .green,
+                heroImage: "Education/FoodLabels"
             ),
             LearnTopic(
                 title: "Seasoning Alternatives",
@@ -999,7 +1007,8 @@ extension EducationContent {
                     """,
                 source: "Heart Failure Society of America",
                 heroIcon: "flame.fill",
-                heroColor: .green
+                heroColor: .green,
+                heroImage: "Education/SeasoningAlternatives"
             ),
             LearnTopic(
                 title: "Restaurant Tips",
@@ -1022,7 +1031,8 @@ extension EducationContent {
                     """,
                 source: "Heart Failure Society of America",
                 heroIcon: "fork.knife",
-                heroColor: .green
+                heroColor: .green,
+                heroImage: "Education/RestaurantTips"
             )
         ]
     )
@@ -1052,7 +1062,8 @@ extension EducationContent {
                     """,
                 source: "Heart Failure Society of America",
                 heroIcon: "figure.walk",
-                heroColor: .blue
+                heroColor: .blue,
+                heroImage: "Education/SafeActivityLevels"
             ),
             LearnTopic(
                 title: "Warm-Up and Cool-Down",
@@ -1076,7 +1087,8 @@ extension EducationContent {
                     """,
                 source: "Heart Failure Society of America",
                 heroIcon: "figure.cooldown",
-                heroColor: .blue
+                heroColor: .blue,
+                heroImage: "Education/WarmUpCoolDown"
             ),
             LearnTopic(
                 title: "When to Stop",
@@ -1099,7 +1111,8 @@ extension EducationContent {
                     """,
                 source: "Heart Failure Society of America",
                 heroIcon: "hand.raised.fill",
-                heroColor: .blue
+                heroColor: .blue,
+                heroImage: "Education/WhenToStop"
             )
         ]
     )
@@ -1132,7 +1145,8 @@ extension EducationContent {
                     """,
                 source: "Heart Failure Society of America",
                 heroIcon: "pills.fill",
-                heroColor: .purple
+                heroColor: .purple,
+                heroImage: "Education/HowMedicationsHelp"
             ),
             LearnTopic(
                 title: "Common Side Effects",
@@ -1156,7 +1170,8 @@ extension EducationContent {
                     """,
                 source: "Heart Failure Society of America",
                 heroIcon: "exclamationmark.bubble.fill",
-                heroColor: .purple
+                heroColor: .purple,
+                heroImage: "Education/CommonSideEffects"
             ),
             LearnTopic(
                 title: "Medications to Avoid",
@@ -1180,7 +1195,8 @@ extension EducationContent {
                     """,
                 source: "Heart Failure Society of America",
                 heroIcon: "xmark.circle.fill",
-                heroColor: .purple
+                heroColor: .purple,
+                heroImage: "Education/MedicationsToAvoid"
             )
         ]
     )
@@ -1214,7 +1230,8 @@ extension EducationContent {
                     """,
                 source: "Heart Failure Society of America",
                 heroIcon: "brain.head.profile",
-                heroColor: .indigo
+                heroColor: .indigo,
+                heroImage: "Education/CommonFeelings"
             ),
             LearnTopic(
                 title: "Signs of Depression or Anxiety",
@@ -1240,7 +1257,8 @@ extension EducationContent {
                     """,
                 source: "Heart Failure Society of America",
                 heroIcon: "waveform.path.ecg",
-                heroColor: .indigo
+                heroColor: .indigo,
+                heroImage: "Education/DepressionAnxiety"
             ),
             LearnTopic(
                 title: "Sleep Tips",
@@ -1263,7 +1281,8 @@ extension EducationContent {
                     """,
                 source: "European Society of Cardiology",
                 heroIcon: "moon.zzz.fill",
-                heroColor: .indigo
+                heroColor: .indigo,
+                heroImage: "Education/SleepTips"
             )
         ]
     )
@@ -1294,7 +1313,8 @@ extension EducationContent {
                     """,
                 source: "Heart Failure Society of America",
                 heroIcon: "person.2.fill",
-                heroColor: .orange
+                heroColor: .orange,
+                heroImage: "Education/HowToHelp"
             ),
             LearnTopic(
                 title: "Warning Signs to Watch",
@@ -1318,7 +1338,8 @@ extension EducationContent {
                     """,
                 source: "Heart Failure Society of America",
                 heroIcon: "eye.fill",
-                heroColor: .orange
+                heroColor: .orange,
+                heroImage: "Education/WarningSignsToWatch"
             ),
             LearnTopic(
                 title: "Caregiver Self-Care",
@@ -1342,7 +1363,8 @@ extension EducationContent {
                     """,
                 source: "European Society of Cardiology",
                 heroIcon: "heart.circle.fill",
-                heroColor: .orange
+                heroColor: .orange,
+                heroImage: "Education/CaregiverSelfCare"
             )
         ]
     )
@@ -1375,7 +1397,8 @@ extension EducationContent {
                     """,
                 source: "Heart Failure Society of America",
                 heroIcon: "chart.bar.fill",
-                heroColor: .slate
+                heroColor: .slate,
+                heroImage: "Education/NYHAClassesExplained"
             ),
             LearnTopic(
                 title: "Advance Care Planning",
@@ -1400,7 +1423,8 @@ extension EducationContent {
                     """,
                 source: "Heart Failure Society of America",
                 heroIcon: "doc.text.fill",
-                heroColor: .slate
+                heroColor: .slate,
+                heroImage: "Education/AdvanceCarePlanning"
             )
         ]
     )
@@ -1424,14 +1448,16 @@ struct LearnTopic: Identifiable, Hashable {
     let source: String
     let heroIcon: String
     let heroColor: HeroColor
+    let heroImage: String?
 
     /// Simplified initializer that uses section defaults
-    init(title: String, content: String, source: String, heroIcon: String = "heart.fill", heroColor: HeroColor = .coral) {
+    init(title: String, content: String, source: String, heroIcon: String = "heart.fill", heroColor: HeroColor = .coral, heroImage: String? = nil) {
         self.title = title
         self.content = content
         self.source = source
         self.heroIcon = heroIcon
         self.heroColor = heroColor
+        self.heroImage = heroImage
     }
 
     func hash(into hasher: inout Hasher) {
