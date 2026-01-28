@@ -402,87 +402,6 @@ enum EducationContent {
             }
         }
 
-        // MARK: - Medications to Avoid
-
-        static let medicationsToAvoid = """
-            Some over-the-counter medications and supplements can worsen heart failure or interact with your prescribed medications.
-            """
-
-        static let nsaidsWarning = MedicationWarning(
-            category: "NSAIDs (Pain Relievers)",
-            examples: "Ibuprofen (Advil, Motrin), Naproxen (Aleve), Aspirin (high doses)",
-            risk: "Can cause your body to retain fluid and worsen heart failure. May also reduce the effectiveness of your heart failure medications.",
-            alternative: "Use acetaminophen (Tylenol) for pain relief instead. Always check with your care team first.",
-            source: "Heart Failure Society of America"
-        )
-
-        static let coldMedicineWarning = MedicationWarning(
-            category: "Cold & Cough Medicines",
-            examples: "Decongestants containing pseudoephedrine or phenylephrine (Sudafed, many cold/flu products)",
-            risk: "Can raise blood pressure, increase heart rate, and trigger irregular heart rhythms.",
-            alternative: "Ask your pharmacist for heart-safe alternatives. Saline nasal spray and steam inhalation are usually safe.",
-            source: "Heart Failure Society of America"
-        )
-
-        static let herbalWarning = MedicationWarning(
-            category: "Herbal Supplements",
-            examples: "Ephedra, St. John's wort, ginseng, ginkgo, hawthorn, Chinese herbs",
-            risk: "May interact with heart failure medications or directly affect heart function. St. John's wort can reduce the effectiveness of many medications.",
-            alternative: "Always consult your healthcare team before taking any herbal products or supplements.",
-            source: "European Society of Cardiology"
-        )
-
-        static let calciumChannelBlockerWarning = MedicationWarning(
-            category: "Certain Calcium Channel Blockers",
-            examples: "Diltiazem, verapamil, nifedipine",
-            risk: "Can worsen heart failure in some patients by reducing the heart's pumping ability.",
-            alternative: "If you need a calcium channel blocker, amlodipine and felodipine are generally safer options. Your doctor will choose what's right for you.",
-            source: "Heart Failure Society of America"
-        )
-
-        static let allWarnings: [MedicationWarning] = [
-            nsaidsWarning,
-            coldMedicineWarning,
-            herbalWarning,
-            calciumChannelBlockerWarning
-        ]
-
-        // MARK: - Adherence Tips
-
-        static let adherenceTips = [
-            AdherenceTip(
-                title: "Use a Pill Organizer",
-                description: "Weekly pill organizers with day and time labels help you track whether you've taken each dose.",
-                icon: "pills.fill"
-            ),
-            AdherenceTip(
-                title: "Set Alarms",
-                description: "Phone or watch alarms at dosing times provide helpful reminders throughout the day.",
-                icon: "alarm.fill"
-            ),
-            AdherenceTip(
-                title: "Keep a Medication List",
-                description: "Post your medication list on your refrigerator and keep a copy in your wallet for emergencies.",
-                icon: "list.clipboard.fill"
-            ),
-            AdherenceTip(
-                title: "Refill Early",
-                description: "Reorder prescriptions a week before running out to prevent gaps in your treatment.",
-                icon: "arrow.triangle.2.circlepath"
-            ),
-            AdherenceTip(
-                title: "Space Doses for Dizziness",
-                description: "If dizziness is a problem, ask your doctor about spreading doses throughout the day.",
-                icon: "clock.fill"
-            ),
-            AdherenceTip(
-                title: "Involve Family",
-                description: "Share your medication schedule with family members who can help remind you.",
-                icon: "person.2.fill"
-            )
-        ]
-
-        static let adherenceSource = "Heart Failure Society of America & European Society of Cardiology"
     }
 
     // MARK: - Trends Education
@@ -583,24 +502,6 @@ struct MedicationEducation {
     let commonSideEffects: String
     let importantNotes: String
     let source: String
-}
-
-/// Warning about medications to avoid
-struct MedicationWarning: Identifiable {
-    let id = UUID()
-    let category: String
-    let examples: String
-    let risk: String
-    let alternative: String
-    let source: String
-}
-
-/// Tip for medication adherence
-struct AdherenceTip: Identifiable {
-    let id = UUID()
-    let title: String
-    let description: String
-    let icon: String
 }
 
 /// Educational content for a trend metric
@@ -1176,27 +1077,69 @@ extension EducationContent {
             LearnTopic(
                 title: "Medications to Avoid",
                 content: """
-                    Some over-the-counter medications can worsen heart failure:
+                    Some over-the-counter medications and supplements can worsen heart failure or interact with your prescribed medications.
 
-                    **NSAIDs (Ibuprofen, Naproxen, Aspirin in high doses)**
-                    Can cause fluid retention and worsen heart failure. Use acetaminophen (Tylenol) instead.
+                    **NSAIDs (Pain Relievers)**
+                    Examples: Ibuprofen (Advil, Motrin), Naproxen (Aleve), Aspirin (high doses)
 
-                    **Cold and Cough Medicines**
-                    Decongestants (pseudoephedrine, phenylephrine) can raise blood pressure and trigger irregular rhythms. \
-                    Ask your pharmacist for heart-safe alternatives.
+                    *Why to avoid:* Can cause your body to retain fluid and worsen heart failure. May also reduce the effectiveness of your heart failure medications.
+
+                    *Safer alternative:* Use acetaminophen (Tylenol) for pain relief instead. Always check with your care team first.
+
+                    **Cold & Cough Medicines**
+                    Examples: Decongestants containing pseudoephedrine or phenylephrine (Sudafed, many cold/flu products)
+
+                    *Why to avoid:* Can raise blood pressure, increase heart rate, and trigger irregular heart rhythms.
+
+                    *Safer alternative:* Ask your pharmacist for heart-safe alternatives. Saline nasal spray and steam inhalation are usually safe.
 
                     **Herbal Supplements**
-                    Ephedra, St. John's wort, ginseng, ginkgo, and hawthorn may interact with your medications. \
-                    Always consult your care team before taking any supplements.
+                    Examples: Ephedra, St. John's wort, ginseng, ginkgo, hawthorn, Chinese herbs
+
+                    *Why to avoid:* May interact with heart failure medications or directly affect heart function. St. John's wort can reduce the effectiveness of many medications.
+
+                    *Safer alternative:* Always consult your healthcare team before taking any herbal products or supplements.
 
                     **Certain Calcium Channel Blockers**
-                    Diltiazem, verapamil, and nifedipine can worsen heart failure. \
-                    If needed, amlodipine and felodipine are safer options.
+                    Examples: Diltiazem, verapamil, nifedipine
+
+                    *Why to avoid:* Can worsen heart failure in some patients by reducing the heart's pumping ability.
+
+                    *Safer alternative:* If you need a calcium channel blocker, amlodipine and felodipine are generally safer options. Your doctor will choose what's right for you.
                     """,
-                source: "Heart Failure Society of America",
+                source: "Heart Failure Society of America & European Society of Cardiology",
                 heroIcon: "xmark.circle.fill",
                 heroColor: .purple,
                 heroImage: "Education/MedicationsToAvoid"
+            ),
+            LearnTopic(
+                title: "Ways to Improve Adherence",
+                content: """
+                    Taking your medications consistently is key to managing heart failure effectively. \
+                    Here are practical strategies to help you stay on track:
+
+                    **Use a Pill Organizer**
+                    Weekly pill organizers with day and time labels help you track whether you've taken each dose.
+
+                    **Set Alarms**
+                    Phone or watch alarms at dosing times provide helpful reminders throughout the day.
+
+                    **Keep a Medication List**
+                    Post your medication list on your refrigerator and keep a copy in your wallet for emergencies.
+
+                    **Refill Early**
+                    Reorder prescriptions a week before running out to prevent gaps in your treatment.
+
+                    **Space Doses for Dizziness**
+                    If dizziness is a problem, ask your doctor about spreading doses throughout the day.
+
+                    **Involve Family**
+                    Share your medication schedule with family members who can help remind you.
+                    """,
+                source: "Heart Failure Society of America & European Society of Cardiology",
+                heroIcon: "checkmark.circle.fill",
+                heroColor: .purple,
+                heroImage: nil
             )
         ]
     )
