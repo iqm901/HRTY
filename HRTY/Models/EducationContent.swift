@@ -1139,7 +1139,7 @@ extension EducationContent {
                 source: "Heart Failure Society of America & European Society of Cardiology",
                 heroIcon: "checkmark.circle.fill",
                 heroColor: .purple,
-                heroImage: nil
+                heroImage: "Education/WaysToImproveAdherence"
             )
         ]
     )
