@@ -38,7 +38,7 @@ struct CoronaryProceduresDetailView: View {
             .scrollContentBackground(.hidden)
         }
         .toolbarBackground(Color.hrtBackgroundFallback, for: .navigationBar)
-        .navigationTitle("Coronary Procedures")
+        .navigationTitle("Coronary Arteries")
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button {
@@ -58,10 +58,10 @@ struct CoronaryProceduresDetailView: View {
 
     private var infoSection: some View {
         VStack(alignment: .leading, spacing: HRTSpacing.sm) {
-            Text("About Coronary Procedures")
+            Text("About Coronary Arteries")
                 .font(.headline)
 
-            Text("Track your coronary interventions including stents (PCI) and bypass surgery (CABG). This helps monitor your heart health and medication needs.")
+            Text("Coronary arteries supply blood to your heart muscle. Blockages in these arteries can cause heart attacks and contribute to heart failure. Your doctor may have checked your arteries with a coronary angiogram or CT scan.")
                 .font(.subheadline)
                 .foregroundStyle(Color.hrtTextSecondaryFallback)
         }

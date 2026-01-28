@@ -19,25 +19,14 @@ struct ClinicalProfileData {
     let nyhaClassDate: Date?
     let targetSystolicBP: Int?
     let targetDiastolicBP: Int?
-    let coronaryArteries: [CoronaryArteryExportData]
     let heartValves: [HeartValveExportData]
 
     var hasAnyData: Bool {
         ejectionFraction != nil ||
         nyhaClass != nil ||
         targetSystolicBP != nil ||
-        !coronaryArteries.isEmpty ||
         !heartValves.isEmpty
     }
-}
-
-/// Coronary artery data for export
-struct CoronaryArteryExportData {
-    let arteryName: String
-    let hasBlockage: Bool
-    let blockageSeverity: String?
-    let hasStent: Bool
-    let stentDate: Date?
 }
 
 /// Heart valve data for export
@@ -291,17 +280,6 @@ final class ExportViewModel {
 
         guard profile.hasAnyData else { return nil }
 
-        // Convert coronary arteries
-        let coronaryArteries = (profile.coronaryArteries ?? []).map { artery in
-            CoronaryArteryExportData(
-                arteryName: artery.arteryType.displayName,
-                hasBlockage: artery.hasBlockage,
-                blockageSeverity: artery.blockageSeverity?.displayName,
-                hasStent: artery.hasStent,
-                stentDate: artery.stentDate
-            )
-        }
-
         // Convert heart valves
         let heartValves = (profile.heartValves ?? []).map { valve in
             HeartValveExportData(
@@ -322,7 +300,6 @@ final class ExportViewModel {
             nyhaClassDate: profile.nyhaClassDate,
             targetSystolicBP: profile.targetSystolicBP,
             targetDiastolicBP: profile.targetDiastolicBP,
-            coronaryArteries: coronaryArteries,
             heartValves: heartValves
         )
     }

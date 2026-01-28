@@ -19,8 +19,6 @@ struct MyHeartView: View {
 
                         bpTargetCard
 
-                        coronaryProceduresCard
-
                         coronaryArteriesCard
 
                         heartValvesCard
@@ -43,9 +41,6 @@ struct MyHeartView: View {
             }
             .sheet(isPresented: $viewModel.showingBPTargetEdit) {
                 BPTargetEditView(viewModel: viewModel)
-            }
-            .navigationDestination(isPresented: $viewModel.showingCoronaryArteriesDetail) {
-                CoronaryArteriesDetailView(viewModel: viewModel)
             }
             .navigationDestination(isPresented: $viewModel.showingHeartValvesDetail) {
                 HeartValvesDetailView(viewModel: viewModel)
@@ -163,9 +158,9 @@ struct MyHeartView: View {
         .accessibilityHint("Tap to edit")
     }
 
-    // MARK: - Coronary Procedures Card
+    // MARK: - Coronary Arteries Card
 
-    private var coronaryProceduresCard: some View {
+    private var coronaryArteriesCard: some View {
         VStack(alignment: .leading, spacing: HRTSpacing.sm) {
             // Card header
             VStack(alignment: .leading, spacing: HRTSpacing.sm) {
@@ -173,7 +168,7 @@ struct MyHeartView: View {
                     Image(systemName: "heart.text.square")
                         .foregroundStyle(Color.hrtPinkFallback)
                         .font(.title2)
-                    Text("Coronary Procedures")
+                    Text("Coronary Arteries")
                         .font(.headline)
                     Spacer()
                     Image(systemName: "chevron.right")
@@ -214,7 +209,7 @@ struct MyHeartView: View {
         .hrtCardShadow()
         .hrtPagePadding()
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("Coronary Procedures")
+        .accessibilityLabel("Coronary Arteries")
         .accessibilityValue(viewModel.coronaryProceduresSummary)
         .accessibilityHint("Tap to view details")
         .sheet(isPresented: $showingAddMedication) {
@@ -273,48 +268,6 @@ struct MyHeartView: View {
         .accessibilityHint("Tap to edit")
     }
 
-    // MARK: - Coronary Arteries Card
-
-    private var coronaryArteriesCard: some View {
-        VStack(alignment: .leading, spacing: HRTSpacing.sm) {
-            HStack {
-                Image(systemName: "arrow.triangle.branch")
-                    .foregroundStyle(Color.hrtPinkFallback)
-                    .font(.title2)
-                Text("Coronary Arteries")
-                    .font(.headline)
-                Spacer()
-                Image(systemName: "chevron.right")
-                    .foregroundStyle(Color.hrtTextTertiaryFallback)
-                    .font(.caption)
-            }
-
-            Text(viewModel.coronaryArteriesSummary)
-                .font(.subheadline)
-                .foregroundStyle(viewModel.hasCoronaryArteries ? Color.hrtTextFallback : Color.hrtTextSecondaryFallback)
-
-            if !viewModel.hasCoronaryArteries {
-                Text("Track the status of your coronary arteries from your heart catheterization or CT scan results.")
-                    .font(.caption)
-                    .foregroundStyle(Color.hrtTextTertiaryFallback)
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .hrtCardPadding()
-        .background(Color.hrtCardFallback)
-        .clipShape(RoundedRectangle(cornerRadius: HRTRadius.medium))
-        .hrtCardShadow()
-        .hrtPagePadding()
-        .contentShape(Rectangle())
-        .onTapGesture {
-            viewModel.prepareCoronaryArteriesDetail()
-        }
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel("Coronary Arteries")
-        .accessibilityValue(viewModel.coronaryArteriesSummary)
-        .accessibilityHint("Tap to view details")
-    }
-
     // MARK: - Heart Valves Card
 
     private var heartValvesCard: some View {
@@ -360,5 +313,5 @@ struct MyHeartView: View {
 
 #Preview {
     MyHeartView()
-        .modelContainer(for: [ClinicalProfile.self, CoronaryArtery.self, HeartValveCondition.self, CoronaryProcedure.self])
+        .modelContainer(for: [ClinicalProfile.self, HeartValveCondition.self, CoronaryProcedure.self])
 }

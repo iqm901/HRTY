@@ -991,39 +991,6 @@ final class PDFGenerator {
             currentY += 18
         }
 
-        // Coronary Arteries
-        if !profile.coronaryArteries.isEmpty {
-            currentY += 8
-            "Coronary Arteries:".draw(at: CGPoint(x: margin, y: currentY), withAttributes: labelAttributes)
-            currentY += 18
-
-            for artery in profile.coronaryArteries {
-                var arteryText = artery.arteryName
-
-                var details: [String] = []
-                if artery.hasBlockage {
-                    if let severity = artery.blockageSeverity {
-                        details.append("\(severity) blockage")
-                    } else {
-                        details.append("Blockage present")
-                    }
-                } else {
-                    details.append("No significant blockage")
-                }
-                if artery.hasStent {
-                    if let stentDate = artery.stentDate {
-                        details.append("Stent (\(dateFormatter.string(from: stentDate)))")
-                    } else {
-                        details.append("Stent placed")
-                    }
-                }
-
-                arteryText += " — " + details.joined(separator: ", ")
-                arteryText.draw(at: CGPoint(x: margin + 10, y: currentY), withAttributes: rowAttributes)
-                currentY += 16
-            }
-        }
-
         // Heart Valves
         if !profile.heartValves.isEmpty {
             currentY += 8

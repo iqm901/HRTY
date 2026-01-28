@@ -94,9 +94,6 @@ final class ClinicalProfile {
 
     // MARK: - Relationships
 
-    @Relationship(deleteRule: .cascade, inverse: \CoronaryArtery.profile)
-    var coronaryArteries: [CoronaryArtery]?
-
     @Relationship(deleteRule: .cascade, inverse: \HeartValveCondition.profile)
     var heartValves: [HeartValveCondition]?
 
@@ -110,11 +107,6 @@ final class ClinicalProfile {
     }
 
     // MARK: - Computed Properties
-
-    /// Returns sorted coronary arteries by type
-    var sortedCoronaryArteries: [CoronaryArtery] {
-        (coronaryArteries ?? []).sorted { $0.arteryType.sortOrder < $1.arteryType.sortOrder }
-    }
 
     /// Returns sorted heart valves by type
     var sortedHeartValves: [HeartValveCondition] {
@@ -131,11 +123,19 @@ final class ClinicalProfile {
             if proc1.dateIsUnknown && proc2.dateIsUnknown {
                 return proc1.createdAt > proc2.createdAt
             }
-            // Both have dates - sort by procedure date
-            guard let date1 = proc1.procedureDate, let date2 = proc2.procedureDate else {
+            // Both have dates - sort by year, month, day (most recent first)
+            guard let year1 = proc1.procedureYear, let year2 = proc2.procedureYear else {
                 return proc1.createdAt > proc2.createdAt
             }
-            return date1 > date2
+            if year1 != year2 { return year1 > year2 }
+            // Same year - compare months (nil goes later)
+            let month1 = proc1.procedureMonth ?? 0
+            let month2 = proc2.procedureMonth ?? 0
+            if month1 != month2 { return month1 > month2 }
+            // Same month - compare days (nil goes later)
+            let day1 = proc1.procedureDay ?? 0
+            let day2 = proc2.procedureDay ?? 0
+            return day1 > day2
         }
     }
 
@@ -159,7 +159,6 @@ final class ClinicalProfile {
         ejectionFraction != nil ||
         nyhaClassRawValue != nil ||
         targetSystolicBP != nil ||
-        !(coronaryArteries ?? []).isEmpty ||
         !(heartValves ?? []).isEmpty ||
         !(coronaryProcedures ?? []).isEmpty
     }

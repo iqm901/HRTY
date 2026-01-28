@@ -1,6 +1,46 @@
 import Foundation
 import SwiftData
 
+/// Types of coronary arteries that can be tracked
+enum CoronaryArteryType: String, CaseIterable, Identifiable {
+    case lm = "LM"      // Left Main
+    case lad = "LAD"    // Left Anterior Descending
+    case lcx = "LCx"    // Left Circumflex
+    case rca = "RCA"    // Right Coronary Artery
+    case diagonal = "Diagonal"
+    case om = "OM"      // Obtuse Marginal
+    case pda = "PDA"    // Posterior Descending Artery
+
+    var id: String { rawValue }
+
+    var displayName: String {
+        switch self {
+        case .lm: return "Left Main (LM)"
+        case .lad: return "Left Anterior Descending (LAD)"
+        case .lcx: return "Left Circumflex (LCx)"
+        case .rca: return "Right Coronary Artery (RCA)"
+        case .diagonal: return "Diagonal Branch"
+        case .om: return "Obtuse Marginal (OM)"
+        case .pda: return "Posterior Descending (PDA)"
+        }
+    }
+
+    var shortName: String { rawValue }
+
+    /// Sort order for display (major arteries first)
+    var sortOrder: Int {
+        switch self {
+        case .lm: return 0
+        case .lad: return 1
+        case .lcx: return 2
+        case .rca: return 3
+        case .diagonal: return 4
+        case .om: return 5
+        case .pda: return 6
+        }
+    }
+}
+
 /// Types of coronary procedures
 enum CoronaryProcedureType: String, CaseIterable, Identifiable {
     case stent = "Stent"
@@ -57,8 +97,14 @@ final class CoronaryProcedure {
     /// Raw value for procedure type ("Stent" or "CABG")
     var procedureTypeRawValue: String
 
-    /// Date when the procedure was performed
-    var procedureDate: Date?
+    /// Year component of procedure date (e.g., 2024)
+    var procedureYear: Int?
+
+    /// Month component of procedure date (1-12)
+    var procedureMonth: Int?
+
+    /// Day component of procedure date (1-31)
+    var procedureDay: Int?
 
     /// Explicit flag for "I don't know the date"
     var dateIsUnknown: Bool
@@ -124,20 +170,49 @@ final class CoronaryProcedure {
 
     /// Whether the procedure date is within the last 12 months
     var isWithinTwelveMonths: Bool {
-        guard let date = procedureDate, !dateIsUnknown else { return false }
+        guard let year = procedureYear, !dateIsUnknown else { return false }
+
+        // Build a date from available components
+        // Use Jan 1 if month unknown, use 1st if day unknown (conservative estimate)
+        var components = DateComponents()
+        components.year = year
+        components.month = procedureMonth ?? 1
+        components.day = procedureDay ?? 1
+
+        guard let procedureDate = Calendar.current.date(from: components) else { return false }
         let twelveMonthsAgo = Calendar.current.date(byAdding: .month, value: -12, to: Date()) ?? Date()
-        return date >= twelveMonthsAgo
+        return procedureDate >= twelveMonthsAgo
     }
 
     /// Formatted procedure date for display
+    /// Returns "Jan 15, 2024", "Jan 2024", "2024", or "Date unknown" based on available components
     var procedureDateDisplay: String? {
         if dateIsUnknown {
             return "Date unknown"
         }
-        guard let date = procedureDate else { return nil }
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MMM yyyy"
-        return formatter.string(from: date)
+
+        guard let year = procedureYear else { return nil }
+
+        if let month = procedureMonth {
+            var components = DateComponents()
+            components.year = year
+            components.month = month
+            components.day = procedureDay ?? 1
+
+            guard let date = Calendar.current.date(from: components) else {
+                return String(year)
+            }
+
+            let formatter = DateFormatter()
+            if procedureDay != nil {
+                formatter.dateFormat = "MMM d, yyyy"  // "Jan 15, 2024"
+            } else {
+                formatter.dateFormat = "MMM yyyy"      // "Jan 2024"
+            }
+            return formatter.string(from: date)
+        }
+
+        return String(year)  // Just the year
     }
 
     /// Summary text for display in lists
@@ -172,14 +247,18 @@ final class CoronaryProcedure {
 
     init(
         procedureType: CoronaryProcedureType,
-        procedureDate: Date? = nil,
+        procedureYear: Int? = nil,
+        procedureMonth: Int? = nil,
+        procedureDay: Int? = nil,
         dateIsUnknown: Bool = false,
         vesselsInvolved: [CoronaryArteryType] = [],
         graftTypes: [CABGGraftType] = [],
         notes: String? = nil
     ) {
         self.procedureTypeRawValue = procedureType.rawValue
-        self.procedureDate = procedureDate
+        self.procedureYear = procedureYear
+        self.procedureMonth = procedureMonth
+        self.procedureDay = procedureDay
         self.dateIsUnknown = dateIsUnknown
         self.vesselsInvolvedRawValues = vesselsInvolved.isEmpty ? nil : vesselsInvolved.map(\.rawValue).joined(separator: ",")
         self.graftTypesRawValues = graftTypes.isEmpty ? nil : graftTypes.map(\.rawValue).joined(separator: ",")

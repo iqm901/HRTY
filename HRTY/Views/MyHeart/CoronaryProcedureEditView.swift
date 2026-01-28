@@ -124,19 +124,23 @@ struct CoronaryProcedureEditView: View {
                 .font(.headline)
 
             if !viewModel.procedureDateIsUnknown {
-                DatePicker(
-                    "Procedure date",
-                    selection: $viewModel.procedureDate,
-                    in: ...Date(),
-                    displayedComponents: .date
+                FlexibleDatePicker(
+                    year: $viewModel.procedureYear,
+                    month: $viewModel.procedureMonth,
+                    day: $viewModel.procedureDay
                 )
-                .datePickerStyle(.compact)
-                .labelsHidden()
             }
 
             Toggle("I don't know the date", isOn: $viewModel.procedureDateIsUnknown)
                 .tint(Color.hrtPinkFallback)
                 .font(.subheadline)
+                .onChange(of: viewModel.procedureDateIsUnknown) { _, isUnknown in
+                    if isUnknown {
+                        viewModel.procedureYear = nil
+                        viewModel.procedureMonth = nil
+                        viewModel.procedureDay = nil
+                    }
+                }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .hrtCardPadding()

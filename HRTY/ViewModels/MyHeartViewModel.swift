@@ -12,7 +12,6 @@ final class MyHeartViewModel {
     var showingEjectionFractionEdit = false
     var showingNYHAClassEdit = false
     var showingBPTargetEdit = false
-    var showingCoronaryArteriesDetail = false
     var showingHeartValvesDetail = false
 
     // MARK: - Ejection Fraction Form
@@ -29,17 +28,6 @@ final class MyHeartViewModel {
 
     var targetSystolicInput: String = ""
     var targetDiastolicInput: String = ""
-
-    // MARK: - Coronary Artery Form
-
-    var showingCoronaryArteryEdit = false
-    var selectedCoronaryArtery: CoronaryArtery?
-    var arteryTypeSelection: CoronaryArteryType = .lad
-    var hasBlockage = false
-    var blockageSeveritySelection: BlockageSeverity?
-    var hasStent = false
-    var stentDate: Date = Date()
-    var arteryNotes: String = ""
 
     // MARK: - Heart Valve Form
 
@@ -59,7 +47,9 @@ final class MyHeartViewModel {
     var showingCoronaryProcedureEdit = false
     var selectedCoronaryProcedure: CoronaryProcedure?
     var procedureTypeSelection: CoronaryProcedureType = .stent
-    var procedureDate: Date = Date()
+    var procedureYear: Int? = nil
+    var procedureMonth: Int? = nil
+    var procedureDay: Int? = nil
     var procedureDateIsUnknown = false
     var procedureVesselsSelection: Set<CoronaryArteryType> = []
     var procedureVesselsUnknown = false
@@ -220,84 +210,6 @@ final class MyHeartViewModel {
         }
     }
 
-    // MARK: - Coronary Artery Methods
-
-    func prepareCoronaryArteriesDetail() {
-        showingCoronaryArteriesDetail = true
-    }
-
-    func prepareAddCoronaryArtery() {
-        selectedCoronaryArtery = nil
-        arteryTypeSelection = .lad
-        hasBlockage = false
-        blockageSeveritySelection = nil
-        hasStent = false
-        stentDate = Date()
-        arteryNotes = ""
-        validationError = nil
-        showingCoronaryArteryEdit = true
-    }
-
-    func prepareEditCoronaryArtery(_ artery: CoronaryArtery) {
-        selectedCoronaryArtery = artery
-        arteryTypeSelection = artery.arteryType
-        hasBlockage = artery.hasBlockage
-        blockageSeveritySelection = artery.blockageSeverity
-        hasStent = artery.hasStent
-        stentDate = artery.stentDate ?? Date()
-        arteryNotes = artery.notes ?? ""
-        validationError = nil
-        showingCoronaryArteryEdit = true
-    }
-
-    func saveCoronaryArtery(context: ModelContext) {
-        if let existing = selectedCoronaryArtery {
-            // Update existing
-            existing.arteryType = arteryTypeSelection
-            existing.hasBlockage = hasBlockage
-            existing.blockageSeverity = hasBlockage ? blockageSeveritySelection : nil
-            existing.hasStent = hasStent
-            existing.stentDate = hasStent ? stentDate : nil
-            existing.notes = arteryNotes.isEmpty ? nil : arteryNotes
-        } else {
-            // Create new
-            let artery = CoronaryArtery(
-                arteryType: arteryTypeSelection,
-                hasBlockage: hasBlockage,
-                blockageSeverity: hasBlockage ? blockageSeveritySelection : nil,
-                hasStent: hasStent,
-                stentDate: hasStent ? stentDate : nil,
-                notes: arteryNotes.isEmpty ? nil : arteryNotes
-            )
-            artery.profile = profile
-            context.insert(artery)
-
-            if profile?.coronaryArteries == nil {
-                profile?.coronaryArteries = []
-            }
-            profile?.coronaryArteries?.append(artery)
-        }
-
-        do {
-            try context.save()
-            showingCoronaryArteryEdit = false
-            validationError = nil
-        } catch {
-            validationError = "Could not save. Please try again."
-        }
-    }
-
-    func deleteCoronaryArtery(_ artery: CoronaryArtery, context: ModelContext) {
-        profile?.coronaryArteries?.removeAll { $0.persistentModelID == artery.persistentModelID }
-        context.delete(artery)
-
-        do {
-            try context.save()
-        } catch {
-            validationError = "Could not delete. Please try again."
-        }
-    }
-
     // MARK: - Heart Valve Methods
 
     func prepareHeartValvesDetail() {
@@ -382,43 +294,12 @@ final class MyHeartViewModel {
 
     // MARK: - Computed Properties
 
-    var coronaryArteries: [CoronaryArtery] {
-        profile?.sortedCoronaryArteries ?? []
-    }
-
     var heartValves: [HeartValveCondition] {
         profile?.sortedHeartValves ?? []
     }
 
-    var hasCoronaryArteries: Bool {
-        !coronaryArteries.isEmpty
-    }
-
     var hasHeartValves: Bool {
         !heartValves.isEmpty
-    }
-
-    /// Summary text for coronary arteries in main view
-    var coronaryArteriesSummary: String {
-        let arteries = coronaryArteries
-        if arteries.isEmpty {
-            return "No arteries recorded"
-        }
-
-        let blocked = arteries.filter { $0.hasBlockage }
-        let stented = arteries.filter { $0.hasStent }
-
-        var parts: [String] = []
-        parts.append("\(arteries.count) arter\(arteries.count == 1 ? "y" : "ies") recorded")
-
-        if !blocked.isEmpty {
-            parts.append("\(blocked.count) with blockage")
-        }
-        if !stented.isEmpty {
-            parts.append("\(stented.count) with stent")
-        }
-
-        return parts.joined(separator: " • ")
     }
 
     /// Summary text for heart valves in main view
@@ -518,7 +399,9 @@ final class MyHeartViewModel {
     func prepareAddCoronaryProcedure() {
         selectedCoronaryProcedure = nil
         procedureTypeSelection = .stent
-        procedureDate = Date()
+        procedureYear = Calendar.current.component(.year, from: Date())
+        procedureMonth = nil
+        procedureDay = nil
         procedureDateIsUnknown = false
         procedureVesselsSelection = []
         procedureVesselsUnknown = false
@@ -532,7 +415,9 @@ final class MyHeartViewModel {
     func prepareEditCoronaryProcedure(_ procedure: CoronaryProcedure) {
         selectedCoronaryProcedure = procedure
         procedureTypeSelection = procedure.procedureType
-        procedureDate = procedure.procedureDate ?? Date()
+        procedureYear = procedure.procedureYear
+        procedureMonth = procedure.procedureMonth
+        procedureDay = procedure.procedureDay
         procedureDateIsUnknown = procedure.dateIsUnknown
         procedureVesselsSelection = Set(procedure.vesselsInvolved)
         procedureVesselsUnknown = procedure.vesselsInvolved.isEmpty && procedure.vesselsInvolvedRawValues == nil
@@ -547,7 +432,9 @@ final class MyHeartViewModel {
         if let existing = selectedCoronaryProcedure {
             // Update existing
             existing.procedureType = procedureTypeSelection
-            existing.procedureDate = procedureDateIsUnknown ? nil : procedureDate
+            existing.procedureYear = procedureDateIsUnknown ? nil : procedureYear
+            existing.procedureMonth = procedureDateIsUnknown ? nil : procedureMonth
+            existing.procedureDay = procedureDateIsUnknown ? nil : procedureDay
             existing.dateIsUnknown = procedureDateIsUnknown
             existing.vesselsInvolved = procedureVesselsUnknown ? [] : Array(procedureVesselsSelection)
             if procedureTypeSelection == .cabg {
@@ -560,7 +447,9 @@ final class MyHeartViewModel {
             // Create new
             let procedure = CoronaryProcedure(
                 procedureType: procedureTypeSelection,
-                procedureDate: procedureDateIsUnknown ? nil : procedureDate,
+                procedureYear: procedureDateIsUnknown ? nil : procedureYear,
+                procedureMonth: procedureDateIsUnknown ? nil : procedureMonth,
+                procedureDay: procedureDateIsUnknown ? nil : procedureDay,
                 dateIsUnknown: procedureDateIsUnknown,
                 vesselsInvolved: procedureVesselsUnknown ? [] : Array(procedureVesselsSelection),
                 graftTypes: procedureTypeSelection == .cabg && !procedureGraftTypesUnknown ? Array(procedureGraftTypesSelection) : [],

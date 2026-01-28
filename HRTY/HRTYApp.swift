@@ -31,7 +31,6 @@ struct HRTYApp: App {
             VitalSignsEntry.self,
             SymptomCheckInProgress.self,
             ClinicalProfile.self,
-            CoronaryArtery.self,
             HeartValveCondition.self,
             CoronaryProcedure.self
         ])
