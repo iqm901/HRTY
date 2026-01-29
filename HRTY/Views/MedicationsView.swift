@@ -16,6 +16,48 @@ struct MedicationsView: View {
                         .frame(height: 280)
                         .containerRelativeFrame(.horizontal)
                         .clipped()
+                        .overlay(alignment: .top) {
+                            LinearGradient(
+                                stops: [
+                                    .init(color: Color.white.opacity(0.12), location: 0),
+                                    .init(color: Color.white.opacity(0), location: 0.7)
+                                ],
+                                startPoint: .top,
+                                endPoint: .bottom
+                            )
+                        }
+                        .overlay(alignment: .topLeading) {
+                            Text("Medications")
+                                .font(.custom("Nunito-SemiBold", size: 34))
+                                .foregroundStyle(Color.hrtHeroTitle)
+                                .shadow(color: Color.hrtHeroTitleShadow, radius: 8, x: 0, y: 2)
+                                .padding(.top, 60)
+                                .padding(.leading, HRTSpacing.md)
+                        }
+                        .overlay(alignment: .topTrailing) {
+                            Menu {
+                                Button {
+                                    viewModel.prepareForPhotoCapture()
+                                } label: {
+                                    Label("Add Photo", systemImage: "camera")
+                                }
+                                Button {
+                                    viewModel.prepareForAdd()
+                                } label: {
+                                    Label("Add Medication", systemImage: "pills")
+                                }
+                            } label: {
+                                Image(systemName: "plus")
+                                    .font(.title2)
+                                    .fontWeight(.semibold)
+                                    .foregroundStyle(Color.hrtHeroTitle)
+                                    .shadow(color: Color.hrtHeroTitleShadow, radius: 8, x: 0, y: 2)
+                            }
+                            .accessibilityLabel("Add")
+                            .accessibilityHint("Opens menu to add a photo or medication")
+                            .padding(.top, 60)
+                            .padding(.trailing, HRTSpacing.md)
+                        }
 
                     // Main content with rounded top corners, pulled up to overlap image
                     mainContent
@@ -28,28 +70,7 @@ struct MedicationsView: View {
             }
             .ignoresSafeArea(edges: .top)
             .background(Color.hrtBackgroundFallback)
-            .toolbarBackground(Color.hrtBackgroundFallback, for: .navigationBar)
-            .navigationTitle("Medications")
-            .toolbar {
-                ToolbarItem(placement: .primaryAction) {
-                    Menu {
-                        Button {
-                            viewModel.prepareForPhotoCapture()
-                        } label: {
-                            Label("Add Photo", systemImage: "camera")
-                        }
-                        Button {
-                            viewModel.prepareForAdd()
-                        } label: {
-                            Label("Add Medication", systemImage: "pills")
-                        }
-                    } label: {
-                        Image(systemName: "plus")
-                    }
-                    .accessibilityLabel("Add")
-                    .accessibilityHint("Opens menu to add a photo or medication")
-                }
-            }
+            .toolbar(.hidden, for: .navigationBar)
             .sheet(isPresented: $viewModel.showingAddMedication) {
                 MedicationFormView(viewModel: viewModel, isEditing: false)
             }
