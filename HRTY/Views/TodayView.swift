@@ -15,23 +15,27 @@ struct TodayView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Color.hrtBackgroundFallback
-                    .ignoresSafeArea()
-
                 ScrollView {
-                    VStack(spacing: HRTSpacing.lg) {
-                        alertsSection
+                    VStack(spacing: 0) {
+                        // Hero image extending to top
+                        Image("TodayHero")
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(height: 280)
+                            .containerRelativeFrame(.horizontal)
+                            .clipped()
 
-                        headerSection
-
-                        vitalSignsSection
-
-                        symptomCheckInPrompt
+                        // Main content with rounded top corners, pulled up to overlap image
+                        mainContent
+                            .background(
+                                Color.hrtBackgroundFallback
+                                    .clipShape(RoundedCorner(radius: 24, corners: [.topLeft, .topRight]))
+                            )
+                            .offset(y: -40)
                     }
-                    .padding(.horizontal, HRTSpacing.md)
-                    .padding(.vertical, HRTSpacing.md)
                 }
-                .scrollContentBackground(.hidden)
+                .ignoresSafeArea(edges: .top)
+                .background(Color.hrtBackgroundFallback)
                 .opacity(viewModel.isLoading ? 0.3 : 1.0)
                 .disabled(viewModel.isLoading)
 
@@ -262,6 +266,21 @@ struct TodayView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.top, HRTSpacing.sm)
+    }
+
+    // MARK: - Main Content
+    private var mainContent: some View {
+        VStack(spacing: HRTSpacing.lg) {
+            alertsSection
+
+            headerSection
+
+            vitalSignsSection
+
+            symptomCheckInPrompt
+        }
+        .padding(.horizontal, HRTSpacing.md)
+        .padding(.vertical, HRTSpacing.lg)
     }
 }
 

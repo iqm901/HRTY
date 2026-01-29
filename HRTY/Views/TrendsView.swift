@@ -12,33 +12,52 @@ struct TrendsView: View {
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                Color.hrtBackgroundFallback
-                    .ignoresSafeArea()
+            ScrollView {
+                VStack(spacing: 0) {
+                    // Hero image extending to top
+                    Image("TrendsHero")
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(height: 280)
+                        .containerRelativeFrame(.horizontal)
+                        .clipped()
 
-                ScrollView {
-                    VStack(alignment: .leading, spacing: HRTSpacing.lg) {
-                        if viewModel.isLoading {
-                            HRTLoadingView("Loading trends...")
-                                .frame(height: 200)
-                        } else {
-                            // 1. Vitals section (top)
-                            vitalsSection
-
-                            // 2. Symptoms section
-                            symptomSection
-                        }
-                    }
-                    .padding(HRTSpacing.md)
+                    // Main content with rounded top corners, pulled up to overlap image
+                    mainContent
+                        .background(
+                            Color.hrtBackgroundFallback
+                                .clipShape(RoundedCorner(radius: 24, corners: [.topLeft, .topRight]))
+                        )
+                        .offset(y: -40)
                 }
-                .scrollContentBackground(.hidden)
             }
+            .ignoresSafeArea(edges: .top)
+            .background(Color.hrtBackgroundFallback)
             .toolbarBackground(Color.hrtBackgroundFallback, for: .navigationBar)
             .navigationTitle("Trends")
             .task {
                 await viewModel.loadAllTrendDataWithHeartRate(context: modelContext)
             }
         }
+    }
+
+    // MARK: - Main Content
+
+    private var mainContent: some View {
+        VStack(alignment: .leading, spacing: HRTSpacing.lg) {
+            if viewModel.isLoading {
+                HRTLoadingView("Loading trends...")
+                    .frame(height: 200)
+            } else {
+                // 1. Vitals section (top)
+                vitalsSection
+
+                // 2. Symptoms section
+                symptomSection
+            }
+        }
+        .padding(HRTSpacing.md)
+        .padding(.top, HRTSpacing.sm)
     }
 
     // MARK: - Vitals Section

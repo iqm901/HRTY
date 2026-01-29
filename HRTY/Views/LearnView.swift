@@ -8,85 +8,27 @@ struct LearnView: View {
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                Color.hrtBackgroundFallback
-                    .ignoresSafeArea()
+            ScrollView {
+                VStack(spacing: 0) {
+                    // Hero image extending to top
+                    Image("Education/LearnHero")
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(height: 280)
+                        .containerRelativeFrame(.horizontal)
+                        .clipped()
 
-                List {
-                    ForEach(EducationContent.learnSections) { section in
-                        Section {
-                            // Section header button
-                            Button {
-                                toggleSection(section.id)
-                            } label: {
-                                HStack(spacing: HRTSpacing.sm) {
-                                    Image(systemName: section.icon)
-                                        .font(.title3)
-                                        .foregroundStyle(Color.hrtPinkFallback)
-                                        .frame(width: 28)
-                                        .accessibilityHidden(true)
-
-                                    Text(section.title)
-                                        .font(.hrtHeadline)
-                                        .foregroundStyle(Color.hrtTextFallback)
-
-                                    Spacer()
-
-                                    Image(systemName: "chevron.right")
-                                        .font(.hrtCallout)
-                                        .foregroundStyle(Color.hrtTextSecondaryFallback)
-                                        .rotationEffect(.degrees(expandedSections.contains(section.id) ? 90 : 0))
-                                }
-                                .contentShape(Rectangle())
-                            }
-                            .buttonStyle(.plain)
-                            .accessibilityLabel(section.title)
-                            .accessibilityHint(expandedSections.contains(section.id) ? "Collapse section" : "Expand section")
-                            .accessibilityAddTraits(.isButton)
-
-                            // Topic rows - shown when expanded
-                            if expandedSections.contains(section.id) {
-                                ForEach(section.topics) { topic in
-                                    if topic.heroImage != nil {
-                                        // Hero image topics: present as full screen cover
-                                        Button {
-                                            selectedHeroTopic = topic
-                                        } label: {
-                                            HStack {
-                                                Text(topic.title)
-                                                    .font(.hrtBody)
-                                                    .foregroundStyle(Color.hrtTextFallback)
-                                                    .multilineTextAlignment(.leading)
-                                                    .padding(.leading, 36)
-                                                Spacer()
-                                                Image(systemName: "chevron.right")
-                                                    .font(.caption)
-                                                    .foregroundStyle(Color.hrtTextSecondaryFallback)
-                                            }
-                                        }
-                                        .accessibilityLabel(topic.title)
-                                        .accessibilityHint("Opens detailed information")
-                                    } else {
-                                        // Regular topics: use navigation
-                                        NavigationLink(value: topic) {
-                                            Text(topic.title)
-                                                .font(.hrtBody)
-                                                .foregroundStyle(Color.hrtTextFallback)
-                                                .multilineTextAlignment(.leading)
-                                                .padding(.leading, 36)
-                                        }
-                                        .accessibilityLabel(topic.title)
-                                        .accessibilityHint("Opens detailed information")
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    // List content with rounded top corners, pulled up to overlap image
+                    listContent
+                        .background(
+                            Color.hrtBackgroundFallback
+                                .clipShape(RoundedCorner(radius: 24, corners: [.topLeft, .topRight]))
+                        )
+                        .offset(y: -40)
                 }
-                .listStyle(.insetGrouped)
-                .listSectionSpacing(HRTSpacing.sm)
-                .scrollContentBackground(.hidden)
             }
+            .ignoresSafeArea(edges: .top)
+            .background(Color.hrtBackgroundFallback)
             .toolbarBackground(Color.hrtBackgroundFallback, for: .navigationBar)
             .navigationTitle("Learn")
             .navigationDestination(for: LearnTopic.self) { topic in
@@ -96,6 +38,98 @@ struct LearnView: View {
                 LearnTopicDetailView(topic: topic)
             }
         }
+    }
+
+    // MARK: - List Content
+
+    private var listContent: some View {
+        VStack(spacing: HRTSpacing.sm) {
+            ForEach(EducationContent.learnSections) { section in
+                VStack(spacing: 0) {
+                    // Section header button
+                    Button {
+                        toggleSection(section.id)
+                    } label: {
+                        HStack(spacing: HRTSpacing.sm) {
+                            Image(systemName: section.icon)
+                                .font(.title3)
+                                .foregroundStyle(Color.hrtPinkFallback)
+                                .frame(width: 28)
+                                .accessibilityHidden(true)
+
+                            Text(section.title)
+                                .font(.hrtHeadline)
+                                .foregroundStyle(Color.hrtTextFallback)
+
+                            Spacer()
+
+                            Image(systemName: "chevron.right")
+                                .font(.hrtCallout)
+                                .foregroundStyle(Color.hrtTextSecondaryFallback)
+                                .rotationEffect(.degrees(expandedSections.contains(section.id) ? 90 : 0))
+                        }
+                        .padding(.horizontal, HRTSpacing.md)
+                        .padding(.vertical, HRTSpacing.sm)
+                        .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(section.title)
+                    .accessibilityHint(expandedSections.contains(section.id) ? "Collapse section" : "Expand section")
+                    .accessibilityAddTraits(.isButton)
+
+                    // Topic rows - shown when expanded
+                    if expandedSections.contains(section.id) {
+                        ForEach(section.topics) { topic in
+                            if topic.heroImage != nil {
+                                // Hero image topics: present as full screen cover
+                                Button {
+                                    selectedHeroTopic = topic
+                                } label: {
+                                    HStack {
+                                        Text(topic.title)
+                                            .font(.hrtBody)
+                                            .foregroundStyle(Color.hrtTextFallback)
+                                            .multilineTextAlignment(.leading)
+                                        Spacer()
+                                        Image(systemName: "chevron.right")
+                                            .font(.caption)
+                                            .foregroundStyle(Color.hrtTextSecondaryFallback)
+                                    }
+                                    .padding(.horizontal, HRTSpacing.md)
+                                    .padding(.vertical, HRTSpacing.xs)
+                                    .padding(.leading, 36)
+                                }
+                                .accessibilityLabel(topic.title)
+                                .accessibilityHint("Opens detailed information")
+                            } else {
+                                // Regular topics: use navigation
+                                NavigationLink(value: topic) {
+                                    HStack {
+                                        Text(topic.title)
+                                            .font(.hrtBody)
+                                            .foregroundStyle(Color.hrtTextFallback)
+                                            .multilineTextAlignment(.leading)
+                                        Spacer()
+                                        Image(systemName: "chevron.right")
+                                            .font(.caption)
+                                            .foregroundStyle(Color.hrtTextSecondaryFallback)
+                                    }
+                                    .padding(.horizontal, HRTSpacing.md)
+                                    .padding(.vertical, HRTSpacing.xs)
+                                    .padding(.leading, 36)
+                                }
+                                .accessibilityLabel(topic.title)
+                                .accessibilityHint("Opens detailed information")
+                            }
+                        }
+                    }
+
+                    Divider()
+                        .padding(.horizontal, HRTSpacing.md)
+                }
+            }
+        }
+        .padding(.top, HRTSpacing.lg)
     }
 
     private func toggleSection(_ id: UUID) {

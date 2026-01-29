@@ -7,20 +7,27 @@ struct MedicationsView: View {
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                Color.hrtBackgroundFallback
-                    .ignoresSafeArea()
+            ScrollView {
+                VStack(spacing: 0) {
+                    // Hero image extending to top
+                    Image("MedicationsHero")
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(height: 280)
+                        .containerRelativeFrame(.horizontal)
+                        .clipped()
 
-                ScrollView {
-                    VStack(spacing: HRTSpacing.lg) {
-                        photosSection
-
-                        medicationsSection
-                    }
-                    .padding(.vertical, HRTSpacing.md)
+                    // Main content with rounded top corners, pulled up to overlap image
+                    mainContent
+                        .background(
+                            Color.hrtBackgroundFallback
+                                .clipShape(RoundedCorner(radius: 24, corners: [.topLeft, .topRight]))
+                        )
+                        .offset(y: -40)
                 }
-                .scrollContentBackground(.hidden)
             }
+            .ignoresSafeArea(edges: .top)
+            .background(Color.hrtBackgroundFallback)
             .toolbarBackground(Color.hrtBackgroundFallback, for: .navigationBar)
             .navigationTitle("Medications")
             .toolbar {
@@ -96,6 +103,17 @@ struct MedicationsView: View {
             }
             .animation(.easeInOut(duration: 0.3), value: viewModel.photoSavedMessage)
         }
+    }
+
+    // MARK: - Main Content
+
+    private var mainContent: some View {
+        VStack(spacing: HRTSpacing.lg) {
+            photosSection
+
+            medicationsSection
+        }
+        .padding(.vertical, HRTSpacing.lg)
     }
 
     // MARK: - Subviews

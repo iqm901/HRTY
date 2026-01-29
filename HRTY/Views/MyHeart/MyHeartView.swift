@@ -7,26 +7,27 @@ struct MyHeartView: View {
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                Color.hrtBackgroundFallback
-                    .ignoresSafeArea()
+            ScrollView {
+                VStack(spacing: 0) {
+                    // Hero image extending to top
+                    Image("MyHeartHero")
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(height: 280)
+                        .containerRelativeFrame(.horizontal)
+                        .clipped()
 
-                ScrollView {
-                    VStack(spacing: HRTSpacing.lg) {
-                        ejectionFractionCard
-
-                        nyhaClassCard
-
-                        bpTargetCard
-
-                        coronaryArteriesCard
-
-                        heartValvesCard
-                    }
-                    .padding(.vertical, HRTSpacing.md)
+                    // Main content with rounded top corners, pulled up to overlap image
+                    mainContent
+                        .background(
+                            Color.hrtBackgroundFallback
+                                .clipShape(RoundedCorner(radius: 24, corners: [.topLeft, .topRight]))
+                        )
+                        .offset(y: -40)
                 }
-                .scrollContentBackground(.hidden)
             }
+            .ignoresSafeArea(edges: .top)
+            .background(Color.hrtBackgroundFallback)
             .toolbarBackground(Color.hrtBackgroundFallback, for: .navigationBar)
             .navigationTitle("My Heart")
             .onAppear {
@@ -57,6 +58,23 @@ struct MyHeartView: View {
     // MARK: - State for Add Medication Navigation
 
     @State private var showingAddMedication = false
+
+    // MARK: - Main Content
+
+    private var mainContent: some View {
+        VStack(spacing: HRTSpacing.lg) {
+            ejectionFractionCard
+
+            nyhaClassCard
+
+            bpTargetCard
+
+            coronaryArteriesCard
+
+            heartValvesCard
+        }
+        .padding(.vertical, HRTSpacing.lg)
+    }
 
     // MARK: - Ejection Fraction Card
 
