@@ -150,6 +150,9 @@
 		MYH021000000000000000002 /* CoronaryProcedureEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = MYH021000000000000000001 /* CoronaryProcedureEditView.swift */; };
 		FDP001000000000000000002 /* FlexibleDatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDP001000000000000000001 /* FlexibleDatePicker.swift */; };
 		MYH022000000000000000002 /* CoronaryProceduresDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = MYH022000000000000000001 /* CoronaryProceduresDetailView.swift */; };
+		FONT0001000000000000002 /* Nunito-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FONT0001000000000000001 /* Nunito-SemiBold.ttf */; };
+		PCP001000000000000000002 /* ProfileCompletionPromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = PCP001000000000000000001 /* ProfileCompletionPromptView.swift */; };
+		PSV001000000000000000002 /* ProfileSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = PSV001000000000000000001 /* ProfileSheetView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -163,6 +166,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		FONT0001000000000000001 /* Nunito-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Nunito-SemiBold.ttf"; sourceTree = "<group>"; };
+		INFO0001000000000000001 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2A7C0660E053A24F396A156B /* SymptomCheckInSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymptomCheckInSummaryView.swift; sourceTree = "<group>"; };
 		77D273B604ECD0FC7FEB6918 /* SymptomCheckInWizardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymptomCheckInWizardView.swift; sourceTree = "<group>"; };
 		178BA23E6533AE023F42273B /* SymptomStepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymptomStepView.swift; sourceTree = "<group>"; };
@@ -301,6 +306,8 @@
 		MYH020000000000000000001 /* AntiplateletWarningBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AntiplateletWarningBanner.swift; sourceTree = "<group>"; };
 		MYH021000000000000000001 /* CoronaryProcedureEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoronaryProcedureEditView.swift; sourceTree = "<group>"; };
 		FDP001000000000000000001 /* FlexibleDatePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlexibleDatePicker.swift; sourceTree = "<group>"; };
+		PCP001000000000000000001 /* ProfileCompletionPromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCompletionPromptView.swift; sourceTree = "<group>"; };
+		PSV001000000000000000001 /* ProfileSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSheetView.swift; sourceTree = "<group>"; };
 		MYH022000000000000000001 /* CoronaryProceduresDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoronaryProceduresDetailView.swift; sourceTree = "<group>"; };
 		MYH005000000000000000001 /* MyHeart */ = {isa = PBXGroup; children = (
 				MYH010000000000000000001 /* MyHeartView.swift */,
@@ -373,10 +380,20 @@
 				A1000005200000010000000100000006 /* ViewModels */,
 				A1000005200000010000000100000007 /* Services */,
 				019000040000000100000001 /* DesignSystem */,
+				FONT0003000000000000001 /* Fonts */,
 				A1000002200000010000000100000003 /* Assets.xcassets */,
 				030000020000000100000001 /* LaunchScreen.storyboard */,
+				INFO0001000000000000001 /* Info.plist */,
 			);
 			path = HRTY;
+			sourceTree = "<group>";
+		};
+		FONT0003000000000000001 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				FONT0001000000000000001 /* Nunito-SemiBold.ttf */,
+			);
+			path = Fonts;
 			sourceTree = "<group>";
 		};
 		019000040000000100000001 /* DesignSystem */ = {
@@ -416,14 +433,24 @@
 			isa = PBXGroup;
 			children = (
 				FDP001000000000000000001 /* FlexibleDatePicker.swift */,
+				PCP001000000000000000001 /* ProfileCompletionPromptView.swift */,
 			);
 			path = Components;
+			sourceTree = "<group>";
+		};
+		PROF00010000000000000001 /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				PSV001000000000000000001 /* ProfileSheetView.swift */,
+			);
+			path = Profile;
 			sourceTree = "<group>";
 		};
 A1000005200000010000000100000004 /* Views */ = {
 			isa = PBXGroup;
 			children = (
 				COMP00010000000000000001 /* Components */,
+				PROF00010000000000000001 /* Profile */,
 				368EF31B795D1697A97F251F /* SymptomCheckIn */,
 				031000020000000100000001 /* LearnView.swift */,
 				E998E324A4914EC7BE3057D4 /* SymptomManagementTabView.swift */,
@@ -640,6 +667,7 @@ A1000005200000010000000100000004 /* Views */ = {
 			files = (
 				A1000001200000010000000100000003 /* Assets.xcassets in Resources */,
 				030000010000000100000001 /* LaunchScreen.storyboard in Resources */,
+				FONT0001000000000000002 /* Nunito-SemiBold.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -776,6 +804,8 @@ A1000005200000010000000100000004 /* Views */ = {
 				MYH020000000000000000002 /* AntiplateletWarningBanner.swift in Sources */,
 				MYH021000000000000000002 /* CoronaryProcedureEditView.swift in Sources */,
 				FDP001000000000000000002 /* FlexibleDatePicker.swift in Sources */,
+				PCP001000000000000000002 /* ProfileCompletionPromptView.swift in Sources */,
+				PSV001000000000000000002 /* ProfileSheetView.swift in Sources */,
 				MYH022000000000000000002 /* CoronaryProceduresDetailView.swift in Sources */,);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -941,6 +971,7 @@ A1000005200000010000000100000004 /* Views */ = {
 				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "HRTY/Info.plist";
 				INFOPLIST_KEY_NSCameraUsageDescription = "HRTY needs camera access to photograph your medication bottles or lists for easy reference when entering your medications.";
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "HRTY reads your weight, heart rate, and blood pressure data from Apple Health to help you track your heart health and share trends with your care team.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -976,6 +1007,7 @@ A1000005200000010000000100000004 /* Views */ = {
 				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "HRTY/Info.plist";
 				INFOPLIST_KEY_NSCameraUsageDescription = "HRTY needs camera access to photograph your medication bottles or lists for easy reference when entering your medications.";
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "HRTY reads your weight, heart rate, and blood pressure data from Apple Health to help you track your heart health and share trends with your care team.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

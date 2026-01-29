@@ -12,6 +12,10 @@ struct TodayView: View {
     @State private var hasIncompleteCheckIn = false
     @State private var incompleteProgress: SymptomCheckInProgress?
 
+    // MARK: - Profile State
+    @State private var showProfileSheet = false
+    @State private var clinicalProfile: ClinicalProfile?
+
     var body: some View {
         NavigationStack {
             ZStack {
@@ -24,6 +28,53 @@ struct TodayView: View {
                             .frame(height: 280)
                             .containerRelativeFrame(.horizontal)
                             .clipped()
+                            .overlay(alignment: .top) {
+                                // Light top scrim for readability
+                                // White 12% at top, fading to transparent by 70% height
+                                LinearGradient(
+                                    stops: [
+                                        .init(color: Color.white.opacity(0.12), location: 0),
+                                        .init(color: Color.white.opacity(0), location: 0.7)
+                                    ],
+                                    startPoint: .top,
+                                    endPoint: .bottom
+                                )
+                            }
+                            .overlay(alignment: .topLeading) {
+                                // "Today" title styled with Nunito to complement the soft illustration
+                                Text("Today")
+                                    .font(.custom("Nunito-SemiBold", size: 34))
+                                    .foregroundStyle(Color.hrtHeroTitle)
+                                    .shadow(color: Color.hrtHeroTitleShadow, radius: 8, x: 0, y: 2)
+                                    .padding(.top, 60)
+                                    .padding(.leading, HRTSpacing.md)
+                            }
+                            .overlay(alignment: .topTrailing) {
+                                Button {
+                                    showProfileSheet = true
+                                } label: {
+                                    ZStack(alignment: .topTrailing) {
+                                        Image(systemName: "person.circle")
+                                            .font(.title2)
+                                            .fontWeight(.semibold)
+                                            .foregroundStyle(Color.hrtHeroTitle)
+                                            .shadow(color: Color.hrtHeroTitleShadow, radius: 8, x: 0, y: 2)
+
+                                        // Red dot badge when profile incomplete
+                                        if !(clinicalProfile?.isProfileComplete ?? true) {
+                                            Circle()
+                                                .fill(Color.hrtAlertFallback)
+                                                .frame(width: 10, height: 10)
+                                                .offset(x: 2, y: -2)
+                                        }
+                                    }
+                                }
+                                .accessibilityLabel(clinicalProfile?.isProfileComplete == true
+                                    ? "View health profile"
+                                    : "Complete health profile")
+                                .padding(.top, 60)
+                                .padding(.trailing, HRTSpacing.md)
+                            }
 
                         // Main content with rounded top corners, pulled up to overlap image
                         mainContent
@@ -43,11 +94,12 @@ struct TodayView: View {
                     HRTLoadingView("Loading your data...")
                 }
             }
-            .toolbarBackground(Color.hrtBackgroundFallback, for: .navigationBar)
-            .navigationTitle("Today")
+            .toolbarBackground(Color.hrtBackgroundFallback.opacity(0), for: .navigationBar)
+            .navigationBarTitleDisplayMode(.inline)
             .task {
                 await viewModel.loadAllData(context: modelContext)
                 loadCheckInProgress()
+                clinicalProfile = ClinicalProfile.getOrCreate(in: modelContext)
             }
             .onChange(of: viewModel.activeWeightAlerts.count) { oldCount, newCount in
                 if newCount > oldCount {
@@ -82,6 +134,13 @@ struct TodayView: View {
                         handleCheckInComplete()
                     }
                 )
+            }
+            .sheet(isPresented: $showProfileSheet) {
+                ProfileSheetView()
+                    .onDisappear {
+                        // Refresh profile state when sheet closes
+                        clinicalProfile = ClinicalProfile.getOrCreate(in: modelContext)
+                    }
             }
         }
     }
@@ -268,10 +327,25 @@ struct TodayView: View {
         .padding(.top, HRTSpacing.sm)
     }
 
+    // MARK: - Profile Completion Prompt
+
+    @ViewBuilder
+    private var profileCompletionPrompt: some View {
+        if !(clinicalProfile?.isProfileComplete ?? true) {
+            ProfileCompletionPromptView(
+                completedCount: clinicalProfile?.completedRequiredFieldsCount ?? 0,
+                totalCount: ClinicalProfile.requiredFieldsCount,
+                onTapComplete: { showProfileSheet = true }
+            )
+        }
+    }
+
     // MARK: - Main Content
     private var mainContent: some View {
         VStack(spacing: HRTSpacing.lg) {
             alertsSection
+
+            profileCompletionPrompt
 
             headerSection
 
@@ -286,5 +360,5 @@ struct TodayView: View {
 
 #Preview {
     TodayView()
-        .modelContainer(for: [DailyEntry.self, SymptomCheckInProgress.self], inMemory: true)
+        .modelContainer(for: [DailyEntry.self, SymptomCheckInProgress.self, ClinicalProfile.self], inMemory: true)
 }

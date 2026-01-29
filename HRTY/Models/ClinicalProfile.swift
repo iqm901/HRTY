@@ -163,6 +163,32 @@ final class ClinicalProfile {
         !(coronaryProcedures ?? []).isEmpty
     }
 
+    // MARK: - Profile Completion
+
+    /// Required fields: Ejection Fraction and NYHA Class
+    static let requiredFieldsCount = 2
+
+    /// Returns true if minimum required clinical profile fields are filled
+    var isProfileComplete: Bool {
+        ejectionFraction != nil && nyhaClassRawValue != nil
+    }
+
+    /// Count of completed required fields (for progress display)
+    var completedRequiredFieldsCount: Int {
+        var count = 0
+        if ejectionFraction != nil { count += 1 }
+        if nyhaClassRawValue != nil { count += 1 }
+        return count
+    }
+
+    /// Human-readable list of missing fields
+    var missingFields: [String] {
+        var missing: [String] = []
+        if ejectionFraction == nil { missing.append("Ejection Fraction") }
+        if nyhaClassRawValue == nil { missing.append("NYHA Class") }
+        return missing
+    }
+
     /// EF category description based on value
     var efCategory: String? {
         guard let ef = ejectionFraction else { return nil }
