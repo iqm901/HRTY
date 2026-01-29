@@ -159,4 +159,10 @@ extension NotificationService: UNUserNotificationCenterDelegate {
 extension Notification.Name {
     /// Posted when the app should navigate to the Today tab.
     static let navigateToTodayTab = Notification.Name("navigateToTodayTab")
+    /// Posted when the app should navigate to the My Heart tab.
+    static let navigateToMyHeartTab = Notification.Name("navigateToMyHeartTab")
+    /// Posted when the app should navigate to the Export tab.
+    static let navigateToExportTab = Notification.Name("navigateToExportTab")
+    /// Posted when the app should navigate to the Settings tab.
+    static let navigateToSettingsTab = Notification.Name("navigateToSettingsTab")
 }

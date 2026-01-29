@@ -68,6 +68,15 @@ struct ContentView: View {
         .onReceive(NotificationCenter.default.publisher(for: .navigateToTodayTab)) { _ in
             selectedTab = .today
         }
+        .onReceive(NotificationCenter.default.publisher(for: .navigateToMyHeartTab)) { _ in
+            selectedTab = .myHeart
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .navigateToExportTab)) { _ in
+            selectedTab = .export
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .navigateToSettingsTab)) { _ in
+            selectedTab = .settings
+        }
     }
 }
 

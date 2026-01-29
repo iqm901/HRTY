@@ -50,8 +50,24 @@ struct TodayView: View {
                                     .padding(.leading, HRTSpacing.md)
                             }
                             .overlay(alignment: .topTrailing) {
-                                Button {
-                                    showProfileSheet = true
+                                Menu {
+                                    Button {
+                                        NotificationCenter.default.post(name: .navigateToMyHeartTab, object: nil)
+                                    } label: {
+                                        Label("My Heart", systemImage: "heart.circle")
+                                    }
+
+                                    Button {
+                                        NotificationCenter.default.post(name: .navigateToExportTab, object: nil)
+                                    } label: {
+                                        Label("Export", systemImage: "square.and.arrow.up")
+                                    }
+
+                                    Button {
+                                        NotificationCenter.default.post(name: .navigateToSettingsTab, object: nil)
+                                    } label: {
+                                        Label("Settings", systemImage: "gear")
+                                    }
                                 } label: {
                                     ZStack(alignment: .topTrailing) {
                                         Image(systemName: "person.circle")
