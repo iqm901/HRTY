@@ -33,6 +33,12 @@ struct SodiumDashboardView: View {
             ToolbarItem(placement: .primaryAction) {
                 Menu {
                     Button {
+                        viewModel.showingFoodSearchView = true
+                    } label: {
+                        Label("Search Foods", systemImage: "magnifyingglass")
+                    }
+
+                    Button {
                         viewModel.prepareForAdd()
                     } label: {
                         Label("Manual Entry", systemImage: "pencil")
@@ -85,6 +91,11 @@ struct SodiumDashboardView: View {
         .sheet(isPresented: $viewModel.showingLabelScannerSheet) {
             NavigationStack {
                 LabelScannerView(viewModel: viewModel)
+            }
+        }
+        .sheet(isPresented: $viewModel.showingFoodSearchView) {
+            NavigationStack {
+                FoodSearchView(viewModel: viewModel)
             }
         }
         .alert("Save as Template?", isPresented: $viewModel.showSaveAsTemplatePrompt) {

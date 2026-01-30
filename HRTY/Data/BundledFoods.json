@@ -1,0 +1,1548 @@
+{
+  "foods": [
+    {
+      "id": "soup-001",
+      "name": "Chicken Noodle Soup",
+      "sodium_mg": 890,
+      "serving_size": "1 cup (245g)",
+      "category": "canned_soups",
+      "brand": "Campbell's"
+    },
+    {
+      "id": "soup-002",
+      "name": "Tomato Soup",
+      "sodium_mg": 480,
+      "serving_size": "1 cup (245g)",
+      "category": "canned_soups",
+      "brand": "Campbell's"
+    },
+    {
+      "id": "soup-003",
+      "name": "Cream of Mushroom Soup",
+      "sodium_mg": 870,
+      "serving_size": "1 cup (245g)",
+      "category": "canned_soups",
+      "brand": "Campbell's"
+    },
+    {
+      "id": "soup-004",
+      "name": "New England Clam Chowder",
+      "sodium_mg": 890,
+      "serving_size": "1 cup (245g)",
+      "category": "canned_soups",
+      "brand": "Progresso"
+    },
+    {
+      "id": "soup-005",
+      "name": "Minestrone Soup",
+      "sodium_mg": 690,
+      "serving_size": "1 cup (245g)",
+      "category": "canned_soups",
+      "brand": "Progresso"
+    },
+    {
+      "id": "soup-006",
+      "name": "Beef Vegetable Soup",
+      "sodium_mg": 820,
+      "serving_size": "1 cup (245g)",
+      "category": "canned_soups",
+      "brand": "Campbell's"
+    },
+    {
+      "id": "soup-007",
+      "name": "Split Pea with Ham",
+      "sodium_mg": 680,
+      "serving_size": "1 cup (245g)",
+      "category": "canned_soups",
+      "brand": "Progresso"
+    },
+    {
+      "id": "soup-008",
+      "name": "Chicken and Rice Soup",
+      "sodium_mg": 790,
+      "serving_size": "1 cup (245g)",
+      "category": "canned_soups",
+      "brand": "Campbell's"
+    },
+    {
+      "id": "soup-009",
+      "name": "Vegetable Soup",
+      "sodium_mg": 650,
+      "serving_size": "1 cup (245g)",
+      "category": "canned_soups",
+      "brand": "Campbell's"
+    },
+    {
+      "id": "soup-010",
+      "name": "Lentil Soup",
+      "sodium_mg": 720,
+      "serving_size": "1 cup (245g)",
+      "category": "canned_soups",
+      "brand": "Progresso"
+    },
+    {
+      "id": "frozen-001",
+      "name": "Swedish Meatballs",
+      "sodium_mg": 670,
+      "serving_size": "1 meal (269g)",
+      "category": "frozen_meals",
+      "brand": "Lean Cuisine"
+    },
+    {
+      "id": "frozen-002",
+      "name": "Chicken Alfredo",
+      "sodium_mg": 590,
+      "serving_size": "1 meal (283g)",
+      "category": "frozen_meals",
+      "brand": "Lean Cuisine"
+    },
+    {
+      "id": "frozen-003",
+      "name": "Lasagna with Meat Sauce",
+      "sodium_mg": 960,
+      "serving_size": "1 meal (298g)",
+      "category": "frozen_meals",
+      "brand": "Stouffer's"
+    },
+    {
+      "id": "frozen-004",
+      "name": "Macaroni and Cheese",
+      "sodium_mg": 1030,
+      "serving_size": "1 meal (340g)",
+      "category": "frozen_meals",
+      "brand": "Stouffer's"
+    },
+    {
+      "id": "frozen-005",
+      "name": "Pepperoni Hot Pocket",
+      "sodium_mg": 640,
+      "serving_size": "1 sandwich (127g)",
+      "category": "frozen_meals",
+      "brand": "Hot Pockets"
+    },
+    {
+      "id": "frozen-006",
+      "name": "Ham and Cheese Hot Pocket",
+      "sodium_mg": 680,
+      "serving_size": "1 sandwich (127g)",
+      "category": "frozen_meals",
+      "brand": "Hot Pockets"
+    },
+    {
+      "id": "frozen-007",
+      "name": "Chicken Pot Pie",
+      "sodium_mg": 850,
+      "serving_size": "1 pie (198g)",
+      "category": "frozen_meals",
+      "brand": "Marie Callender's"
+    },
+    {
+      "id": "frozen-008",
+      "name": "Salisbury Steak",
+      "sodium_mg": 980,
+      "serving_size": "1 meal (269g)",
+      "category": "frozen_meals",
+      "brand": "Hungry-Man"
+    },
+    {
+      "id": "frozen-009",
+      "name": "Orange Chicken",
+      "sodium_mg": 640,
+      "serving_size": "1 meal (283g)",
+      "category": "frozen_meals",
+      "brand": "Lean Cuisine"
+    },
+    {
+      "id": "frozen-010",
+      "name": "Chicken Fried Rice",
+      "sodium_mg": 780,
+      "serving_size": "1 meal (255g)",
+      "category": "frozen_meals",
+      "brand": "Stouffer's"
+    },
+    {
+      "id": "frozen-011",
+      "name": "Beef Burrito",
+      "sodium_mg": 760,
+      "serving_size": "1 burrito (142g)",
+      "category": "frozen_meals",
+      "brand": "El Monterey"
+    },
+    {
+      "id": "frozen-012",
+      "name": "Cheese Pizza",
+      "sodium_mg": 820,
+      "serving_size": "1/3 pizza (145g)",
+      "category": "frozen_meals",
+      "brand": "DiGiorno"
+    },
+    {
+      "id": "chips-001",
+      "name": "Classic Potato Chips",
+      "sodium_mg": 170,
+      "serving_size": "1 oz (28g)",
+      "category": "chips",
+      "brand": "Lay's"
+    },
+    {
+      "id": "chips-002",
+      "name": "Barbecue Potato Chips",
+      "sodium_mg": 200,
+      "serving_size": "1 oz (28g)",
+      "category": "chips",
+      "brand": "Lay's"
+    },
+    {
+      "id": "chips-003",
+      "name": "Sour Cream & Onion Chips",
+      "sodium_mg": 180,
+      "serving_size": "1 oz (28g)",
+      "category": "chips",
+      "brand": "Lay's"
+    },
+    {
+      "id": "chips-004",
+      "name": "Nacho Cheese Doritos",
+      "sodium_mg": 210,
+      "serving_size": "1 oz (28g)",
+      "category": "chips",
+      "brand": "Doritos"
+    },
+    {
+      "id": "chips-005",
+      "name": "Cool Ranch Doritos",
+      "sodium_mg": 180,
+      "serving_size": "1 oz (28g)",
+      "category": "chips",
+      "brand": "Doritos"
+    },
+    {
+      "id": "chips-006",
+      "name": "Cheddar Cheese Cheetos",
+      "sodium_mg": 250,
+      "serving_size": "1 oz (28g)",
+      "category": "chips",
+      "brand": "Cheetos"
+    },
+    {
+      "id": "chips-007",
+      "name": "Original Pringles",
+      "sodium_mg": 150,
+      "serving_size": "1 oz (28g)",
+      "category": "chips",
+      "brand": "Pringles"
+    },
+    {
+      "id": "chips-008",
+      "name": "Pretzel Twists",
+      "sodium_mg": 450,
+      "serving_size": "1 oz (28g)",
+      "category": "chips",
+      "brand": "Rold Gold"
+    },
+    {
+      "id": "chips-009",
+      "name": "Saltine Crackers",
+      "sodium_mg": 230,
+      "serving_size": "5 crackers (16g)",
+      "category": "chips",
+      "brand": "Premium"
+    },
+    {
+      "id": "chips-010",
+      "name": "Cheddar Goldfish",
+      "sodium_mg": 250,
+      "serving_size": "55 pieces (30g)",
+      "category": "chips",
+      "brand": "Pepperidge Farm"
+    },
+    {
+      "id": "chips-011",
+      "name": "Tortilla Chips",
+      "sodium_mg": 115,
+      "serving_size": "1 oz (28g)",
+      "category": "chips",
+      "brand": "Tostitos"
+    },
+    {
+      "id": "chips-012",
+      "name": "Ritz Crackers",
+      "sodium_mg": 135,
+      "serving_size": "5 crackers (16g)",
+      "category": "chips",
+      "brand": "Ritz"
+    },
+    {
+      "id": "bread-001",
+      "name": "White Bread",
+      "sodium_mg": 135,
+      "serving_size": "1 slice (30g)",
+      "category": "bread",
+      "brand": "Wonder"
+    },
+    {
+      "id": "bread-002",
+      "name": "Whole Wheat Bread",
+      "sodium_mg": 130,
+      "serving_size": "1 slice (43g)",
+      "category": "bread",
+      "brand": "Nature's Own"
+    },
+    {
+      "id": "bread-003",
+      "name": "Plain Bagel",
+      "sodium_mg": 430,
+      "serving_size": "1 bagel (98g)",
+      "category": "bread",
+      "brand": "Thomas'"
+    },
+    {
+      "id": "bread-004",
+      "name": "English Muffin",
+      "sodium_mg": 260,
+      "serving_size": "1 muffin (57g)",
+      "category": "bread",
+      "brand": "Thomas'"
+    },
+    {
+      "id": "bread-005",
+      "name": "Hamburger Bun",
+      "sodium_mg": 200,
+      "serving_size": "1 bun (43g)",
+      "category": "bread",
+      "brand": null
+    },
+    {
+      "id": "bread-006",
+      "name": "Hot Dog Bun",
+      "sodium_mg": 190,
+      "serving_size": "1 bun (43g)",
+      "category": "bread",
+      "brand": null
+    },
+    {
+      "id": "bread-007",
+      "name": "Flour Tortilla (10 inch)",
+      "sodium_mg": 490,
+      "serving_size": "1 tortilla (64g)",
+      "category": "bread",
+      "brand": "Mission"
+    },
+    {
+      "id": "bread-008",
+      "name": "Corn Tortilla (6 inch)",
+      "sodium_mg": 30,
+      "serving_size": "1 tortilla (26g)",
+      "category": "bread",
+      "brand": "Mission"
+    },
+    {
+      "id": "bread-009",
+      "name": "Croissant",
+      "sodium_mg": 320,
+      "serving_size": "1 medium (57g)",
+      "category": "bread",
+      "brand": null
+    },
+    {
+      "id": "bread-010",
+      "name": "Pita Bread",
+      "sodium_mg": 322,
+      "serving_size": "1 pita (64g)",
+      "category": "bread",
+      "brand": null
+    },
+    {
+      "id": "deli-001",
+      "name": "Sliced Turkey Breast",
+      "sodium_mg": 500,
+      "serving_size": "2 oz (56g)",
+      "category": "deli_meats",
+      "brand": "Oscar Mayer"
+    },
+    {
+      "id": "deli-002",
+      "name": "Sliced Ham",
+      "sodium_mg": 540,
+      "serving_size": "2 oz (56g)",
+      "category": "deli_meats",
+      "brand": "Oscar Mayer"
+    },
+    {
+      "id": "deli-003",
+      "name": "Sliced Roast Beef",
+      "sodium_mg": 450,
+      "serving_size": "2 oz (56g)",
+      "category": "deli_meats",
+      "brand": "Boar's Head"
+    },
+    {
+      "id": "deli-004",
+      "name": "Genoa Salami",
+      "sodium_mg": 580,
+      "serving_size": "1 oz (28g)",
+      "category": "deli_meats",
+      "brand": "Hormel"
+    },
+    {
+      "id": "deli-005",
+      "name": "Pepperoni",
+      "sodium_mg": 463,
+      "serving_size": "1 oz (28g)",
+      "category": "deli_meats",
+      "brand": "Hormel"
+    },
+    {
+      "id": "deli-006",
+      "name": "Bologna",
+      "sodium_mg": 290,
+      "serving_size": "1 slice (28g)",
+      "category": "deli_meats",
+      "brand": "Oscar Mayer"
+    },
+    {
+      "id": "deli-007",
+      "name": "Pastrami",
+      "sodium_mg": 470,
+      "serving_size": "2 oz (56g)",
+      "category": "deli_meats",
+      "brand": "Boar's Head"
+    },
+    {
+      "id": "deli-008",
+      "name": "Bacon (cooked)",
+      "sodium_mg": 385,
+      "serving_size": "3 slices (24g)",
+      "category": "deli_meats",
+      "brand": "Oscar Mayer"
+    },
+    {
+      "id": "deli-009",
+      "name": "Prosciutto",
+      "sodium_mg": 680,
+      "serving_size": "1 oz (28g)",
+      "category": "deli_meats",
+      "brand": null
+    },
+    {
+      "id": "deli-010",
+      "name": "Hot Dogs",
+      "sodium_mg": 480,
+      "serving_size": "1 link (45g)",
+      "category": "deli_meats",
+      "brand": "Oscar Mayer"
+    },
+    {
+      "id": "cheese-001",
+      "name": "American Cheese Singles",
+      "sodium_mg": 250,
+      "serving_size": "1 slice (21g)",
+      "category": "cheese",
+      "brand": "Kraft"
+    },
+    {
+      "id": "cheese-002",
+      "name": "Cheddar Cheese",
+      "sodium_mg": 180,
+      "serving_size": "1 oz (28g)",
+      "category": "cheese",
+      "brand": null
+    },
+    {
+      "id": "cheese-003",
+      "name": "Mozzarella String Cheese",
+      "sodium_mg": 200,
+      "serving_size": "1 stick (28g)",
+      "category": "cheese",
+      "brand": "Polly-O"
+    },
+    {
+      "id": "cheese-004",
+      "name": "Swiss Cheese",
+      "sodium_mg": 54,
+      "serving_size": "1 oz (28g)",
+      "category": "cheese",
+      "brand": null
+    },
+    {
+      "id": "cheese-005",
+      "name": "Parmesan Cheese (grated)",
+      "sodium_mg": 330,
+      "serving_size": "2 tbsp (10g)",
+      "category": "cheese",
+      "brand": "Kraft"
+    },
+    {
+      "id": "cheese-006",
+      "name": "Feta Cheese",
+      "sodium_mg": 316,
+      "serving_size": "1 oz (28g)",
+      "category": "cheese",
+      "brand": null
+    },
+    {
+      "id": "cheese-007",
+      "name": "Cream Cheese",
+      "sodium_mg": 100,
+      "serving_size": "2 tbsp (29g)",
+      "category": "cheese",
+      "brand": "Philadelphia"
+    },
+    {
+      "id": "cheese-008",
+      "name": "Cottage Cheese",
+      "sodium_mg": 380,
+      "serving_size": "1/2 cup (113g)",
+      "category": "cheese",
+      "brand": "Breakstone's"
+    },
+    {
+      "id": "cheese-009",
+      "name": "Blue Cheese",
+      "sodium_mg": 395,
+      "serving_size": "1 oz (28g)",
+      "category": "cheese",
+      "brand": null
+    },
+    {
+      "id": "cheese-010",
+      "name": "Provolone Cheese",
+      "sodium_mg": 248,
+      "serving_size": "1 oz (28g)",
+      "category": "cheese",
+      "brand": null
+    },
+    {
+      "id": "cond-001",
+      "name": "Soy Sauce",
+      "sodium_mg": 879,
+      "serving_size": "1 tbsp (15ml)",
+      "category": "condiments",
+      "brand": "Kikkoman"
+    },
+    {
+      "id": "cond-002",
+      "name": "Ketchup",
+      "sodium_mg": 154,
+      "serving_size": "1 tbsp (17g)",
+      "category": "condiments",
+      "brand": "Heinz"
+    },
+    {
+      "id": "cond-003",
+      "name": "Yellow Mustard",
+      "sodium_mg": 55,
+      "serving_size": "1 tsp (5g)",
+      "category": "condiments",
+      "brand": "French's"
+    },
+    {
+      "id": "cond-004",
+      "name": "Mayonnaise",
+      "sodium_mg": 90,
+      "serving_size": "1 tbsp (13g)",
+      "category": "condiments",
+      "brand": "Hellmann's"
+    },
+    {
+      "id": "cond-005",
+      "name": "Ranch Dressing",
+      "sodium_mg": 260,
+      "serving_size": "2 tbsp (30g)",
+      "category": "condiments",
+      "brand": "Hidden Valley"
+    },
+    {
+      "id": "cond-006",
+      "name": "Italian Dressing",
+      "sodium_mg": 243,
+      "serving_size": "2 tbsp (30g)",
+      "category": "condiments",
+      "brand": "Wish-Bone"
+    },
+    {
+      "id": "cond-007",
+      "name": "Barbecue Sauce",
+      "sodium_mg": 310,
+      "serving_size": "2 tbsp (36g)",
+      "category": "condiments",
+      "brand": "Sweet Baby Ray's"
+    },
+    {
+      "id": "cond-008",
+      "name": "Hot Sauce",
+      "sodium_mg": 190,
+      "serving_size": "1 tsp (5ml)",
+      "category": "condiments",
+      "brand": "Tabasco"
+    },
+    {
+      "id": "cond-009",
+      "name": "Teriyaki Sauce",
+      "sodium_mg": 610,
+      "serving_size": "1 tbsp (15ml)",
+      "category": "condiments",
+      "brand": "Kikkoman"
+    },
+    {
+      "id": "cond-010",
+      "name": "Worcestershire Sauce",
+      "sodium_mg": 167,
+      "serving_size": "1 tsp (5ml)",
+      "category": "condiments",
+      "brand": "Lea & Perrins"
+    },
+    {
+      "id": "cond-011",
+      "name": "Pickle Relish",
+      "sodium_mg": 164,
+      "serving_size": "1 tbsp (15g)",
+      "category": "condiments",
+      "brand": "Heinz"
+    },
+    {
+      "id": "cond-012",
+      "name": "Dill Pickle Spear",
+      "sodium_mg": 300,
+      "serving_size": "1 spear (35g)",
+      "category": "condiments",
+      "brand": "Vlasic"
+    },
+    {
+      "id": "cond-013",
+      "name": "Caesar Dressing",
+      "sodium_mg": 310,
+      "serving_size": "2 tbsp (30g)",
+      "category": "condiments",
+      "brand": "Ken's"
+    },
+    {
+      "id": "cond-014",
+      "name": "Salsa",
+      "sodium_mg": 230,
+      "serving_size": "2 tbsp (30g)",
+      "category": "condiments",
+      "brand": "Pace"
+    },
+    {
+      "id": "canned-001",
+      "name": "Canned Green Beans",
+      "sodium_mg": 380,
+      "serving_size": "1/2 cup (121g)",
+      "category": "canned_vegetables",
+      "brand": "Del Monte"
+    },
+    {
+      "id": "canned-002",
+      "name": "Canned Corn",
+      "sodium_mg": 320,
+      "serving_size": "1/2 cup (125g)",
+      "category": "canned_vegetables",
+      "brand": "Green Giant"
+    },
+    {
+      "id": "canned-003",
+      "name": "Canned Peas",
+      "sodium_mg": 390,
+      "serving_size": "1/2 cup (125g)",
+      "category": "canned_vegetables",
+      "brand": "Del Monte"
+    },
+    {
+      "id": "canned-004",
+      "name": "Canned Black Beans",
+      "sodium_mg": 460,
+      "serving_size": "1/2 cup (130g)",
+      "category": "canned_vegetables",
+      "brand": "Goya"
+    },
+    {
+      "id": "canned-005",
+      "name": "Canned Kidney Beans",
+      "sodium_mg": 420,
+      "serving_size": "1/2 cup (130g)",
+      "category": "canned_vegetables",
+      "brand": "Bush's"
+    },
+    {
+      "id": "canned-006",
+      "name": "Canned Tomatoes (diced)",
+      "sodium_mg": 290,
+      "serving_size": "1/2 cup (121g)",
+      "category": "canned_vegetables",
+      "brand": "Hunt's"
+    },
+    {
+      "id": "canned-007",
+      "name": "Tomato Sauce",
+      "sodium_mg": 320,
+      "serving_size": "1/4 cup (62g)",
+      "category": "canned_vegetables",
+      "brand": "Hunt's"
+    },
+    {
+      "id": "canned-008",
+      "name": "Sauerkraut",
+      "sodium_mg": 469,
+      "serving_size": "1/4 cup (35g)",
+      "category": "canned_vegetables",
+      "brand": "Vlasic"
+    },
+    {
+      "id": "breakfast-001",
+      "name": "Breakfast Sausage Links",
+      "sodium_mg": 340,
+      "serving_size": "2 links (48g)",
+      "category": "breakfast",
+      "brand": "Jimmy Dean"
+    },
+    {
+      "id": "breakfast-002",
+      "name": "Breakfast Sausage Patties",
+      "sodium_mg": 440,
+      "serving_size": "2 patties (56g)",
+      "category": "breakfast",
+      "brand": "Jimmy Dean"
+    },
+    {
+      "id": "breakfast-003",
+      "name": "Frozen Pancakes",
+      "sodium_mg": 350,
+      "serving_size": "3 pancakes (105g)",
+      "category": "breakfast",
+      "brand": "Eggo"
+    },
+    {
+      "id": "breakfast-004",
+      "name": "Frozen Waffles",
+      "sodium_mg": 380,
+      "serving_size": "2 waffles (70g)",
+      "category": "breakfast",
+      "brand": "Eggo"
+    },
+    {
+      "id": "breakfast-005",
+      "name": "Frosted Flakes",
+      "sodium_mg": 150,
+      "serving_size": "1 cup (37g)",
+      "category": "breakfast",
+      "brand": "Kellogg's"
+    },
+    {
+      "id": "breakfast-006",
+      "name": "Cheerios",
+      "sodium_mg": 140,
+      "serving_size": "1 cup (28g)",
+      "category": "breakfast",
+      "brand": "General Mills"
+    },
+    {
+      "id": "breakfast-007",
+      "name": "Raisin Bran",
+      "sodium_mg": 210,
+      "serving_size": "1 cup (59g)",
+      "category": "breakfast",
+      "brand": "Kellogg's"
+    },
+    {
+      "id": "breakfast-008",
+      "name": "Honey Nut Cheerios",
+      "sodium_mg": 190,
+      "serving_size": "1 cup (28g)",
+      "category": "breakfast",
+      "brand": "General Mills"
+    },
+    {
+      "id": "breakfast-009",
+      "name": "Instant Oatmeal (flavored)",
+      "sodium_mg": 260,
+      "serving_size": "1 packet (43g)",
+      "category": "breakfast",
+      "brand": "Quaker"
+    },
+    {
+      "id": "breakfast-010",
+      "name": "Pop-Tarts (Frosted Strawberry)",
+      "sodium_mg": 200,
+      "serving_size": "1 pastry (50g)",
+      "category": "breakfast",
+      "brand": "Kellogg's"
+    },
+    {
+      "id": "snack-001",
+      "name": "Popcorn (microwave butter)",
+      "sodium_mg": 300,
+      "serving_size": "3.5 cups popped (28g)",
+      "category": "snacks",
+      "brand": "Orville Redenbacher's"
+    },
+    {
+      "id": "snack-002",
+      "name": "Beef Jerky",
+      "sodium_mg": 590,
+      "serving_size": "1 oz (28g)",
+      "category": "snacks",
+      "brand": "Jack Link's"
+    },
+    {
+      "id": "snack-003",
+      "name": "Cheese Crackers",
+      "sodium_mg": 230,
+      "serving_size": "27 crackers (30g)",
+      "category": "snacks",
+      "brand": "Cheez-It"
+    },
+    {
+      "id": "snack-004",
+      "name": "Trail Mix",
+      "sodium_mg": 65,
+      "serving_size": "1/4 cup (30g)",
+      "category": "snacks",
+      "brand": "Planters"
+    },
+    {
+      "id": "snack-005",
+      "name": "Peanuts (salted)",
+      "sodium_mg": 230,
+      "serving_size": "1/4 cup (39g)",
+      "category": "snacks",
+      "brand": "Planters"
+    },
+    {
+      "id": "snack-006",
+      "name": "Granola Bar",
+      "sodium_mg": 140,
+      "serving_size": "1 bar (35g)",
+      "category": "snacks",
+      "brand": "Nature Valley"
+    },
+    {
+      "id": "mcd-001",
+      "name": "Big Mac",
+      "sodium_mg": 1010,
+      "serving_size": "1 sandwich (212g)",
+      "category": "fast_food",
+      "brand": "McDonald's"
+    },
+    {
+      "id": "mcd-002",
+      "name": "Quarter Pounder with Cheese",
+      "sodium_mg": 1090,
+      "serving_size": "1 sandwich (202g)",
+      "category": "fast_food",
+      "brand": "McDonald's"
+    },
+    {
+      "id": "mcd-003",
+      "name": "McChicken",
+      "sodium_mg": 560,
+      "serving_size": "1 sandwich (143g)",
+      "category": "fast_food",
+      "brand": "McDonald's"
+    },
+    {
+      "id": "mcd-004",
+      "name": "Medium French Fries",
+      "sodium_mg": 260,
+      "serving_size": "1 medium (117g)",
+      "category": "fast_food",
+      "brand": "McDonald's"
+    },
+    {
+      "id": "mcd-005",
+      "name": "Chicken McNuggets (10 pc)",
+      "sodium_mg": 900,
+      "serving_size": "10 pieces (162g)",
+      "category": "fast_food",
+      "brand": "McDonald's"
+    },
+    {
+      "id": "mcd-006",
+      "name": "Sausage McMuffin with Egg",
+      "sodium_mg": 860,
+      "serving_size": "1 sandwich (165g)",
+      "category": "fast_food",
+      "brand": "McDonald's"
+    },
+    {
+      "id": "mcd-007",
+      "name": "McGriddle (Bacon, Egg, Cheese)",
+      "sodium_mg": 1290,
+      "serving_size": "1 sandwich (185g)",
+      "category": "fast_food",
+      "brand": "McDonald's"
+    },
+    {
+      "id": "mcd-008",
+      "name": "Egg McMuffin",
+      "sodium_mg": 770,
+      "serving_size": "1 sandwich (136g)",
+      "category": "fast_food",
+      "brand": "McDonald's"
+    },
+    {
+      "id": "mcd-009",
+      "name": "Hash Browns",
+      "sodium_mg": 310,
+      "serving_size": "1 piece (56g)",
+      "category": "fast_food",
+      "brand": "McDonald's"
+    },
+    {
+      "id": "mcd-010",
+      "name": "Filet-O-Fish",
+      "sodium_mg": 640,
+      "serving_size": "1 sandwich (142g)",
+      "category": "fast_food",
+      "brand": "McDonald's"
+    },
+    {
+      "id": "sub-001",
+      "name": "6\" Italian BMT",
+      "sodium_mg": 1260,
+      "serving_size": "1 sub (239g)",
+      "category": "fast_food",
+      "brand": "Subway"
+    },
+    {
+      "id": "sub-002",
+      "name": "6\" Turkey Breast",
+      "sodium_mg": 790,
+      "serving_size": "1 sub (225g)",
+      "category": "fast_food",
+      "brand": "Subway"
+    },
+    {
+      "id": "sub-003",
+      "name": "6\" Meatball Marinara",
+      "sodium_mg": 910,
+      "serving_size": "1 sub (306g)",
+      "category": "fast_food",
+      "brand": "Subway"
+    },
+    {
+      "id": "sub-004",
+      "name": "6\" Tuna",
+      "sodium_mg": 530,
+      "serving_size": "1 sub (238g)",
+      "category": "fast_food",
+      "brand": "Subway"
+    },
+    {
+      "id": "sub-005",
+      "name": "Footlong Italian BMT",
+      "sodium_mg": 2520,
+      "serving_size": "1 sub (478g)",
+      "category": "fast_food",
+      "brand": "Subway"
+    },
+    {
+      "id": "sub-006",
+      "name": "Footlong Turkey Breast",
+      "sodium_mg": 1580,
+      "serving_size": "1 sub (450g)",
+      "category": "fast_food",
+      "brand": "Subway"
+    },
+    {
+      "id": "chip-001",
+      "name": "Chicken Burrito",
+      "sodium_mg": 1355,
+      "serving_size": "1 burrito (510g)",
+      "category": "fast_food",
+      "brand": "Chipotle"
+    },
+    {
+      "id": "chip-002",
+      "name": "Chicken Burrito Bowl",
+      "sodium_mg": 1295,
+      "serving_size": "1 bowl (510g)",
+      "category": "fast_food",
+      "brand": "Chipotle"
+    },
+    {
+      "id": "chip-003",
+      "name": "Steak Burrito",
+      "sodium_mg": 1555,
+      "serving_size": "1 burrito (510g)",
+      "category": "fast_food",
+      "brand": "Chipotle"
+    },
+    {
+      "id": "chip-004",
+      "name": "Chips and Guacamole",
+      "sodium_mg": 420,
+      "serving_size": "1 serving (155g)",
+      "category": "fast_food",
+      "brand": "Chipotle"
+    },
+    {
+      "id": "chip-005",
+      "name": "Chips and Queso",
+      "sodium_mg": 690,
+      "serving_size": "1 serving (165g)",
+      "category": "fast_food",
+      "brand": "Chipotle"
+    },
+    {
+      "id": "cfa-001",
+      "name": "Chicken Sandwich",
+      "sodium_mg": 1400,
+      "serving_size": "1 sandwich (143g)",
+      "category": "fast_food",
+      "brand": "Chick-fil-A"
+    },
+    {
+      "id": "cfa-002",
+      "name": "Spicy Chicken Sandwich",
+      "sodium_mg": 1620,
+      "serving_size": "1 sandwich (156g)",
+      "category": "fast_food",
+      "brand": "Chick-fil-A"
+    },
+    {
+      "id": "cfa-003",
+      "name": "Chicken Nuggets (8 pc)",
+      "sodium_mg": 1250,
+      "serving_size": "8 pieces (113g)",
+      "category": "fast_food",
+      "brand": "Chick-fil-A"
+    },
+    {
+      "id": "cfa-004",
+      "name": "Waffle Fries (Medium)",
+      "sodium_mg": 280,
+      "serving_size": "1 medium (125g)",
+      "category": "fast_food",
+      "brand": "Chick-fil-A"
+    },
+    {
+      "id": "cfa-005",
+      "name": "Chicken Biscuit",
+      "sodium_mg": 1240,
+      "serving_size": "1 biscuit (153g)",
+      "category": "fast_food",
+      "brand": "Chick-fil-A"
+    },
+    {
+      "id": "sbux-001",
+      "name": "Bacon, Gouda & Egg Sandwich",
+      "sodium_mg": 900,
+      "serving_size": "1 sandwich (127g)",
+      "category": "fast_food",
+      "brand": "Starbucks"
+    },
+    {
+      "id": "sbux-002",
+      "name": "Sausage, Cheddar & Egg Sandwich",
+      "sodium_mg": 800,
+      "serving_size": "1 sandwich (127g)",
+      "category": "fast_food",
+      "brand": "Starbucks"
+    },
+    {
+      "id": "sbux-003",
+      "name": "Turkey Bacon & Egg White Sandwich",
+      "sodium_mg": 770,
+      "serving_size": "1 sandwich (142g)",
+      "category": "fast_food",
+      "brand": "Starbucks"
+    },
+    {
+      "id": "sbux-004",
+      "name": "Ham & Swiss Croissant",
+      "sodium_mg": 960,
+      "serving_size": "1 sandwich (127g)",
+      "category": "fast_food",
+      "brand": "Starbucks"
+    },
+    {
+      "id": "sbux-005",
+      "name": "Spinach, Feta & Egg White Wrap",
+      "sodium_mg": 840,
+      "serving_size": "1 wrap (170g)",
+      "category": "fast_food",
+      "brand": "Starbucks"
+    },
+    {
+      "id": "bk-001",
+      "name": "Whopper",
+      "sodium_mg": 980,
+      "serving_size": "1 sandwich (270g)",
+      "category": "fast_food",
+      "brand": "Burger King"
+    },
+    {
+      "id": "bk-002",
+      "name": "Whopper with Cheese",
+      "sodium_mg": 1270,
+      "serving_size": "1 sandwich (291g)",
+      "category": "fast_food",
+      "brand": "Burger King"
+    },
+    {
+      "id": "bk-003",
+      "name": "Original Chicken Sandwich",
+      "sodium_mg": 1100,
+      "serving_size": "1 sandwich (209g)",
+      "category": "fast_food",
+      "brand": "Burger King"
+    },
+    {
+      "id": "bk-004",
+      "name": "Chicken Fries (9 pc)",
+      "sodium_mg": 960,
+      "serving_size": "9 pieces (91g)",
+      "category": "fast_food",
+      "brand": "Burger King"
+    },
+    {
+      "id": "tb-001",
+      "name": "Crunchy Taco",
+      "sodium_mg": 310,
+      "serving_size": "1 taco (78g)",
+      "category": "fast_food",
+      "brand": "Taco Bell"
+    },
+    {
+      "id": "tb-002",
+      "name": "Crunchy Taco Supreme",
+      "sodium_mg": 350,
+      "serving_size": "1 taco (106g)",
+      "category": "fast_food",
+      "brand": "Taco Bell"
+    },
+    {
+      "id": "tb-003",
+      "name": "Beef Burrito Supreme",
+      "sodium_mg": 1090,
+      "serving_size": "1 burrito (248g)",
+      "category": "fast_food",
+      "brand": "Taco Bell"
+    },
+    {
+      "id": "tb-004",
+      "name": "Crunchwrap Supreme",
+      "sodium_mg": 1200,
+      "serving_size": "1 wrap (254g)",
+      "category": "fast_food",
+      "brand": "Taco Bell"
+    },
+    {
+      "id": "tb-005",
+      "name": "Nachos BellGrande",
+      "sodium_mg": 1050,
+      "serving_size": "1 order (308g)",
+      "category": "fast_food",
+      "brand": "Taco Bell"
+    },
+    {
+      "id": "tb-006",
+      "name": "Cheesy Gordita Crunch",
+      "sodium_mg": 670,
+      "serving_size": "1 item (153g)",
+      "category": "fast_food",
+      "brand": "Taco Bell"
+    },
+    {
+      "id": "wen-001",
+      "name": "Dave's Single",
+      "sodium_mg": 970,
+      "serving_size": "1 burger (219g)",
+      "category": "fast_food",
+      "brand": "Wendy's"
+    },
+    {
+      "id": "wen-002",
+      "name": "Baconator",
+      "sodium_mg": 1830,
+      "serving_size": "1 burger (328g)",
+      "category": "fast_food",
+      "brand": "Wendy's"
+    },
+    {
+      "id": "wen-003",
+      "name": "Spicy Chicken Sandwich",
+      "sodium_mg": 1260,
+      "serving_size": "1 sandwich (230g)",
+      "category": "fast_food",
+      "brand": "Wendy's"
+    },
+    {
+      "id": "wen-004",
+      "name": "Medium Fries",
+      "sodium_mg": 330,
+      "serving_size": "1 medium (142g)",
+      "category": "fast_food",
+      "brand": "Wendy's"
+    },
+    {
+      "id": "wen-005",
+      "name": "Chili (Large)",
+      "sodium_mg": 1170,
+      "serving_size": "1 large (340g)",
+      "category": "fast_food",
+      "brand": "Wendy's"
+    },
+    {
+      "id": "pizza-001",
+      "name": "Pepperoni Pizza Slice (Large)",
+      "sodium_mg": 680,
+      "serving_size": "1 slice (107g)",
+      "category": "pizza",
+      "brand": "Pizza Hut"
+    },
+    {
+      "id": "pizza-002",
+      "name": "Cheese Pizza Slice (Large)",
+      "sodium_mg": 600,
+      "serving_size": "1 slice (99g)",
+      "category": "pizza",
+      "brand": "Pizza Hut"
+    },
+    {
+      "id": "pizza-003",
+      "name": "Supreme Pizza Slice (Large)",
+      "sodium_mg": 750,
+      "serving_size": "1 slice (125g)",
+      "category": "pizza",
+      "brand": "Pizza Hut"
+    },
+    {
+      "id": "pizza-004",
+      "name": "Meat Lovers Pizza Slice (Large)",
+      "sodium_mg": 880,
+      "serving_size": "1 slice (132g)",
+      "category": "pizza",
+      "brand": "Pizza Hut"
+    },
+    {
+      "id": "pizza-005",
+      "name": "Breadsticks (2 pieces)",
+      "sodium_mg": 330,
+      "serving_size": "2 sticks (57g)",
+      "category": "pizza",
+      "brand": "Pizza Hut"
+    },
+    {
+      "id": "pizza-006",
+      "name": "Pepperoni Pizza Slice (Large)",
+      "sodium_mg": 710,
+      "serving_size": "1 slice (119g)",
+      "category": "pizza",
+      "brand": "Domino's"
+    },
+    {
+      "id": "pizza-007",
+      "name": "Cheese Pizza Slice (Large)",
+      "sodium_mg": 585,
+      "serving_size": "1 slice (108g)",
+      "category": "pizza",
+      "brand": "Domino's"
+    },
+    {
+      "id": "pizza-008",
+      "name": "Buffalo Wings (8 pc)",
+      "sodium_mg": 1900,
+      "serving_size": "8 pieces (182g)",
+      "category": "pizza",
+      "brand": "Domino's"
+    },
+    {
+      "id": "pizza-009",
+      "name": "Parmesan Bread Bites (8 pc)",
+      "sodium_mg": 590,
+      "serving_size": "8 pieces (70g)",
+      "category": "pizza",
+      "brand": "Domino's"
+    },
+    {
+      "id": "pizza-010",
+      "name": "Cheese Pizza Slice (18 inch)",
+      "sodium_mg": 640,
+      "serving_size": "1 slice (150g)",
+      "category": "pizza",
+      "brand": "Costco"
+    },
+    {
+      "id": "pizza-011",
+      "name": "Pepperoni Pizza Slice (18 inch)",
+      "sodium_mg": 780,
+      "serving_size": "1 slice (170g)",
+      "category": "pizza",
+      "brand": "Costco"
+    },
+    {
+      "id": "pizza-012",
+      "name": "Combo Pizza Slice (18 inch)",
+      "sodium_mg": 920,
+      "serving_size": "1 slice (195g)",
+      "category": "pizza",
+      "brand": "Costco"
+    },
+    {
+      "id": "chinese-001",
+      "name": "General Tso's Chicken",
+      "sodium_mg": 1580,
+      "serving_size": "1 cup (195g)",
+      "category": "chinese",
+      "brand": null
+    },
+    {
+      "id": "chinese-002",
+      "name": "Orange Chicken",
+      "sodium_mg": 1490,
+      "serving_size": "1 cup (195g)",
+      "category": "chinese",
+      "brand": null
+    },
+    {
+      "id": "chinese-003",
+      "name": "Beef with Broccoli",
+      "sodium_mg": 1250,
+      "serving_size": "1 cup (195g)",
+      "category": "chinese",
+      "brand": null
+    },
+    {
+      "id": "chinese-004",
+      "name": "Chicken Fried Rice",
+      "sodium_mg": 1080,
+      "serving_size": "1 cup (200g)",
+      "category": "chinese",
+      "brand": null
+    },
+    {
+      "id": "chinese-005",
+      "name": "Pork Fried Rice",
+      "sodium_mg": 1150,
+      "serving_size": "1 cup (200g)",
+      "category": "chinese",
+      "brand": null
+    },
+    {
+      "id": "chinese-006",
+      "name": "Lo Mein",
+      "sodium_mg": 1390,
+      "serving_size": "1 cup (200g)",
+      "category": "chinese",
+      "brand": null
+    },
+    {
+      "id": "chinese-007",
+      "name": "Egg Roll",
+      "sodium_mg": 460,
+      "serving_size": "1 roll (89g)",
+      "category": "chinese",
+      "brand": null
+    },
+    {
+      "id": "chinese-008",
+      "name": "Hot and Sour Soup",
+      "sodium_mg": 910,
+      "serving_size": "1 cup (245g)",
+      "category": "chinese",
+      "brand": null
+    },
+    {
+      "id": "chinese-009",
+      "name": "Wonton Soup",
+      "sodium_mg": 870,
+      "serving_size": "1 cup (245g)",
+      "category": "chinese",
+      "brand": null
+    },
+    {
+      "id": "chinese-010",
+      "name": "Kung Pao Chicken",
+      "sodium_mg": 1210,
+      "serving_size": "1 cup (195g)",
+      "category": "chinese",
+      "brand": null
+    },
+    {
+      "id": "chinese-011",
+      "name": "Sweet and Sour Chicken",
+      "sodium_mg": 830,
+      "serving_size": "1 cup (195g)",
+      "category": "chinese",
+      "brand": null
+    },
+    {
+      "id": "chinese-012",
+      "name": "Crab Rangoon (4 pc)",
+      "sodium_mg": 540,
+      "serving_size": "4 pieces (90g)",
+      "category": "chinese",
+      "brand": null
+    },
+    {
+      "id": "pf-001",
+      "name": "Orange Chicken",
+      "sodium_mg": 770,
+      "serving_size": "5.7 oz (162g)",
+      "category": "chinese",
+      "brand": "Panda Express"
+    },
+    {
+      "id": "pf-002",
+      "name": "Beijing Beef",
+      "sodium_mg": 660,
+      "serving_size": "5.6 oz (159g)",
+      "category": "chinese",
+      "brand": "Panda Express"
+    },
+    {
+      "id": "pf-003",
+      "name": "Kung Pao Chicken",
+      "sodium_mg": 980,
+      "serving_size": "5.4 oz (153g)",
+      "category": "chinese",
+      "brand": "Panda Express"
+    },
+    {
+      "id": "pf-004",
+      "name": "Chow Mein",
+      "sodium_mg": 860,
+      "serving_size": "9.4 oz (267g)",
+      "category": "chinese",
+      "brand": "Panda Express"
+    },
+    {
+      "id": "pf-005",
+      "name": "Fried Rice",
+      "sodium_mg": 850,
+      "serving_size": "9.3 oz (264g)",
+      "category": "chinese",
+      "brand": "Panda Express"
+    },
+    {
+      "id": "mexican-001",
+      "name": "Beef Taco (Street Style)",
+      "sodium_mg": 280,
+      "serving_size": "1 taco (85g)",
+      "category": "mexican",
+      "brand": null
+    },
+    {
+      "id": "mexican-002",
+      "name": "Chicken Quesadilla",
+      "sodium_mg": 1180,
+      "serving_size": "1 quesadilla (180g)",
+      "category": "mexican",
+      "brand": null
+    },
+    {
+      "id": "mexican-003",
+      "name": "Cheese Enchilada",
+      "sodium_mg": 780,
+      "serving_size": "1 enchilada (163g)",
+      "category": "mexican",
+      "brand": null
+    },
+    {
+      "id": "mexican-004",
+      "name": "Chicken Enchilada",
+      "sodium_mg": 860,
+      "serving_size": "1 enchilada (180g)",
+      "category": "mexican",
+      "brand": null
+    },
+    {
+      "id": "mexican-005",
+      "name": "Bean and Cheese Burrito",
+      "sodium_mg": 950,
+      "serving_size": "1 burrito (230g)",
+      "category": "mexican",
+      "brand": null
+    },
+    {
+      "id": "mexican-006",
+      "name": "Nachos with Cheese",
+      "sodium_mg": 810,
+      "serving_size": "1 serving (145g)",
+      "category": "mexican",
+      "brand": null
+    },
+    {
+      "id": "mexican-007",
+      "name": "Chips and Salsa",
+      "sodium_mg": 430,
+      "serving_size": "1 serving (85g)",
+      "category": "mexican",
+      "brand": null
+    },
+    {
+      "id": "mexican-008",
+      "name": "Guacamole",
+      "sodium_mg": 160,
+      "serving_size": "2 tbsp (30g)",
+      "category": "mexican",
+      "brand": null
+    },
+    {
+      "id": "mexican-009",
+      "name": "Refried Beans",
+      "sodium_mg": 530,
+      "serving_size": "1/2 cup (130g)",
+      "category": "mexican",
+      "brand": null
+    },
+    {
+      "id": "mexican-010",
+      "name": "Spanish Rice",
+      "sodium_mg": 450,
+      "serving_size": "1 cup (195g)",
+      "category": "mexican",
+      "brand": null
+    },
+    {
+      "id": "bev-001",
+      "name": "V8 Vegetable Juice",
+      "sodium_mg": 640,
+      "serving_size": "8 oz (240ml)",
+      "category": "beverages",
+      "brand": "V8"
+    },
+    {
+      "id": "bev-002",
+      "name": "Tomato Juice",
+      "sodium_mg": 670,
+      "serving_size": "8 oz (240ml)",
+      "category": "beverages",
+      "brand": "Campbell's"
+    },
+    {
+      "id": "bev-003",
+      "name": "Low-Sodium V8",
+      "sodium_mg": 140,
+      "serving_size": "8 oz (240ml)",
+      "category": "beverages",
+      "brand": "V8"
+    },
+    {
+      "id": "bev-004",
+      "name": "Sports Drink",
+      "sodium_mg": 270,
+      "serving_size": "20 oz (591ml)",
+      "category": "beverages",
+      "brand": "Gatorade"
+    },
+    {
+      "id": "bev-005",
+      "name": "Chocolate Milk",
+      "sodium_mg": 150,
+      "serving_size": "8 oz (240ml)",
+      "category": "beverages",
+      "brand": null
+    },
+    {
+      "id": "bev-006",
+      "name": "Hot Chocolate (from mix)",
+      "sodium_mg": 230,
+      "serving_size": "1 packet + water (210ml)",
+      "category": "beverages",
+      "brand": "Swiss Miss"
+    }
+  ]
+}

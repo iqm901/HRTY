@@ -26,6 +26,7 @@ final class SodiumViewModel {
     var showingBarcodeScannerSheet = false
     var showingLabelScannerSheet = false
     var showingHistoryView = false
+    var showingFoodSearchView = false
 
     // MARK: - Template Editing
 
@@ -303,6 +304,21 @@ final class SodiumViewModel {
         nameInput = "Scanned Item"
         sodiumInput = String(sodiumMg)
         showingAddSheet = true
+    }
+
+    func addFromBundledFood(_ food: BundledFoodItem, context: ModelContext) {
+        if let entry = repository.addEntry(
+            name: food.displayName,
+            sodiumMg: food.sodiumMg,
+            servingSize: food.servingSize,
+            source: .template,
+            barcode: nil,
+            templateId: nil,
+            context: context
+        ) {
+            entryAddedMessage = "\(food.name) logged"
+            loadData(context: context)
+        }
     }
 
     // MARK: - Message Clearing

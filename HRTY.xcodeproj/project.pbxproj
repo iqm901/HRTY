@@ -173,6 +173,10 @@
 		SOD018000000000000000002 /* SodiumViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = SOD018000000000000000001 /* SodiumViewModelTests.swift */; };
 		SOD019000000000000000002 /* NutritionLabelParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = SOD019000000000000000001 /* NutritionLabelParserTests.swift */; };
 		SOD020000000000000000002 /* LocalProductDatabaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = SOD020000000000000000001 /* LocalProductDatabaseTests.swift */; };
+		SOD023000000000000000002 /* BundledFoodItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = SOD023000000000000000001 /* BundledFoodItem.swift */; };
+		SOD024000000000000000002 /* BundledFoodDatabaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = SOD024000000000000000001 /* BundledFoodDatabaseService.swift */; };
+		SOD025000000000000000002 /* FoodSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = SOD025000000000000000001 /* FoodSearchView.swift */; };
+		SOD026000000000000000002 /* BundledFoods.json in Resources */ = {isa = PBXBuildFile; fileRef = SOD026000000000000000001 /* BundledFoods.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -345,6 +349,11 @@
 		SOD014000000000000000001 /* SodiumHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SodiumHistoryView.swift; sourceTree = "<group>"; };
 		SOD015000000000000000001 /* BarcodeScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerView.swift; sourceTree = "<group>"; };
 		SOD016000000000000000001 /* LabelScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelScannerView.swift; sourceTree = "<group>"; };
+		SOD023000000000000000001 /* BundledFoodItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BundledFoodItem.swift; sourceTree = "<group>"; };
+		SOD024000000000000000001 /* BundledFoodDatabaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BundledFoodDatabaseService.swift; sourceTree = "<group>"; };
+		SOD025000000000000000001 /* FoodSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodSearchView.swift; sourceTree = "<group>"; };
+		SOD026000000000000000001 /* BundledFoods.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = BundledFoods.json; sourceTree = "<group>"; };
+		SOD027000000000000000001 /* Data */ = {isa = PBXGroup; children = (SOD026000000000000000001 /* BundledFoods.json */,); path = Data; sourceTree = "<group>"; };
 		SOD017000000000000000001 /* SodiumRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SodiumRepositoryTests.swift; sourceTree = "<group>"; };
 		SOD018000000000000000001 /* SodiumViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SodiumViewModelTests.swift; sourceTree = "<group>"; };
 		SOD019000000000000000001 /* NutritionLabelParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionLabelParserTests.swift; sourceTree = "<group>"; };
@@ -359,6 +368,7 @@
 				SOD014000000000000000001 /* SodiumHistoryView.swift */,
 				SOD015000000000000000001 /* BarcodeScannerView.swift */,
 				SOD016000000000000000001 /* LabelScannerView.swift */,
+				SOD025000000000000000001 /* FoodSearchView.swift */,
 			); name = Sodium; path = Sodium; sourceTree = "<group>"; };
 		SOD022000000000000000001 /* SodiumTracking */ = {isa = PBXGroup; children = (
 				SOD017000000000000000001 /* SodiumRepositoryTests.swift */,
@@ -436,6 +446,7 @@
 				A1000005200000010000000100000004 /* Views */,
 				A1000005200000010000000100000006 /* ViewModels */,
 				A1000005200000010000000100000007 /* Services */,
+				SOD027000000000000000001 /* Data */,
 				019000040000000100000001 /* DesignSystem */,
 				FONT0003000000000000001 /* Fonts */,
 				A1000002200000010000000100000003 /* Assets.xcassets */,
@@ -585,7 +596,8 @@ A1000005200000010000000100000004 /* Views */ = {
 				MYH018000000000000000001 /* CoronaryProcedure.swift */,
 				SOD001000000000000000001 /* SodiumEntry.swift */,
 				SOD002000000000000000001 /* SodiumTemplate.swift */,
-				SOD003000000000000000001 /* SodiumConstants.swift */,);
+				SOD003000000000000000001 /* SodiumConstants.swift */,
+				SOD023000000000000000001 /* BundledFoodItem.swift */,);
 			path = Models;
 			sourceTree = "<group>";
 		};
@@ -623,6 +635,7 @@ A1000005200000010000000100000004 /* Views */ = {
 				SOD004000000000000000001 /* SodiumRepository.swift */,
 				SOD005000000000000000001 /* LocalProductDatabase.swift */,
 				SOD006000000000000000001 /* NutritionLabelParser.swift */,
+				SOD024000000000000000001 /* BundledFoodDatabaseService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -734,6 +747,7 @@ A1000005200000010000000100000004 /* Views */ = {
 				A1000001200000010000000100000003 /* Assets.xcassets in Resources */,
 				030000010000000100000001 /* LaunchScreen.storyboard in Resources */,
 				FONT0001000000000000002 /* Nunito-SemiBold.ttf in Resources */,
+				SOD026000000000000000002 /* BundledFoods.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -888,7 +902,10 @@ A1000005200000010000000100000004 /* Views */ = {
 				SOD013000000000000000002 /* TemplateEditorSheet.swift in Sources */,
 				SOD014000000000000000002 /* SodiumHistoryView.swift in Sources */,
 				SOD015000000000000000002 /* BarcodeScannerView.swift in Sources */,
-				SOD016000000000000000002 /* LabelScannerView.swift in Sources */,);
+				SOD016000000000000000002 /* LabelScannerView.swift in Sources */,
+				SOD023000000000000000002 /* BundledFoodItem.swift in Sources */,
+				SOD024000000000000000002 /* BundledFoodDatabaseService.swift in Sources */,
+				SOD025000000000000000002 /* FoodSearchView.swift in Sources */,);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		B1000009200000010000000200000001 /* Sources */ = {
