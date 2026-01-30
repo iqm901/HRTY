@@ -37,6 +37,7 @@ final class SodiumEntry {
     var sourceRawValue: String
     var barcode: String?
     var templateId: UUID?
+    var bundledFoodId: String?
 
     var source: SodiumEntrySource {
         get { SodiumEntrySource(rawValue: sourceRawValue) ?? .manual }
@@ -51,7 +52,8 @@ final class SodiumEntry {
         timestamp: Date = Date(),
         source: SodiumEntrySource = .manual,
         barcode: String? = nil,
-        templateId: UUID? = nil
+        templateId: UUID? = nil,
+        bundledFoodId: String? = nil
     ) {
         self.id = id
         self.name = name
@@ -61,6 +63,7 @@ final class SodiumEntry {
         self.sourceRawValue = source.rawValue
         self.barcode = barcode
         self.templateId = templateId
+        self.bundledFoodId = bundledFoodId
     }
 }
 
@@ -127,5 +130,33 @@ extension SodiumEntry {
         return dailyTotals
             .map { (date: $0.key, totalMg: $0.value) }
             .sorted { $0.date < $1.date }
+    }
+
+    /// Fetch recent bundled food IDs (for "Recent Foods" feature)
+    static func fetchRecentBundledFoodIds(limit: Int = 10, in context: ModelContext) -> [String] {
+        let descriptor = FetchDescriptor<SodiumEntry>(
+            sortBy: [SortDescriptor(\.timestamp, order: .reverse)]
+        )
+
+        guard let entries = try? context.fetch(descriptor) else {
+            return []
+        }
+
+        // Get unique bundled food IDs, maintaining order by most recent
+        var seenIds = Set<String>()
+        var recentIds: [String] = []
+
+        for entry in entries {
+            guard let foodId = entry.bundledFoodId, !seenIds.contains(foodId) else {
+                continue
+            }
+            seenIds.insert(foodId)
+            recentIds.append(foodId)
+            if recentIds.count >= limit {
+                break
+            }
+        }
+
+        return recentIds
     }
 }

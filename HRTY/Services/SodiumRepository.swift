@@ -10,6 +10,7 @@ protocol SodiumRepositoryProtocol {
         source: SodiumEntrySource,
         barcode: String?,
         templateId: UUID?,
+        bundledFoodId: String?,
         context: ModelContext
     ) -> SodiumEntry?
 
@@ -48,6 +49,7 @@ final class SodiumRepository: SodiumRepositoryProtocol {
         source: SodiumEntrySource,
         barcode: String?,
         templateId: UUID?,
+        bundledFoodId: String? = nil,
         context: ModelContext
     ) -> SodiumEntry? {
         let entry = SodiumEntry(
@@ -56,7 +58,8 @@ final class SodiumRepository: SodiumRepositoryProtocol {
             servingSize: servingSize,
             source: source,
             barcode: barcode,
-            templateId: templateId
+            templateId: templateId,
+            bundledFoodId: bundledFoodId
         )
 
         context.insert(entry)

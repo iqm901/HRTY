@@ -17,6 +17,9 @@ enum BundledFoodCategory: String, Codable, CaseIterable {
     case chinese = "chinese"
     case mexican = "mexican"
     case beverages = "beverages"
+    case sauces = "sauces"
+    case pickled = "pickled"
+    case instantNoodles = "instant_noodles"
     case other = "other"
 
     var displayName: String {
@@ -36,6 +39,9 @@ enum BundledFoodCategory: String, Codable, CaseIterable {
         case .chinese: return "Chinese"
         case .mexican: return "Mexican"
         case .beverages: return "Beverages"
+        case .sauces: return "Sauces & Marinades"
+        case .pickled: return "Pickled Foods"
+        case .instantNoodles: return "Instant Noodles"
         case .other: return "Other"
         }
     }
@@ -57,6 +63,9 @@ enum BundledFoodCategory: String, Codable, CaseIterable {
         case .chinese: return "takeoutbag.and.cup.and.straw"
         case .mexican: return "flame"
         case .beverages: return "cup.and.saucer"
+        case .sauces: return "drop.circle"
+        case .pickled: return "seal"
+        case .instantNoodles: return "flame.circle"
         case .other: return "ellipsis.circle"
         }
     }

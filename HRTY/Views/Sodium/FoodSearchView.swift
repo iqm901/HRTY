@@ -11,6 +11,11 @@ struct FoodSearchView: View {
     @State private var selectedCategory: BundledFoodCategory?
     @FocusState private var isSearchFocused: Bool
 
+    // Recent and favorites state
+    @State private var recentFoods: [BundledFoodItem] = []
+    @State private var favoriteFoods: [BundledFoodItem] = []
+    @State private var favoriteIds: Set<String> = []
+
     private let database = BundledFoodDatabaseService.shared
 
     var body: some View {
@@ -26,7 +31,7 @@ struct FoodSearchView: View {
 
             // Results
             if searchQuery.isEmpty && selectedCategory == nil {
-                browsePrompt
+                defaultBrowseView
             } else if searchResults.isEmpty {
                 emptyState
             } else {
@@ -45,6 +50,7 @@ struct FoodSearchView: View {
         }
         .onAppear {
             isSearchFocused = true
+            loadRecentAndFavorites()
         }
         .onChange(of: searchQuery) { _, newValue in
             performSearch()
@@ -121,11 +127,86 @@ struct FoodSearchView: View {
         }
     }
 
+    // MARK: - Default Browse View (Recent, Favorites, Browse Prompt)
+
+    private var defaultBrowseView: some View {
+        ScrollView {
+            VStack(spacing: HRTSpacing.lg) {
+                // Recent Foods Section
+                if !recentFoods.isEmpty {
+                    recentFoodsSection
+                }
+
+                // Favorites Section
+                if !favoriteFoods.isEmpty {
+                    favoritesSection
+                }
+
+                // Browse Prompt
+                browsePrompt
+            }
+            .padding(.bottom, HRTSpacing.lg)
+        }
+    }
+
+    // MARK: - Recent Foods Section
+
+    private var recentFoodsSection: some View {
+        VStack(alignment: .leading, spacing: HRTSpacing.sm) {
+            Text("Recent")
+                .font(.hrtSubheadline)
+                .fontWeight(.semibold)
+                .foregroundStyle(Color.hrtTextFallback)
+                .padding(.horizontal, HRTSpacing.md)
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: HRTSpacing.sm) {
+                    ForEach(recentFoods) { food in
+                        FoodChip(
+                            food: food,
+                            isFavorite: favoriteIds.contains(food.id),
+                            onTap: { addFood(food) },
+                            onFavoriteToggle: { toggleFavorite(food) }
+                        )
+                    }
+                }
+                .padding(.horizontal, HRTSpacing.md)
+            }
+        }
+    }
+
+    // MARK: - Favorites Section
+
+    private var favoritesSection: some View {
+        VStack(alignment: .leading, spacing: HRTSpacing.sm) {
+            Text("Favorites")
+                .font(.hrtSubheadline)
+                .fontWeight(.semibold)
+                .foregroundStyle(Color.hrtTextFallback)
+                .padding(.horizontal, HRTSpacing.md)
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: HRTSpacing.sm) {
+                    ForEach(favoriteFoods) { food in
+                        FoodChip(
+                            food: food,
+                            isFavorite: true,
+                            onTap: { addFood(food) },
+                            onFavoriteToggle: { toggleFavorite(food) }
+                        )
+                    }
+                }
+                .padding(.horizontal, HRTSpacing.md)
+            }
+        }
+    }
+
     // MARK: - Browse Prompt
 
     private var browsePrompt: some View {
         VStack(spacing: HRTSpacing.lg) {
             Spacer()
+                .frame(height: HRTSpacing.xl)
 
             Image(systemName: "magnifyingglass")
                 .font(.system(size: 48))
@@ -143,6 +224,7 @@ struct FoodSearchView: View {
             }
 
             Spacer()
+                .frame(height: HRTSpacing.xl)
         }
         .padding(.horizontal, HRTSpacing.xl)
     }
@@ -177,9 +259,12 @@ struct FoodSearchView: View {
         ScrollView {
             LazyVStack(spacing: 0) {
                 ForEach(searchResults) { food in
-                    FoodSearchRow(food: food) {
-                        addFood(food)
-                    }
+                    FoodSearchRow(
+                        food: food,
+                        isFavorite: favoriteIds.contains(food.id),
+                        onTap: { addFood(food) },
+                        onFavoriteToggle: { toggleFavorite(food) }
+                    )
 
                     if food.id != searchResults.last?.id {
                         Divider()
@@ -216,29 +301,57 @@ struct FoodSearchView: View {
         viewModel.addFromBundledFood(food, context: modelContext)
         dismiss()
     }
+
+    private func loadRecentAndFavorites() {
+        // Load recent food IDs and resolve to BundledFoodItems
+        let recentIds = SodiumEntry.fetchRecentBundledFoodIds(limit: 10, in: modelContext)
+        recentFoods = database.foods(byIds: recentIds)
+
+        // Load favorite IDs and resolve to BundledFoodItems
+        let favIds = FoodFavorite.allFavoriteIds(in: modelContext)
+        favoriteIds = Set(favIds)
+        favoriteFoods = database.foods(byIds: favIds)
+    }
+
+    private func toggleFavorite(_ food: BundledFoodItem) {
+        let isNowFavorite = FoodFavorite.toggle(bundledFoodId: food.id, in: modelContext)
+
+        // Update local state
+        if isNowFavorite {
+            favoriteIds.insert(food.id)
+            if !favoriteFoods.contains(where: { $0.id == food.id }) {
+                favoriteFoods.insert(food, at: 0)
+            }
+        } else {
+            favoriteIds.remove(food.id)
+            favoriteFoods.removeAll { $0.id == food.id }
+        }
+    }
 }
 
 // MARK: - Food Search Row
 
 private struct FoodSearchRow: View {
     let food: BundledFoodItem
+    let isFavorite: Bool
     let onTap: () -> Void
+    let onFavoriteToggle: () -> Void
 
     var body: some View {
-        Button(action: onTap) {
-            HStack(spacing: HRTSpacing.md) {
-                // Category Icon
-                ZStack {
-                    Circle()
-                        .fill(Color.hrtPinkLightFallback)
-                        .frame(width: 40, height: 40)
+        HStack(spacing: HRTSpacing.md) {
+            // Category Icon
+            ZStack {
+                Circle()
+                    .fill(Color.hrtPinkLightFallback)
+                    .frame(width: 40, height: 40)
 
-                    Image(systemName: food.category.icon)
-                        .font(.system(size: 16, weight: .medium))
-                        .foregroundStyle(Color.hrtPinkFallback)
-                }
+                Image(systemName: food.category.icon)
+                    .font(.system(size: 16, weight: .medium))
+                    .foregroundStyle(Color.hrtPinkFallback)
+            }
 
-                // Name and Details
+            // Name and Details
+            Button(action: onTap) {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(food.displayName)
                         .font(.hrtBody)
@@ -250,10 +363,22 @@ private struct FoodSearchRow: View {
                         .font(.hrtCaption)
                         .foregroundStyle(Color.hrtTextTertiaryFallback)
                 }
+            }
+            .buttonStyle(.plain)
 
-                Spacer()
+            Spacer()
 
-                // Sodium Amount
+            // Favorite Button
+            Button(action: onFavoriteToggle) {
+                Image(systemName: isFavorite ? "heart.fill" : "heart")
+                    .font(.system(size: 18))
+                    .foregroundStyle(isFavorite ? Color.hrtPinkFallback : Color.hrtTextTertiaryFallback)
+            }
+            .buttonStyle(.plain)
+            .padding(.trailing, HRTSpacing.xs)
+
+            // Sodium Amount + Add Button
+            Button(action: onTap) {
                 VStack(alignment: .trailing, spacing: 2) {
                     Text(SodiumConstants.formatSodium(food.sodiumMg))
                         .font(.hrtBody)
@@ -265,13 +390,66 @@ private struct FoodSearchRow: View {
                         .foregroundStyle(Color.hrtPinkFallback)
                 }
             }
-            .padding(.horizontal, HRTSpacing.md)
-            .padding(.vertical, HRTSpacing.sm)
-            .contentShape(Rectangle())
+            .buttonStyle(.plain)
         }
-        .buttonStyle(.plain)
+        .padding(.horizontal, HRTSpacing.md)
+        .padding(.vertical, HRTSpacing.sm)
+        .contentShape(Rectangle())
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(food.displayName), \(food.sodiumMg) milligrams, \(food.servingSize)")
+        .accessibilityHint("Double tap to add to today's log")
+    }
+}
+
+// MARK: - Food Chip (for Recent/Favorites horizontal scroll)
+
+private struct FoodChip: View {
+    let food: BundledFoodItem
+    let isFavorite: Bool
+    let onTap: () -> Void
+    let onFavoriteToggle: () -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: HRTSpacing.xs) {
+            HStack(spacing: HRTSpacing.xs) {
+                Text(food.displayName)
+                    .font(.hrtCaption)
+                    .fontWeight(.medium)
+                    .foregroundStyle(Color.hrtTextFallback)
+                    .lineLimit(1)
+
+                Spacer(minLength: 4)
+
+                Button(action: onFavoriteToggle) {
+                    Image(systemName: isFavorite ? "heart.fill" : "heart")
+                        .font(.system(size: 12))
+                        .foregroundStyle(isFavorite ? Color.hrtPinkFallback : Color.hrtTextTertiaryFallback)
+                }
+                .buttonStyle(.plain)
+            }
+
+            HStack(spacing: HRTSpacing.xs) {
+                Text(SodiumConstants.formatSodium(food.sodiumMg))
+                    .font(.hrtCaption)
+                    .foregroundStyle(Color.hrtTextSecondaryFallback)
+
+                Spacer(minLength: 4)
+
+                Button(action: onTap) {
+                    Image(systemName: "plus.circle.fill")
+                        .font(.system(size: 16))
+                        .foregroundStyle(Color.hrtPinkFallback)
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(.horizontal, HRTSpacing.sm)
+        .padding(.vertical, HRTSpacing.sm)
+        .frame(width: 140)
+        .background(Color.hrtCardFallback)
+        .clipShape(RoundedRectangle(cornerRadius: HRTRadius.small))
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(food.displayName), \(food.sodiumMg) milligrams")
         .accessibilityHint("Double tap to add to today's log")
     }
 }
@@ -280,5 +458,5 @@ private struct FoodSearchRow: View {
     NavigationStack {
         FoodSearchView(viewModel: SodiumViewModel())
     }
-    .modelContainer(for: [SodiumEntry.self, SodiumTemplate.self], inMemory: true)
+    .modelContainer(for: [SodiumEntry.self, SodiumTemplate.self, FoodFavorite.self], inMemory: true)
 }

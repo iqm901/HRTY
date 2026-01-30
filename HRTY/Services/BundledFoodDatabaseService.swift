@@ -8,6 +8,14 @@ final class BundledFoodDatabaseService {
     private var foods: [BundledFoodItem] = []
     private var isLoaded = false
 
+    // Pre-computed search optimization structures
+    private var foodsById: [String: BundledFoodItem] = [:]
+    private var foodsByCategory: [BundledFoodCategory: [BundledFoodItem]] = [:]
+    private var searchableTexts: [String: String] = [:] // food.id -> lowercase searchable text
+
+    /// Maximum number of search results to return
+    private let searchResultLimit = 50
+
     private init() {
         loadDatabase()
     }
@@ -27,6 +35,7 @@ final class BundledFoodDatabaseService {
             let decoder = JSONDecoder()
             let database = try decoder.decode(BundledFoodDatabase.self, from: data)
             foods = database.foods
+            buildIndexes()
             isLoaded = true
             print("BundledFoodDatabaseService: Loaded \(foods.count) foods")
         } catch {
@@ -34,9 +43,28 @@ final class BundledFoodDatabaseService {
         }
     }
 
+    /// Build optimized indexes for faster lookups
+    private func buildIndexes() {
+        // Build ID lookup map
+        foodsById = Dictionary(uniqueKeysWithValues: foods.map { ($0.id, $0) })
+
+        // Build category index
+        foodsByCategory = Dictionary(grouping: foods, by: { $0.category })
+        // Sort foods within each category
+        for (category, categoryFoods) in foodsByCategory {
+            foodsByCategory[category] = categoryFoods.sorted { $0.displayName < $1.displayName }
+        }
+
+        // Pre-compute searchable text for each food
+        for food in foods {
+            searchableTexts[food.id] = "\(food.displayName) \(food.category.displayName)".lowercased()
+        }
+    }
+
     // MARK: - Search
 
     /// Search foods by name (case-insensitive, supports partial matching)
+    /// Results are capped at 50 items for performance
     func searchFoods(query: String) -> [BundledFoodItem] {
         let trimmedQuery = query.trimmingCharacters(in: .whitespaces).lowercased()
 
@@ -47,8 +75,9 @@ final class BundledFoodDatabaseService {
         // Split query into words for better matching
         let queryWords = trimmedQuery.split(separator: " ").map { String($0) }
 
-        return foods.filter { food in
-            let searchText = "\(food.displayName) \(food.category.displayName)".lowercased()
+        var results = foods.filter { food in
+            // Use pre-computed searchable text
+            guard let searchText = searchableTexts[food.id] else { return false }
 
             // Check if all query words are found in the search text
             return queryWords.allSatisfy { word in
@@ -70,12 +99,23 @@ final class BundledFoodDatabaseService {
             // Then sort alphabetically
             return food1.displayName < food2.displayName
         }
+
+        // Limit results for performance
+        if results.count > searchResultLimit {
+            results = Array(results.prefix(searchResultLimit))
+        }
+
+        return results
     }
 
-    /// Get foods by category
+    /// Get foods by category (uses pre-built index for O(1) lookup)
     func foodsByCategory(_ category: BundledFoodCategory) -> [BundledFoodItem] {
-        foods.filter { $0.category == category }
-            .sorted { $0.displayName < $1.displayName }
+        foodsByCategory[category] ?? []
+    }
+
+    /// Look up foods by their IDs (for recent foods and favorites)
+    func foods(byIds ids: [String]) -> [BundledFoodItem] {
+        ids.compactMap { foodsById[$0] }
     }
 
     /// Get all categories that have foods

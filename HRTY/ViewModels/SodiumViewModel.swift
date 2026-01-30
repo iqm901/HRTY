@@ -128,6 +128,7 @@ final class SodiumViewModel {
             source: .manual,
             barcode: nil,
             templateId: nil,
+            bundledFoodId: nil,
             context: context
         ) {
             lastAddedEntry = entry
@@ -147,6 +148,7 @@ final class SodiumViewModel {
             source: .manual,
             barcode: nil,
             templateId: nil,
+            bundledFoodId: nil,
             context: context
         ) != nil {
             entryAddedMessage = "+\(SodiumConstants.formatSodium(sodiumMg))"
@@ -290,6 +292,7 @@ final class SodiumViewModel {
             source: .barcode,
             barcode: barcode,
             templateId: nil,
+            bundledFoodId: nil,
             context: context
         ) {
             lastAddedEntry = entry
@@ -307,15 +310,16 @@ final class SodiumViewModel {
     }
 
     func addFromBundledFood(_ food: BundledFoodItem, context: ModelContext) {
-        if let entry = repository.addEntry(
+        if repository.addEntry(
             name: food.displayName,
             sodiumMg: food.sodiumMg,
             servingSize: food.servingSize,
             source: .template,
             barcode: nil,
             templateId: nil,
+            bundledFoodId: food.id,
             context: context
-        ) {
+        ) != nil {
             entryAddedMessage = "\(food.name) logged"
             loadData(context: context)
         }
