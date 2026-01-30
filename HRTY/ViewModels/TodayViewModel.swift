@@ -1,6 +1,51 @@
 import Foundation
 import SwiftData
 
+/// Consolidated state for HealthKit import operations
+struct HealthKitImportState {
+    var isLoading: Bool = false
+    var error: String?
+    var recoverySuggestion: String?
+    var timestamp: String?
+
+    mutating func reset() {
+        isLoading = false
+        error = nil
+        recoverySuggestion = nil
+        timestamp = nil
+    }
+
+    mutating func startLoading() {
+        isLoading = true
+        error = nil
+        recoverySuggestion = nil
+    }
+
+    mutating func setError(_ message: String, suggestion: String? = nil) {
+        isLoading = false
+        error = message
+        recoverySuggestion = suggestion
+    }
+
+    mutating func setSuccess(timestamp: String) {
+        isLoading = false
+        error = nil
+        self.timestamp = timestamp
+    }
+}
+
+/// Configuration for a specific HealthKit import operation
+private struct HealthKitImportConfig<T: HealthKitReading> {
+    let unavailableError: String
+    let unavailableSuggestion: String?
+    let authFailedError: String
+    let authFailedSuggestion: String?
+    let noDataError: String
+    let noDataSuggestion: String?
+    let fetch: () async -> T?
+    let onSuccess: (T) -> Void
+}
+
 @Observable
 final class TodayViewModel {
     // MARK: - Weight Input
@@ -79,7 +124,9 @@ final class TodayViewModel {
     private let healthKitService: HealthKitServiceProtocol
     private let dizzinessBPAlertService: DizzinessBPAlertServiceProtocol
     private let vitalSignsAlertService: VitalSignsAlertServiceProtocol
-    private let diureticDoseService: DiureticDoseServiceProtocol
+
+    // MARK: - Managers
+    let diureticManager: DiureticDoseManagerProtocol
 
     // MARK: - Initialization
     init(
@@ -89,7 +136,7 @@ final class TodayViewModel {
         healthKitService: HealthKitServiceProtocol = HealthKitService(),
         dizzinessBPAlertService: DizzinessBPAlertServiceProtocol = DizzinessBPAlertService(),
         vitalSignsAlertService: VitalSignsAlertServiceProtocol = VitalSignsAlertService(),
-        diureticDoseService: DiureticDoseServiceProtocol = DiureticDoseService()
+        diureticManager: DiureticDoseManagerProtocol = DiureticDoseManager()
     ) {
         self.weightAlertService = weightAlertService
         self.symptomAlertService = symptomAlertService
@@ -97,7 +144,7 @@ final class TodayViewModel {
         self.healthKitService = healthKitService
         self.dizzinessBPAlertService = dizzinessBPAlertService
         self.vitalSignsAlertService = vitalSignsAlertService
-        self.diureticDoseService = diureticDoseService
+        self.diureticManager = diureticManager
         self.healthKitAvailable = healthKitService.isAvailable
     }
 
@@ -385,44 +432,71 @@ final class TodayViewModel {
         }
     }
 
+    // MARK: - Generic HealthKit Import
+
+    /// Generic method to import data from HealthKit
+    /// Handles the common pattern: check availability → authorize → fetch → handle result
+    @MainActor
+    private func importFromHealthKit<T: HealthKitReading>(
+        config: HealthKitImportConfig<T>,
+        state: inout HealthKitImportState
+    ) async {
+        guard healthKitAvailable else {
+            state.setError(config.unavailableError, suggestion: config.unavailableSuggestion)
+            return
+        }
+
+        state.startLoading()
+
+        let authorized = await healthKitService.requestAuthorization()
+        guard authorized else {
+            state.setError(config.authFailedError, suggestion: config.authFailedSuggestion)
+            return
+        }
+
+        if let reading = await config.fetch() {
+            let formatter = RelativeDateTimeFormatter()
+            formatter.unitsStyle = .full
+            let timestampText = "from Health \(formatter.localizedString(for: reading.date, relativeTo: Date()))"
+            state.setSuccess(timestamp: timestampText)
+            config.onSuccess(reading)
+        } else {
+            state.setError(config.noDataError, suggestion: config.noDataSuggestion)
+        }
+    }
+
     // MARK: - HealthKit Weight Import
+
+    /// Consolidated weight import state
+    private var weightImportState = HealthKitImportState()
 
     /// Import weight from HealthKit
     @MainActor
     func importWeightFromHealthKit() async {
-        guard healthKitAvailable else {
-            healthKitError = "HealthKit is not available on this device"
-            healthKitRecoverySuggestion = "Please ensure Health is enabled in Settings"
-            return
-        }
+        var state = weightImportState
 
-        isLoadingHealthKit = true
-        healthKitError = nil
-        healthKitRecoverySuggestion = nil
+        let config = HealthKitImportConfig<WeightReading>(
+            unavailableError: "HealthKit is not available on this device",
+            unavailableSuggestion: "Please ensure Health is enabled in Settings",
+            authFailedError: "Unable to access Health data",
+            authFailedSuggestion: "Please allow HRTY to read weight data in Settings > Health > Data Access",
+            noDataError: "No recent weight data found",
+            noDataSuggestion: "Try weighing yourself on a connected scale or enter your weight manually",
+            fetch: { [weak self] in await self?.healthKitService.fetchLatestWeight() },
+            onSuccess: { [weak self] weight in
+                self?.weightInput = String(format: "%.1f", weight.weight)
+                self?.showHealthKitTimestamp = true
+            }
+        )
 
-        // Request authorization
-        let authorized = await healthKitService.requestAuthorization()
-        guard authorized else {
-            isLoadingHealthKit = false
-            healthKitError = "Unable to access Health data"
-            healthKitRecoverySuggestion = "Please allow HRTY to read weight data in Settings > Health > Data Access"
-            return
-        }
+        await importFromHealthKit(config: config, state: &state)
 
-        // Fetch latest weight
-        if let weight = await healthKitService.fetchLatestWeight() {
-            weightInput = String(format: "%.1f", weight.weight)
-            showHealthKitTimestamp = true
-
-            let formatter = RelativeDateTimeFormatter()
-            formatter.unitsStyle = .full
-            healthKitTimestampText = "from Health \(formatter.localizedString(for: weight.date, relativeTo: Date()))"
-        } else {
-            healthKitError = "No recent weight data found"
-            healthKitRecoverySuggestion = "Try weighing yourself on a connected scale or enter your weight manually"
-        }
-
-        isLoadingHealthKit = false
+        // Sync state back to view properties
+        isLoadingHealthKit = state.isLoading
+        healthKitError = state.error
+        healthKitRecoverySuggestion = state.recoverySuggestion
+        healthKitTimestampText = state.timestamp
+        weightImportState = state
     }
 
     /// Clear the HealthKit imported weight indicator and any errors
@@ -431,43 +505,39 @@ final class TodayViewModel {
         healthKitTimestampText = nil
         healthKitError = nil
         healthKitRecoverySuggestion = nil
+        weightImportState.reset()
     }
 
-    // MARK: - Diuretic State
-    var diureticMedications: [Medication] = []
-    var todayDiureticDoses: [DiureticDose] = []
-    var showDeleteError: Bool = false
+    // MARK: - Diuretic Delegation (to DiureticDoseManager)
 
-    // MARK: - Diuretic Computed Properties
+    /// Diuretic medications - delegates to manager
+    var diureticMedications: [Medication] {
+        diureticManager.diureticMedications
+    }
+
+    /// Today's diuretic doses - delegates to manager
+    var todayDiureticDoses: [DiureticDose] {
+        diureticManager.todayDiureticDoses
+    }
+
+    /// Show delete error - delegates to manager
+    var showDeleteError: Bool {
+        get { diureticManager.showDeleteError }
+        set { diureticManager.showDeleteError = newValue }
+    }
 
     /// Returns doses for a specific medication logged today
     func doses(for medication: Medication) -> [DiureticDose] {
-        todayDiureticDoses.filter { $0.medication?.persistentModelID == medication.persistentModelID }
-            .sorted { $0.timestamp < $1.timestamp }
+        diureticManager.doses(for: medication)
     }
 
-    // MARK: - Diuretic Methods
-
     func loadDiuretics(context: ModelContext) {
-        // Load diuretics using the shared service
-        diureticMedications = diureticDoseService.loadDiuretics(context: context)
-
-        // Load today's doses from the daily entry
-        todayDiureticDoses = diureticDoseService.loadTodayDoses(from: todayEntry)
+        diureticManager.loadDiuretics(context: context, dailyEntry: todayEntry)
     }
 
     /// Log a standard dose (quick entry with medication's default dosage)
     func logStandardDose(for medication: Medication, context: ModelContext) {
-        // Parse dosage String to Double for diuretic dose logging
-        guard let dosageAmount = Double(medication.dosage) else { return }
-
-        logDose(
-            for: medication,
-            amount: dosageAmount,
-            isExtra: false,
-            timestamp: Date(),
-            context: context
-        )
+        _ = diureticManager.logStandardDose(for: medication, context: context, dailyEntry: &todayEntry)
     }
 
     /// Log a custom dose with specific amount, extra flag, and timestamp
@@ -478,46 +548,19 @@ final class TodayViewModel {
         timestamp: Date,
         context: ModelContext
     ) {
-        logDose(for: medication, amount: amount, isExtra: isExtra, timestamp: timestamp, context: context)
-    }
-
-    private func logDose(
-        for medication: Medication,
-        amount: Double,
-        isExtra: Bool,
-        timestamp: Date,
-        context: ModelContext
-    ) {
-        // Ensure we have a daily entry
-        if todayEntry == nil {
-            todayEntry = DailyEntry.getOrCreate(for: Date(), in: context)
-        }
-
-        guard let entry = todayEntry else { return }
-
-        if let dose = diureticDoseService.logDose(
+        _ = diureticManager.logCustomDose(
             for: medication,
             amount: amount,
             isExtra: isExtra,
             timestamp: timestamp,
-            dailyEntry: entry,
-            context: context
-        ) {
-            // Update local state for immediate UI feedback
-            if !todayDiureticDoses.contains(where: { $0.persistentModelID == dose.persistentModelID }) {
-                todayDiureticDoses.append(dose)
-            }
-        }
+            context: context,
+            dailyEntry: &todayEntry
+        )
     }
 
     /// Delete a logged dose
     func deleteDose(_ dose: DiureticDose, context: ModelContext) {
-        if diureticDoseService.deleteDose(dose, context: context) {
-            todayDiureticDoses.removeAll { $0.persistentModelID == dose.persistentModelID }
-            showDeleteError = false
-        } else {
-            showDeleteError = true
-        }
+        _ = diureticManager.deleteDose(dose, context: context)
     }
 
     // MARK: - Symptom Methods
@@ -890,37 +933,35 @@ final class TodayViewModel {
         }
     }
 
+    /// Consolidated blood pressure import state
+    private var bpImportState = HealthKitImportState()
+
     /// Import blood pressure from HealthKit
     @MainActor
     func importBloodPressureFromHealthKit() async {
-        guard healthKitAvailable else {
-            bloodPressureValidationError = "HealthKit is not available on this device"
-            return
-        }
+        var state = bpImportState
 
-        isLoadingBPHealthKit = true
-        bloodPressureValidationError = nil
-        bloodPressureHealthKitTimestamp = nil
+        let config = HealthKitImportConfig<BloodPressureReading>(
+            unavailableError: "HealthKit is not available on this device",
+            unavailableSuggestion: nil,
+            authFailedError: "Unable to access Health data",
+            authFailedSuggestion: nil,
+            noDataError: "No recent blood pressure data found",
+            noDataSuggestion: nil,
+            fetch: { [weak self] in await self?.healthKitService.fetchLatestBloodPressure() },
+            onSuccess: { [weak self] reading in
+                self?.systolicBPInput = String(reading.systolic)
+                self?.diastolicBPInput = String(reading.diastolic)
+            }
+        )
 
-        let authorized = await healthKitService.requestAuthorization()
-        guard authorized else {
-            isLoadingBPHealthKit = false
-            bloodPressureValidationError = "Unable to access Health data"
-            return
-        }
+        await importFromHealthKit(config: config, state: &state)
 
-        if let reading = await healthKitService.fetchLatestBloodPressure() {
-            systolicBPInput = String(reading.systolic)
-            diastolicBPInput = String(reading.diastolic)
-
-            let formatter = RelativeDateTimeFormatter()
-            formatter.unitsStyle = .full
-            bloodPressureHealthKitTimestamp = "from Health \(formatter.localizedString(for: reading.date, relativeTo: Date()))"
-        } else {
-            bloodPressureValidationError = "No recent blood pressure data found"
-        }
-
-        isLoadingBPHealthKit = false
+        // Sync state back to view properties
+        isLoadingBPHealthKit = state.isLoading
+        bloodPressureValidationError = state.error
+        bloodPressureHealthKitTimestamp = state.timestamp
+        bpImportState = state
     }
 
     // MARK: - Oxygen Saturation Methods
@@ -998,36 +1039,34 @@ final class TodayViewModel {
         }
     }
 
+    /// Consolidated oxygen saturation import state
+    private var spO2ImportState = HealthKitImportState()
+
     /// Import oxygen saturation from HealthKit
     @MainActor
     func importOxygenSaturationFromHealthKit() async {
-        guard healthKitAvailable else {
-            oxygenSaturationValidationError = "HealthKit is not available on this device"
-            return
-        }
+        var state = spO2ImportState
 
-        isLoadingSpO2HealthKit = true
-        oxygenSaturationValidationError = nil
-        oxygenSaturationHealthKitTimestamp = nil
+        let config = HealthKitImportConfig<OxygenSaturationReading>(
+            unavailableError: "HealthKit is not available on this device",
+            unavailableSuggestion: nil,
+            authFailedError: "Unable to access Health data",
+            authFailedSuggestion: nil,
+            noDataError: "No recent oxygen saturation data found",
+            noDataSuggestion: nil,
+            fetch: { [weak self] in await self?.healthKitService.fetchLatestOxygenSaturation() },
+            onSuccess: { [weak self] reading in
+                self?.oxygenSaturationInput = String(reading.percentage)
+            }
+        )
 
-        let authorized = await healthKitService.requestAuthorization()
-        guard authorized else {
-            isLoadingSpO2HealthKit = false
-            oxygenSaturationValidationError = "Unable to access Health data"
-            return
-        }
+        await importFromHealthKit(config: config, state: &state)
 
-        if let reading = await healthKitService.fetchLatestOxygenSaturation() {
-            oxygenSaturationInput = String(reading.percentage)
-
-            let formatter = RelativeDateTimeFormatter()
-            formatter.unitsStyle = .full
-            oxygenSaturationHealthKitTimestamp = "from Health \(formatter.localizedString(for: reading.date, relativeTo: Date()))"
-        } else {
-            oxygenSaturationValidationError = "No recent oxygen saturation data found"
-        }
-
-        isLoadingSpO2HealthKit = false
+        // Sync state back to view properties
+        isLoadingSpO2HealthKit = state.isLoading
+        oxygenSaturationValidationError = state.error
+        oxygenSaturationHealthKitTimestamp = state.timestamp
+        spO2ImportState = state
     }
 
     // MARK: - Heart Rate Entry Methods
@@ -1107,36 +1146,34 @@ final class TodayViewModel {
         }
     }
 
+    /// Consolidated heart rate import state
+    private var hrImportState = HealthKitImportState()
+
     /// Import heart rate from HealthKit
     @MainActor
     func importHeartRateFromHealthKit() async {
-        guard healthKitAvailable else {
-            heartRateValidationError = "HealthKit is not available on this device"
-            return
-        }
+        var state = hrImportState
 
-        isLoadingHRHealthKit = true
-        heartRateValidationError = nil
-        heartRateHealthKitTimestamp = nil
+        let config = HealthKitImportConfig<HeartRateReading>(
+            unavailableError: "HealthKit is not available on this device",
+            unavailableSuggestion: nil,
+            authFailedError: "Unable to access Health data",
+            authFailedSuggestion: nil,
+            noDataError: "No recent heart rate data found",
+            noDataSuggestion: nil,
+            fetch: { [weak self] in await self?.healthKitService.fetchLatestRestingHeartRate() },
+            onSuccess: { [weak self] reading in
+                self?.heartRateInput = String(reading.heartRate)
+            }
+        )
 
-        let authorized = await healthKitService.requestAuthorization()
-        guard authorized else {
-            isLoadingHRHealthKit = false
-            heartRateValidationError = "Unable to access Health data"
-            return
-        }
+        await importFromHealthKit(config: config, state: &state)
 
-        if let reading = await healthKitService.fetchLatestRestingHeartRate() {
-            heartRateInput = String(reading.heartRate)
-
-            let formatter = RelativeDateTimeFormatter()
-            formatter.unitsStyle = .full
-            heartRateHealthKitTimestamp = "from Health \(formatter.localizedString(for: reading.date, relativeTo: Date()))"
-        } else {
-            heartRateValidationError = "No recent heart rate data found"
-        }
-
-        isLoadingHRHealthKit = false
+        // Sync state back to view properties
+        isLoadingHRHealthKit = state.isLoading
+        heartRateValidationError = state.error
+        heartRateHealthKitTimestamp = state.timestamp
+        hrImportState = state
     }
 
     // MARK: - Vital Signs Alert Methods

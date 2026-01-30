@@ -174,19 +174,25 @@ final class MedicationsViewModel {
     var pendingConflictMedication: Medication?
     var conflictWarningMessage: String = ""
 
+    // MARK: - Avoid Warning State
+    var showingAvoidWarning = false
+    var pendingAvoidMedication: Medication?
+    var avoidWarningMessage: String = ""
+    var avoidWarningCategory: String = ""
+
     // MARK: - Services
     private let photoService = PhotoService.shared
-    private let diureticDoseService: DiureticDoseServiceProtocol
     private let conflictService: MedicationConflictServiceProtocol
+    private let avoidService: MedicationAvoidServiceProtocol
     private let historyService = MedicationHistoryService()
 
     // MARK: - Initialization
     init(
-        diureticDoseService: DiureticDoseServiceProtocol = DiureticDoseService(),
-        conflictService: MedicationConflictServiceProtocol = MedicationConflictService()
+        conflictService: MedicationConflictServiceProtocol = MedicationConflictService(),
+        avoidService: MedicationAvoidServiceProtocol = MedicationAvoidService()
     ) {
-        self.diureticDoseService = diureticDoseService
         self.conflictService = conflictService
+        self.avoidService = avoidService
     }
 
     // MARK: - Computed Properties
@@ -594,14 +600,24 @@ final class MedicationsViewModel {
 
     // MARK: - Conflict Detection Methods
 
-    /// Check for conflicts before saving. If conflicts exist, show warning; otherwise save directly.
+    /// Check for conflicts and avoid warnings before saving.
+    /// Priority: 1) Drug conflicts, 2) Avoid warnings, 3) Save directly
     func checkAndSaveMedication(context: ModelContext) {
         guard validateForm() else { return }
 
+        let trimmedName = nameInput.trimmingCharacters(in: .whitespaces)
         let trimmedDosage = dosageInput.trimmingCharacters(in: .whitespaces)
+        let trimmedSchedule = scheduleInput.trimmingCharacters(in: .whitespaces)
 
-        // Only check conflicts for preset HF medications with a known category
-        // Other medications don't have HF-specific category conflicts
+        // Auto-detect if medication is a diuretic
+        let detectedDiuretic = selectedPresetMedication?.isDiuretic
+            ?? selectedOtherMedication?.isDiuretic
+            ?? HeartFailureMedication.isDiuretic(medicationName: trimmedName)
+            || OtherMedication.knownDiureticNames.contains(trimmedName.lowercased())
+
+        let categoryRawValue = selectedPresetMedication?.category.rawValue
+
+        // 1) Check for drug-drug conflicts (only for HF medications with known category)
         if let category = selectedPresetMedication?.category {
             let conflicts = conflictService.checkConflicts(
                 newCategory: category,
@@ -609,23 +625,13 @@ final class MedicationsViewModel {
             )
 
             if !conflicts.isEmpty {
-                // Store the pending medication info and show warning
-                let trimmedName = nameInput.trimmingCharacters(in: .whitespaces)
-                let trimmedSchedule = scheduleInput.trimmingCharacters(in: .whitespaces)
-
-                // Auto-detect if medication is a diuretic
-                let detectedDiuretic = selectedPresetMedication?.isDiuretic
-                    ?? selectedOtherMedication?.isDiuretic
-                    ?? HeartFailureMedication.isDiuretic(medicationName: trimmedName)
-                    || OtherMedication.knownDiureticNames.contains(trimmedName.lowercased())
-
                 pendingConflictMedication = Medication(
                     name: trimmedName,
                     dosage: trimmedDosage,
                     unit: selectedUnit,
                     schedule: trimmedSchedule,
                     isDiuretic: detectedDiuretic,
-                    categoryRawValue: category.rawValue
+                    categoryRawValue: categoryRawValue
                 )
 
                 conflictWarningMessage = conflicts.first?.message ?? "A potential conflict was detected."
@@ -634,7 +640,24 @@ final class MedicationsViewModel {
             }
         }
 
-        // No conflicts, save directly
+        // 2) Check if medication is on the "avoid" list for heart failure patients
+        if let avoidWarning = avoidService.checkIfShouldAvoid(medicationName: trimmedName) {
+            pendingAvoidMedication = Medication(
+                name: trimmedName,
+                dosage: trimmedDosage,
+                unit: selectedUnit,
+                schedule: trimmedSchedule,
+                isDiuretic: detectedDiuretic,
+                categoryRawValue: categoryRawValue
+            )
+
+            avoidWarningMessage = avoidWarning.message
+            avoidWarningCategory = avoidWarning.category.displayName
+            showingAvoidWarning = true
+            return
+        }
+
+        // 3) No warnings, save directly
         saveMedication(context: context)
     }
 
@@ -678,6 +701,49 @@ final class MedicationsViewModel {
     /// Whether there are any active conflicts to display
     var hasConflicts: Bool {
         !detectedConflicts.isEmpty
+    }
+
+    // MARK: - Avoid Warning Methods
+
+    /// Save medication despite it being on the "avoid" list
+    func confirmAddDespiteAvoidWarning(context: ModelContext) {
+        guard let medication = pendingAvoidMedication else { return }
+
+        // Create initial period for tracking history
+        let initialPeriod = MedicationPeriod(
+            dosage: medication.dosage,
+            unit: medication.unit,
+            schedule: medication.schedule,
+            startDate: Date()
+        )
+        medication.periods = [initialPeriod]
+
+        context.insert(medication)
+
+        do {
+            try context.save()
+            loadMedications(context: context)
+            refreshConflicts()
+            medicationSavedMessage = "\(medication.name) added"
+            pendingAvoidMedication = nil
+            showingAvoidWarning = false
+            resetForm()
+        } catch {
+            validationError = "Could not save medication. Please try again."
+        }
+    }
+
+    /// Cancel adding the avoid-list medication
+    func cancelAvoidAdd() {
+        pendingAvoidMedication = nil
+        showingAvoidWarning = false
+        avoidWarningMessage = ""
+        avoidWarningCategory = ""
+    }
+
+    /// Check if a specific medication is on the "avoid" list (for showing caution badge)
+    func shouldShowCaution(_ medication: Medication) -> Bool {
+        avoidService.shouldAvoid(medicationName: medication.name)
     }
 
     // MARK: - Photo Methods
@@ -739,98 +805,6 @@ final class MedicationsViewModel {
 
     var hasNoPhotos: Bool {
         photos.isEmpty
-    }
-
-    // MARK: - Diuretic Dose Logging
-
-    var diureticMedications: [Medication] = []
-    var todayDiureticDoses: [DiureticDose] = []
-    var showDoseDeleteError: Bool = false
-    var todayEntry: DailyEntry?
-
-    /// Returns doses for a specific medication logged today
-    func doses(for medication: Medication) -> [DiureticDose] {
-        todayDiureticDoses.filter { $0.medication?.persistentModelID == medication.persistentModelID }
-            .sorted { $0.timestamp < $1.timestamp }
-    }
-
-    func loadDiuretics(context: ModelContext) {
-        // Get today's entry
-        todayEntry = DailyEntry.getOrCreate(for: Date(), in: context)
-
-        // Load diuretics using the shared service
-        diureticMedications = diureticDoseService.loadDiuretics(context: context)
-
-        // Load today's doses from the daily entry
-        todayDiureticDoses = diureticDoseService.loadTodayDoses(from: todayEntry)
-    }
-
-    /// Log a standard dose (quick entry with medication's default dosage)
-    func logStandardDose(for medication: Medication, context: ModelContext) {
-        // Parse dosage String to Double for diuretic dose logging
-        guard let dosageAmount = Double(medication.dosage) else { return }
-
-        logDose(
-            for: medication,
-            amount: dosageAmount,
-            isExtra: false,
-            timestamp: Date(),
-            context: context
-        )
-    }
-
-    /// Log a custom dose with specific amount, extra flag, and timestamp
-    func logCustomDose(
-        for medication: Medication,
-        amount: Double,
-        isExtra: Bool,
-        timestamp: Date,
-        context: ModelContext
-    ) {
-        logDose(for: medication, amount: amount, isExtra: isExtra, timestamp: timestamp, context: context)
-    }
-
-    private func logDose(
-        for medication: Medication,
-        amount: Double,
-        isExtra: Bool,
-        timestamp: Date,
-        context: ModelContext
-    ) {
-        // Ensure we have a daily entry
-        if todayEntry == nil {
-            todayEntry = DailyEntry.getOrCreate(for: Date(), in: context)
-        }
-
-        guard let entry = todayEntry else { return }
-
-        if let dose = diureticDoseService.logDose(
-            for: medication,
-            amount: amount,
-            isExtra: isExtra,
-            timestamp: timestamp,
-            dailyEntry: entry,
-            context: context
-        ) {
-            // Update local state for immediate UI feedback
-            if !todayDiureticDoses.contains(where: { $0.persistentModelID == dose.persistentModelID }) {
-                todayDiureticDoses.append(dose)
-            }
-        }
-    }
-
-    /// Delete a logged dose
-    func deleteDose(_ dose: DiureticDose, context: ModelContext) {
-        if diureticDoseService.deleteDose(dose, context: context) {
-            todayDiureticDoses.removeAll { $0.persistentModelID == dose.persistentModelID }
-            showDoseDeleteError = false
-        } else {
-            showDoseDeleteError = true
-        }
-    }
-
-    var hasDiuretics: Bool {
-        !diureticMedications.isEmpty
     }
 
     // MARK: - Medication History Methods

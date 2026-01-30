@@ -29,6 +29,8 @@
 		019000010000000100000008 /* HRTSeveritySelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 019000020000000100000008 /* HRTSeveritySelector.swift */; };
 		019000010000000100000009 /* HRTFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 019000020000000100000009 /* HRTFeedback.swift */; };
 		020000010000000100000001 /* DiureticDoseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020000020000000100000001 /* DiureticDoseService.swift */; };
+		MGR000010000000100000001 /* DiureticDoseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = MGR000020000000100000001 /* DiureticDoseManager.swift */; };
+		MGR000010000000100000002 /* DiureticDoseManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = MGR000020000000100000002 /* DiureticDoseManagerTests.swift */; };
 		021000010000000100000001 /* BloodPressureReading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021000020000000100000001 /* BloodPressureReading.swift */; };
 		021000010000000100000002 /* MedicationConflictService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021000020000000100000002 /* MedicationConflictService.swift */; };
 		021000010000000100000003 /* MedicationAvoidService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021000020000000100000003 /* MedicationAvoidService.swift */; };
@@ -215,6 +217,8 @@
 		019000020000000100000008 /* HRTSeveritySelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HRTSeveritySelector.swift; sourceTree = "<group>"; };
 		019000020000000100000009 /* HRTFeedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HRTFeedback.swift; sourceTree = "<group>"; };
 		020000020000000100000001 /* DiureticDoseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiureticDoseService.swift; sourceTree = "<group>"; };
+		MGR000020000000100000001 /* DiureticDoseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiureticDoseManager.swift; sourceTree = "<group>"; };
+		MGR000020000000100000002 /* DiureticDoseManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiureticDoseManagerTests.swift; sourceTree = "<group>"; };
 		021000020000000100000001 /* BloodPressureReading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BloodPressureReading.swift; sourceTree = "<group>"; };
 		021000020000000100000002 /* MedicationConflictService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicationConflictService.swift; sourceTree = "<group>"; };
 		021000020000000100000003 /* MedicationAvoidService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicationAvoidService.swift; sourceTree = "<group>"; };
@@ -446,6 +450,7 @@
 				A1000005200000010000000100000004 /* Views */,
 				A1000005200000010000000100000006 /* ViewModels */,
 				A1000005200000010000000100000007 /* Services */,
+				MGR000050000000100000001 /* Managers */,
 				SOD027000000000000000001,
 				019000040000000100000001 /* DesignSystem */,
 				FONT0003000000000000001,
@@ -569,6 +574,14 @@
 			path = ViewModels;
 			sourceTree = "<group>";
 		};
+		MGR000050000000100000001 /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				MGR000020000000100000001 /* DiureticDoseManager.swift */,
+			);
+			path = Managers;
+			sourceTree = "<group>";
+		};
 		A1000005200000010000000100000007 /* Services */ = {
 			isa = PBXGroup;
 			children = (
@@ -611,6 +624,7 @@
 				B100000220000001000000020000000C /* CardiovascularMedicationTests.swift */,
 				B100000220000001000000020000000D /* MedicationChangeAnalysisServiceTests.swift */,
 				029000020000000100000002 /* OtherMedicationTests.swift */,
+				MGR000020000000100000002 /* DiureticDoseManagerTests.swift */,
 				SOD022000000000000000001,
 			);
 			path = HRTYTests;
@@ -806,6 +820,7 @@
 				023000010000000100000001 /* MedicationPeriod.swift in Sources */,
 				024000010000000100000001 /* PriorMedicationDetailView.swift in Sources */,
 				020000010000000100000001 /* DiureticDoseService.swift in Sources */,
+				MGR000010000000100000001 /* DiureticDoseManager.swift in Sources */,
 				021000010000000100000002 /* MedicationConflictService.swift in Sources */,
 				021000010000000100000003 /* MedicationAvoidService.swift in Sources */,
 				63E3FE18315940D08A81709F /* VitalSignsEntry.swift in Sources */,
@@ -962,6 +977,7 @@
 				B100000120000001000000020000000C /* CardiovascularMedicationTests.swift in Sources */,
 				B100000120000001000000020000000D /* MedicationChangeAnalysisServiceTests.swift in Sources */,
 				029000010000000100000002 /* OtherMedicationTests.swift in Sources */,
+				MGR000010000000100000002 /* DiureticDoseManagerTests.swift in Sources */,
 				SOD017000000000000000002,
 				SOD018000000000000000002,
 				SOD019000000000000000002,

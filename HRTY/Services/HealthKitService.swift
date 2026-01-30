@@ -1,11 +1,14 @@
 import Foundation
 import HealthKit
 
-/// Protocol for HealthKit service operations
-/// Enables dependency injection and testability
+/// Protocol for readings that can be imported from HealthKit
+/// Enables generic handling of different vital sign types
+protocol HealthKitReading {
+    var date: Date { get }
+}
 
 /// Simple struct for weight readings from HealthKit
-struct WeightReading: Identifiable, Equatable {
+struct WeightReading: Identifiable, Equatable, HealthKitReading {
     let id: UUID
     let weight: Double
     let date: Date

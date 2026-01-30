@@ -2,7 +2,7 @@ import Foundation
 
 /// Data point for oxygen saturation (SpO2) readings from HealthKit
 /// Used to represent individual SpO2 samples fetched from Apple Health
-struct OxygenSaturationReading: Identifiable, Equatable {
+struct OxygenSaturationReading: Identifiable, Equatable, HealthKitReading {
     let id: UUID
     let percentage: Int
     let date: Date

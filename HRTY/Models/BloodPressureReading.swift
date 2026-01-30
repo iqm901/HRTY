@@ -2,7 +2,7 @@ import Foundation
 
 /// Data point for blood pressure readings from HealthKit
 /// Used to represent individual blood pressure samples fetched from Apple Health
-struct BloodPressureReading: Identifiable, Equatable {
+struct BloodPressureReading: Identifiable, Equatable, HealthKitReading {
     let id: UUID
     let systolic: Int
     let diastolic: Int
