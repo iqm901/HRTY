@@ -107,7 +107,7 @@
 		B1000001200000010000000200000002 /* SymptomTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000002200000010000000200000002 /* SymptomTests.swift */; };
 		B1000001200000010000000200000003 /* MedicationsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000002200000010000000200000003 /* MedicationsViewModelTests.swift */; };
 		B1000001200000010000000200000004 /* MedicationAvoidServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000002200000010000000200000004 /* MedicationAvoidServiceTests.swift */; };
-		B1000001200000010000000200000004 /* WeightAlertTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000002200000010000000200000004 /* WeightAlertTests.swift */; };
+		B1000001200000010000000200000024 /* WeightAlertTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000002200000010000000200000024 /* WeightAlertTests.swift */; };
 		B1000001200000010000000200000005 /* SymptomAlertServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000002200000010000000200000005 /* SymptomAlertServiceTests.swift */; };
 		B1000001200000010000000200000006 /* TrendsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000002200000010000000200000006 /* TrendsViewModelTests.swift */; };
 		B1000001200000010000000200000007 /* ExportViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000002200000010000000200000007 /* ExportViewModelTests.swift */; };
@@ -153,6 +153,26 @@
 		FONT0001000000000000002 /* Nunito-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FONT0001000000000000001 /* Nunito-SemiBold.ttf */; };
 		PCP001000000000000000002 /* ProfileCompletionPromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = PCP001000000000000000001 /* ProfileCompletionPromptView.swift */; };
 		PSV001000000000000000002 /* ProfileSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = PSV001000000000000000001 /* ProfileSheetView.swift */; };
+		SOD001000000000000000002 /* SodiumEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = SOD001000000000000000001 /* SodiumEntry.swift */; };
+		SOD002000000000000000002 /* SodiumTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = SOD002000000000000000001 /* SodiumTemplate.swift */; };
+		SOD003000000000000000002 /* SodiumConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = SOD003000000000000000001 /* SodiumConstants.swift */; };
+		SOD004000000000000000002 /* SodiumRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = SOD004000000000000000001 /* SodiumRepository.swift */; };
+		SOD005000000000000000002 /* LocalProductDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = SOD005000000000000000001 /* LocalProductDatabase.swift */; };
+		SOD006000000000000000002 /* NutritionLabelParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = SOD006000000000000000001 /* NutritionLabelParser.swift */; };
+		SOD007000000000000000002 /* SodiumViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = SOD007000000000000000001 /* SodiumViewModel.swift */; };
+		SOD008000000000000000002 /* SodiumDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = SOD008000000000000000001 /* SodiumDashboardView.swift */; };
+		SOD009000000000000000002 /* SodiumProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = SOD009000000000000000001 /* SodiumProgressView.swift */; };
+		SOD010000000000000000002 /* AddSodiumSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = SOD010000000000000000001 /* AddSodiumSheet.swift */; };
+		SOD011000000000000000002 /* SodiumEntryRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = SOD011000000000000000001 /* SodiumEntryRow.swift */; };
+		SOD012000000000000000002 /* TemplateGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = SOD012000000000000000001 /* TemplateGridView.swift */; };
+		SOD013000000000000000002 /* TemplateEditorSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = SOD013000000000000000001 /* TemplateEditorSheet.swift */; };
+		SOD014000000000000000002 /* SodiumHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = SOD014000000000000000001 /* SodiumHistoryView.swift */; };
+		SOD015000000000000000002 /* BarcodeScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = SOD015000000000000000001 /* BarcodeScannerView.swift */; };
+		SOD016000000000000000002 /* LabelScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = SOD016000000000000000001 /* LabelScannerView.swift */; };
+		SOD017000000000000000002 /* SodiumRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = SOD017000000000000000001 /* SodiumRepositoryTests.swift */; };
+		SOD018000000000000000002 /* SodiumViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = SOD018000000000000000001 /* SodiumViewModelTests.swift */; };
+		SOD019000000000000000002 /* NutritionLabelParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = SOD019000000000000000001 /* NutritionLabelParserTests.swift */; };
+		SOD020000000000000000002 /* LocalProductDatabaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = SOD020000000000000000001 /* LocalProductDatabaseTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -265,7 +285,7 @@
 		B1000002200000010000000200000002 /* SymptomTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymptomTests.swift; sourceTree = "<group>"; };
 		B1000002200000010000000200000003 /* MedicationsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicationsViewModelTests.swift; sourceTree = "<group>"; };
 		B1000002200000010000000200000004 /* MedicationAvoidServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicationAvoidServiceTests.swift; sourceTree = "<group>"; };
-		B1000002200000010000000200000004 /* WeightAlertTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightAlertTests.swift; sourceTree = "<group>"; };
+		B1000002200000010000000200000024 /* WeightAlertTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightAlertTests.swift; sourceTree = "<group>"; };
 		B1000002200000010000000200000005 /* SymptomAlertServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymptomAlertServiceTests.swift; sourceTree = "<group>"; };
 		B1000002200000010000000200000006 /* TrendsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendsViewModelTests.swift; sourceTree = "<group>"; };
 		B1000002200000010000000200000007 /* ExportViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportViewModelTests.swift; sourceTree = "<group>"; };
@@ -309,6 +329,43 @@
 		PCP001000000000000000001 /* ProfileCompletionPromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCompletionPromptView.swift; sourceTree = "<group>"; };
 		PSV001000000000000000001 /* ProfileSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSheetView.swift; sourceTree = "<group>"; };
 		MYH022000000000000000001 /* CoronaryProceduresDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoronaryProceduresDetailView.swift; sourceTree = "<group>"; };
+		SOD001000000000000000001 /* SodiumEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SodiumEntry.swift; sourceTree = "<group>"; };
+		SOD002000000000000000001 /* SodiumTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SodiumTemplate.swift; sourceTree = "<group>"; };
+		SOD003000000000000000001 /* SodiumConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SodiumConstants.swift; sourceTree = "<group>"; };
+		SOD004000000000000000001 /* SodiumRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SodiumRepository.swift; sourceTree = "<group>"; };
+		SOD005000000000000000001 /* LocalProductDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalProductDatabase.swift; sourceTree = "<group>"; };
+		SOD006000000000000000001 /* NutritionLabelParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionLabelParser.swift; sourceTree = "<group>"; };
+		SOD007000000000000000001 /* SodiumViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SodiumViewModel.swift; sourceTree = "<group>"; };
+		SOD008000000000000000001 /* SodiumDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SodiumDashboardView.swift; sourceTree = "<group>"; };
+		SOD009000000000000000001 /* SodiumProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SodiumProgressView.swift; sourceTree = "<group>"; };
+		SOD010000000000000000001 /* AddSodiumSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddSodiumSheet.swift; sourceTree = "<group>"; };
+		SOD011000000000000000001 /* SodiumEntryRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SodiumEntryRow.swift; sourceTree = "<group>"; };
+		SOD012000000000000000001 /* TemplateGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateGridView.swift; sourceTree = "<group>"; };
+		SOD013000000000000000001 /* TemplateEditorSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateEditorSheet.swift; sourceTree = "<group>"; };
+		SOD014000000000000000001 /* SodiumHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SodiumHistoryView.swift; sourceTree = "<group>"; };
+		SOD015000000000000000001 /* BarcodeScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerView.swift; sourceTree = "<group>"; };
+		SOD016000000000000000001 /* LabelScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelScannerView.swift; sourceTree = "<group>"; };
+		SOD017000000000000000001 /* SodiumRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SodiumRepositoryTests.swift; sourceTree = "<group>"; };
+		SOD018000000000000000001 /* SodiumViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SodiumViewModelTests.swift; sourceTree = "<group>"; };
+		SOD019000000000000000001 /* NutritionLabelParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionLabelParserTests.swift; sourceTree = "<group>"; };
+		SOD020000000000000000001 /* LocalProductDatabaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalProductDatabaseTests.swift; sourceTree = "<group>"; };
+		SOD021000000000000000001 /* Sodium */ = {isa = PBXGroup; children = (
+				SOD008000000000000000001 /* SodiumDashboardView.swift */,
+				SOD009000000000000000001 /* SodiumProgressView.swift */,
+				SOD010000000000000000001 /* AddSodiumSheet.swift */,
+				SOD011000000000000000001 /* SodiumEntryRow.swift */,
+				SOD012000000000000000001 /* TemplateGridView.swift */,
+				SOD013000000000000000001 /* TemplateEditorSheet.swift */,
+				SOD014000000000000000001 /* SodiumHistoryView.swift */,
+				SOD015000000000000000001 /* BarcodeScannerView.swift */,
+				SOD016000000000000000001 /* LabelScannerView.swift */,
+			); name = Sodium; path = Sodium; sourceTree = "<group>"; };
+		SOD022000000000000000001 /* SodiumTracking */ = {isa = PBXGroup; children = (
+				SOD017000000000000000001 /* SodiumRepositoryTests.swift */,
+				SOD018000000000000000001 /* SodiumViewModelTests.swift */,
+				SOD019000000000000000001 /* NutritionLabelParserTests.swift */,
+				SOD020000000000000000001 /* LocalProductDatabaseTests.swift */,
+			); name = SodiumTracking; path = SodiumTracking; sourceTree = "<group>"; };
 		MYH005000000000000000001 /* MyHeart */ = {isa = PBXGroup; children = (
 				MYH010000000000000000001 /* MyHeartView.swift */,
 				MYH011000000000000000001 /* EjectionFractionEditView.swift */,
@@ -493,7 +550,8 @@ A1000005200000010000000100000004 /* Views */ = {
 				030000020000000100000012 /* MedicationTimelineRow.swift */,
 				MYH020000000000000000001 /* AntiplateletWarningBanner.swift */,
 
-				MYH005000000000000000001 /* MyHeart */,);
+				MYH005000000000000000001 /* MyHeart */,
+				SOD021000000000000000001 /* Sodium */,);
 			path = Views;
 			sourceTree = "<group>";
 		};
@@ -524,7 +582,10 @@ A1000005200000010000000100000004 /* Views */ = {
 				029000020000000100000001 /* OtherMedication.swift */,
 			
 				MYH001000000000000000001 /* ClinicalProfile.swift */,				MYH003000000000000000001 /* HeartValveCondition.swift */,
-				MYH018000000000000000001 /* CoronaryProcedure.swift */,);
+				MYH018000000000000000001 /* CoronaryProcedure.swift */,
+				SOD001000000000000000001 /* SodiumEntry.swift */,
+				SOD002000000000000000001 /* SodiumTemplate.swift */,
+				SOD003000000000000000001 /* SodiumConstants.swift */,);
 			path = Models;
 			sourceTree = "<group>";
 		};
@@ -538,7 +599,8 @@ A1000005200000010000000100000004 /* Views */ = {
 				A1000002200000010000000100000028 /* ExportViewModel.swift */,
 				A100000220000001000000010000002B /* SettingsViewModel.swift */,
 			
-				MYH004000000000000000001 /* MyHeartViewModel.swift */,);
+				MYH004000000000000000001 /* MyHeartViewModel.swift */,
+				SOD007000000000000000001 /* SodiumViewModel.swift */,);
 			path = ViewModels;
 			sourceTree = "<group>";
 		};
@@ -558,6 +620,9 @@ A1000005200000010000000100000004 /* Views */ = {
 				028000020000000100000003 /* MedicationChangeAnalysisService.swift */,
 				030000020000000100000010 /* MedicationHistoryService.swift */,
 				MYH019000000000000000001 /* AntiplateletRecommendationService.swift */,
+				SOD004000000000000000001 /* SodiumRepository.swift */,
+				SOD005000000000000000001 /* LocalProductDatabase.swift */,
+				SOD006000000000000000001 /* NutritionLabelParser.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -569,7 +634,7 @@ A1000005200000010000000100000004 /* Views */ = {
 				B1000002200000010000000200000002 /* SymptomTests.swift */,
 				B1000002200000010000000200000003 /* MedicationsViewModelTests.swift */,
 				B1000002200000010000000200000004 /* MedicationAvoidServiceTests.swift */,
-				B1000002200000010000000200000004 /* WeightAlertTests.swift */,
+				B1000002200000010000000200000024 /* WeightAlertTests.swift */,
 				B1000002200000010000000200000005 /* SymptomAlertServiceTests.swift */,
 				B1000002200000010000000200000006 /* TrendsViewModelTests.swift */,
 				B1000002200000010000000200000007 /* ExportViewModelTests.swift */,
@@ -580,6 +645,7 @@ A1000005200000010000000100000004 /* Views */ = {
 				B100000220000001000000020000000C /* CardiovascularMedicationTests.swift */,
 				B100000220000001000000020000000D /* MedicationChangeAnalysisServiceTests.swift */,
 				029000020000000100000002 /* OtherMedicationTests.swift */,
+				SOD022000000000000000001 /* SodiumTracking */,
 			);
 			path = HRTYTests;
 			sourceTree = "<group>";
@@ -806,7 +872,23 @@ A1000005200000010000000100000004 /* Views */ = {
 				FDP001000000000000000002 /* FlexibleDatePicker.swift in Sources */,
 				PCP001000000000000000002 /* ProfileCompletionPromptView.swift in Sources */,
 				PSV001000000000000000002 /* ProfileSheetView.swift in Sources */,
-				MYH022000000000000000002 /* CoronaryProceduresDetailView.swift in Sources */,);
+				MYH022000000000000000002 /* CoronaryProceduresDetailView.swift in Sources */,
+				SOD001000000000000000002 /* SodiumEntry.swift in Sources */,
+				SOD002000000000000000002 /* SodiumTemplate.swift in Sources */,
+				SOD003000000000000000002 /* SodiumConstants.swift in Sources */,
+				SOD004000000000000000002 /* SodiumRepository.swift in Sources */,
+				SOD005000000000000000002 /* LocalProductDatabase.swift in Sources */,
+				SOD006000000000000000002 /* NutritionLabelParser.swift in Sources */,
+				SOD007000000000000000002 /* SodiumViewModel.swift in Sources */,
+				SOD008000000000000000002 /* SodiumDashboardView.swift in Sources */,
+				SOD009000000000000000002 /* SodiumProgressView.swift in Sources */,
+				SOD010000000000000000002 /* AddSodiumSheet.swift in Sources */,
+				SOD011000000000000000002 /* SodiumEntryRow.swift in Sources */,
+				SOD012000000000000000002 /* TemplateGridView.swift in Sources */,
+				SOD013000000000000000002 /* TemplateEditorSheet.swift in Sources */,
+				SOD014000000000000000002 /* SodiumHistoryView.swift in Sources */,
+				SOD015000000000000000002 /* BarcodeScannerView.swift in Sources */,
+				SOD016000000000000000002 /* LabelScannerView.swift in Sources */,);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		B1000009200000010000000200000001 /* Sources */ = {
@@ -817,7 +899,7 @@ A1000005200000010000000100000004 /* Views */ = {
 				B1000001200000010000000200000002 /* SymptomTests.swift in Sources */,
 				B1000001200000010000000200000003 /* MedicationsViewModelTests.swift in Sources */,
 				B1000001200000010000000200000004 /* MedicationAvoidServiceTests.swift in Sources */,
-				B1000001200000010000000200000004 /* WeightAlertTests.swift in Sources */,
+				B1000001200000010000000200000024 /* WeightAlertTests.swift in Sources */,
 				B1000001200000010000000200000005 /* SymptomAlertServiceTests.swift in Sources */,
 				B1000001200000010000000200000006 /* TrendsViewModelTests.swift in Sources */,
 				B1000001200000010000000200000007 /* ExportViewModelTests.swift in Sources */,
@@ -828,6 +910,10 @@ A1000005200000010000000100000004 /* Views */ = {
 				B100000120000001000000020000000C /* CardiovascularMedicationTests.swift in Sources */,
 				B100000120000001000000020000000D /* MedicationChangeAnalysisServiceTests.swift in Sources */,
 				029000010000000100000002 /* OtherMedicationTests.swift in Sources */,
+				SOD017000000000000000002 /* SodiumRepositoryTests.swift in Sources */,
+				SOD018000000000000000002 /* SodiumViewModelTests.swift in Sources */,
+				SOD019000000000000000002 /* NutritionLabelParserTests.swift in Sources */,
+				SOD020000000000000000002 /* LocalProductDatabaseTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

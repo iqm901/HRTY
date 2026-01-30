@@ -32,7 +32,9 @@ struct HRTYApp: App {
             SymptomCheckInProgress.self,
             ClinicalProfile.self,
             HeartValveCondition.self,
-            CoronaryProcedure.self
+            CoronaryProcedure.self,
+            SodiumEntry.self,
+            SodiumTemplate.self
         ])
         let modelConfiguration = ModelConfiguration(
             schema: schema,

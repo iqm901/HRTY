@@ -16,6 +16,9 @@ struct TodayView: View {
     @State private var showProfileSheet = false
     @State private var clinicalProfile: ClinicalProfile?
 
+    // MARK: - Sodium Tracking State
+    @State private var sodiumViewModel = SodiumViewModel()
+
     var body: some View {
         NavigationStack {
             ZStack {
@@ -368,13 +371,74 @@ struct TodayView: View {
             vitalSignsSection
 
             symptomCheckInPrompt
+
+            sodiumTrackingCard
         }
         .padding(.horizontal, HRTSpacing.md)
         .padding(.vertical, HRTSpacing.lg)
+    }
+
+    // MARK: - Sodium Tracking Card
+
+    private var sodiumTrackingCard: some View {
+        NavigationLink(destination: SodiumDashboardView()) {
+            VStack(alignment: .leading, spacing: HRTSpacing.sm) {
+                HStack {
+                    Image(systemName: "leaf.circle.fill")
+                        .font(.title2)
+                        .foregroundStyle(Color.hrtGoodFallback)
+
+                    Text("Sodium Tracker")
+                        .font(.hrtHeadline)
+                        .foregroundStyle(Color.hrtTextFallback)
+
+                    Spacer()
+
+                    Image(systemName: "chevron.right")
+                        .font(.caption)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(Color.hrtTextTertiaryFallback)
+                }
+
+                // Progress bar
+                GeometryReader { geometry in
+                    ZStack(alignment: .leading) {
+                        RoundedRectangle(cornerRadius: 4)
+                            .fill(Color.hrtBackgroundSecondaryFallback)
+                            .frame(height: 8)
+
+                        RoundedRectangle(cornerRadius: 4)
+                            .fill(sodiumViewModel.progressColor)
+                            .frame(width: geometry.size.width * min(sodiumViewModel.progressPercent, 1.0), height: 8)
+                    }
+                }
+                .frame(height: 8)
+
+                HStack {
+                    Text(sodiumViewModel.formattedTotal)
+                        .font(.hrtSubheadline)
+                        .fontWeight(.medium)
+                        .foregroundStyle(sodiumViewModel.progressColor)
+
+                    Spacer()
+
+                    Text(sodiumViewModel.formattedRemaining)
+                        .font(.hrtCaption)
+                        .foregroundStyle(Color.hrtTextSecondaryFallback)
+                }
+            }
+            .padding(HRTSpacing.md)
+            .background(Color.hrtCardFallback)
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+        }
+        .buttonStyle(.plain)
+        .task {
+            sodiumViewModel.loadData(context: modelContext)
+        }
     }
 }
 
 #Preview {
     TodayView()
-        .modelContainer(for: [DailyEntry.self, SymptomCheckInProgress.self, ClinicalProfile.self], inMemory: true)
+        .modelContainer(for: [DailyEntry.self, SymptomCheckInProgress.self, ClinicalProfile.self, SodiumEntry.self, SodiumTemplate.self], inMemory: true)
 }
