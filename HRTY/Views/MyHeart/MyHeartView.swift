@@ -16,6 +16,24 @@ struct MyHeartView: View {
                         .frame(height: 280)
                         .containerRelativeFrame(.horizontal)
                         .clipped()
+                        .overlay(alignment: .top) {
+                            LinearGradient(
+                                stops: [
+                                    .init(color: Color.white.opacity(0.12), location: 0),
+                                    .init(color: Color.white.opacity(0), location: 0.7)
+                                ],
+                                startPoint: .top,
+                                endPoint: .bottom
+                            )
+                        }
+                        .overlay(alignment: .topLeading) {
+                            Text("My Heart")
+                                .font(.custom("Nunito-SemiBold", size: 34))
+                                .foregroundStyle(Color.hrtHeroTitle)
+                                .shadow(color: Color.hrtHeroTitleShadow, radius: 8, x: 0, y: 2)
+                                .padding(.top, 60)
+                                .padding(.leading, HRTSpacing.md)
+                        }
 
                     // Main content with rounded top corners, pulled up to overlap image
                     mainContent
@@ -28,8 +46,8 @@ struct MyHeartView: View {
             }
             .ignoresSafeArea(edges: .top)
             .background(Color.hrtBackgroundFallback)
-            .toolbarBackground(Color.hrtBackgroundFallback, for: .navigationBar)
-            .navigationTitle("My Heart")
+            .toolbarBackground(Color.hrtBackgroundFallback.opacity(0), for: .navigationBar)
+            .navigationBarTitleDisplayMode(.inline)
             .onAppear {
                 viewModel.loadProfile(context: modelContext)
                 viewModel.loadMedications(context: modelContext)

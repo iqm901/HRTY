@@ -7,6 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 HRTY is a patient-facing, offline-first iOS application for heart failure self-management. It consolidates daily weight tracking, symptom logging, diuretic intake, and physiologic data into a low-burden workflow (under 2 minutes daily).
 
 **Key constraints:**
+
 - Not a clinical decision-making tool - it's a self-management tracker
 - No cloud accounts or backend in V1 - all data stored on-device
 - No prescriptive medical advice - alerts prompt user to contact clinician
@@ -36,6 +37,7 @@ xcodebuild test -scheme HRTY -destination 'platform=iOS Simulator,name=iPhone 15
 ## Architecture
 
 ### App Structure (Tab Navigation)
+
 ```
 TabView
 ├── TodayView        # Daily check-in workflow
@@ -46,6 +48,7 @@ TabView
 ```
 
 ### Data Model
+
 ```
 Patient
 ├── DailyEntry (one per day)
@@ -61,21 +64,26 @@ Patient
 ### Core Features
 
 **Daily Check-In (TodayView):**
+
 1. Weight entry (manual or HealthKit)
 2. Symptom severity logging (8 symptoms, 1-5 scale)
 3. Diuretic intake with dosage
 
 **Symptoms Tracked:**
+
 - Dyspnea at rest, Dyspnea on exertion, Orthopnea, PND
 - Chest pain, Dizziness, Syncope, Reduced urine output
 
 **Alert Thresholds (non-prescriptive):**
+
 - Weight: ≥2 lb/24h OR ≥5 lb/7 days
 - Heart rate: <40 bpm OR >120 bpm (persistent)
 - Symptom severity: Any symptom rated 4 or 5
 
 ### HealthKit Integration
+
 Read-only access for:
+
 - Weight (HKQuantityTypeIdentifier.bodyMass)
 - Resting heart rate
 - Heart rate variability
@@ -93,6 +101,7 @@ Read-only access for:
 ## PDF Export Format
 
 Generated PDF includes:
+
 - Patient identifier (optional)
 - Date range
 - 30-day weight trend chart
@@ -100,3 +109,56 @@ Generated PDF includes:
 - Diuretic dosing history
 - Alert events
 - Footer disclaimer about patient-entered data
+
+## Adding Hero Images to Education Sections
+
+Hero images appear at the top of Learn topic detail views, extending under the status bar with the content card overlapping.
+
+### Step 1: Add Image to Asset Catalog
+
+1. Place image file in `HRTY/Assets.xcassets/Education/` folder
+2. Create an `.imageset` folder (e.g., `MyImage.imageset`)
+3. Add `Contents.json`:
+
+```json
+{
+  "images": [
+    {
+      "filename": "my_image.png",
+      "idiom": "universal"
+    }
+  ],
+  "info": {
+    "author": "xcode",
+    "version": 1
+  }
+}
+```
+
+### Step 2: Set heroImage on LearnTopic
+
+In `HRTY/Models/EducationContent.swift`, add `heroImage` parameter to the topic:
+
+```swift
+LearnTopic(
+    title: "Topic Title",
+    content: "...",
+    source: "Source Name",
+    heroIcon: "heart.fill",
+    heroColor: .coral,
+    heroImage: "Education/MyImage"  // <-- Add this line
+)
+```
+
+### Important Layout Notes
+
+The hero image layout in `LearnView.swift` uses:
+
+- `.containerRelativeFrame(.horizontal)` to constrain image width to screen bounds
+- `.aspectRatio(contentMode: .fill)` with `.clipped()` for proper image scaling
+- Negative offset (`-40`) on content card to create overlap effect
+- `RoundedCorner` shape applied only to background (not content) to avoid text clipping
+- `.ignoresSafeArea(edges: .top)` to extend image under status bar
+- `.navigationBarBackButtonHidden(true)` with `.toolbarBackground(.hidden)` for clean look
+
+**Critical**: Always use `.containerRelativeFrame(.horizontal)` when using `.aspectRatio(contentMode: .fill)` on images, otherwise the image width can exceed screen bounds and cause sibling views to be clipped.

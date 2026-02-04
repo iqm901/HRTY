@@ -125,10 +125,18 @@ extension Color {
     static let hrtBackgroundSecondaryFallback = Color(red: 0.99, green: 0.94, blue: 0.95)
     static let hrtCardFallback = Color.white
 
-    // Text colors - fallbacks
-    static let hrtTextFallback = Color(red: 0.20, green: 0.18, blue: 0.22)
-    static let hrtTextSecondaryFallback = Color(red: 0.45, green: 0.42, blue: 0.48)
-    static let hrtTextTertiaryFallback = Color(red: 0.65, green: 0.62, blue: 0.68)
+    // Text colors - fallbacks (warm charcoal, not pure black)
+    // #3A2F2F - slightly warm charcoal for primary text
+    static let hrtTextFallback = Color(red: 0.227, green: 0.184, blue: 0.184)
+    // Adjusted secondary/tertiary to match warm tone
+    static let hrtTextSecondaryFallback = Color(red: 0.40, green: 0.36, blue: 0.36)
+    static let hrtTextTertiaryFallback = Color(red: 0.58, green: 0.54, blue: 0.54)
+
+    // Hero title colors - dark warm gray for refined contrast
+    // #3D3D3D - softens contrast while maintaining WCAG AA accessibility
+    static let hrtHeroTitle = Color(red: 0.24, green: 0.24, blue: 0.24)
+    // Subtle light shadow for depth against the illustration
+    static let hrtHeroTitleShadow = Color.white.opacity(0.4)
 }
 
 // MARK: - Adaptive Colors (Light/Dark)

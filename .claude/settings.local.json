@@ -8,7 +8,31 @@
       "Bash(./scripts/ralph-persona.sh:*)",
       "Bash(git push:*)",
       "Bash(caffeinate:*)",
-      "Bash(git merge:*)"
+      "Bash(git merge:*)",
+      "Bash(xcrun simctl io:*)",
+      "WebFetch(domain:hfsa.org)",
+      "WebSearch",
+      "WebFetch(domain:pmc.ncbi.nlm.nih.gov)",
+      "WebFetch(domain:www.heart.org)",
+      "WebFetch(domain:healthy.kaiserpermanente.org)",
+      "WebFetch(domain:www.mountsinai.org)",
+      "WebFetch(domain:www.cardiosmart.org)",
+      "Bash(xcodebuild:*)",
+      "Bash(xcrun simctl boot:*)",
+      "Bash(open:*)",
+      "Bash(xcrun simctl install:*)",
+      "Bash(xcrun simctl launch:*)",
+      "Bash(ruby -e:*)",
+      "Bash(ls:*)",
+      "Bash(osascript:*)",
+      "Bash(xcrun simctl openurl:*)",
+      "Bash(xcrun simctl shutdown:*)",
+      "Bash(xcrun simctl terminate:*)",
+      "Bash(xcrun simctl uninstall:*)",
+      "Bash(/Users/imranqm/.claude/hooks/notification.sh)",
+      "Bash(find:*)",
+      "Bash(grep:*)",
+      "Bash(xargs:*)"
     ]
   }
 }

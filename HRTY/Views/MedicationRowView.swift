@@ -3,6 +3,7 @@ import SwiftUI
 struct MedicationRowView: View {
     let medication: Medication
     var isInConflict: Bool = false
+    var showsCaution: Bool = false
     @State private var showingEducationSheet = false
 
     /// The detected medication class for this medication
@@ -25,6 +26,10 @@ struct MedicationRowView: View {
 
                     if isInConflict {
                         reviewBadge
+                    }
+
+                    if showsCaution {
+                        cautionBadge
                     }
 
                     if hasEducation {
@@ -115,6 +120,18 @@ struct MedicationRowView: View {
             .accessibilityLabel("This medication may need review")
     }
 
+    private var cautionBadge: some View {
+        Text("Caution")
+            .font(.hrtSmall)
+            .fontWeight(.medium)
+            .padding(.horizontal, HRTSpacing.sm)
+            .padding(.vertical, 2)
+            .background(Color.cautionBadgeBackground)
+            .foregroundStyle(Color.cautionBadgeText)
+            .clipShape(Capsule())
+            .accessibilityLabel("This medication may worsen heart failure")
+    }
+
     // MARK: - Computed Properties
 
     private var dosageText: String {
@@ -128,6 +145,9 @@ struct MedicationRowView: View {
         }
         if isInConflict {
             label += ", needs review with care team"
+        }
+        if showsCaution {
+            label += ", may worsen heart failure, check with your doctor"
         }
         if !medication.schedule.isEmpty {
             label += ", taken \(medication.schedule)"
@@ -246,6 +266,18 @@ private extension Color {
     static let conflictBadgeText = Color.adaptive(
         light: Color(red: 180/255, green: 130/255, blue: 20/255),
         dark: Color(red: 250/255, green: 200/255, blue: 80/255)
+    )
+
+    /// Background for the "Caution" badge (orange tint)
+    static let cautionBadgeBackground = Color.adaptive(
+        light: Color(red: 255/255, green: 237/255, blue: 213/255),
+        dark: Color(red: 80/255, green: 50/255, blue: 25/255)
+    )
+
+    /// Text color for the "Caution" badge
+    static let cautionBadgeText = Color.adaptive(
+        light: Color(red: 200/255, green: 100/255, blue: 20/255),
+        dark: Color(red: 255/255, green: 180/255, blue: 100/255)
     )
 }
 
